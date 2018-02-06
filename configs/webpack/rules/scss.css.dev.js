@@ -1,0 +1,62 @@
+const path    = require('path');
+const extract = require('extract-text-webpack-plugin');
+
+module.exports = function(paths) {
+    return {
+        module: {
+            rules: [
+                {
+                    test: /\.scss$/,
+                    exclude: /node_modules/,
+                    use: extract.extract({
+                        fallback: 'style-loader',
+                        use: [{ 
+                            loader: 'css-loader',
+                            options: {
+                                sourceMap: true,
+                                importLoaders: 1,
+                            }
+                        }, {
+                            loader: 'postcss-loader',
+                            options: {
+                                sourceMap: true,
+                                config: {
+                                    path: path.join(__dirname, '../../postcss_dev/postcss.config.js'),
+                                }
+                            } 
+                        }, { 
+                            loader: 'sass-loader',
+                            options: {
+                                sourceMap: true,
+                            }
+                        }]
+                    }),
+                },
+                {
+                    test: /\.css$/,
+                    exclude: /node_modules/,
+                    use: extract.extract({
+                        fallback: 'style-loader',
+                        use: [{
+                            loader: 'postcss-loader',
+                            options: {
+                                sourceMap: true,
+                                config: {
+                                    path: path.join(__dirname, '../../postcss_dev/postcss.config.js'),
+                                }
+                            }
+                        }, {
+                            loader: 'css-loader',
+                            options: {
+                                sourceMap: true,
+                            }
+                        }]
+                    }),
+                },
+            ],
+        },
+        plugins: [
+            new extract('../../public/css/build.css'),
+        ],
+    };
+};
