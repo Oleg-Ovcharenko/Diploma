@@ -1,0 +1,22 @@
+.app-header {
+    width: 100%;
+    height: 60px;
+    background-color: $header_bg;
+    border-bottom: 2px solid $main_border_color;
+    padding: 0 15px;
+    box-sizing: border-box;
+    &-title {
+        font-size: 16px;
+        line-height: 60px;
+        margin: 0;
+        padding: 0;
+        text-transform: uppercase;
+        a {
+            text-decoration: none;
+            color: $header_title;
+            &:hover {
+                color: $header_title_hover;
+            }
+        }
+    }
+}
