@@ -3,7 +3,7 @@
     height: 60px;
     background-color: $header_bg;
     border-bottom: 2px solid $main_border_color;
-    padding: 0 15px;
+    padding: 0 1.25rem;
     box-sizing: border-box;
     &-title {
         font-size: 16px;
@@ -14,6 +14,8 @@
         a {
             text-decoration: none;
             color: $header_title;
+            font-size: 18px;
+            font-weight: bold;
             &:hover {
                 color: $header_title_hover;
             }

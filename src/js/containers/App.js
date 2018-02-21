@@ -6,7 +6,7 @@ import MainLayout from './MainLayout';
 class App extends Component {
     render() {
         return (
-            <div class="app">
+            <div className="app">
                 <Header />
                 <main className="app-main">
                     <SideBar />

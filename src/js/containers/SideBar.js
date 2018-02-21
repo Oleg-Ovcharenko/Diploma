@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import Controls from '../components/sideBar/Controls';
 
 class SideBar extends Component {
     render() {
         return (
             <section className="menu">
-                <p>left menu</p>
+                <Controls />
             </section>
         )
     }
