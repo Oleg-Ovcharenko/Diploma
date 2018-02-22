@@ -18467,9 +18467,15 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _classnames = __webpack_require__(43);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
 var _CardMenu = __webpack_require__(32);
 
 var _CardMenu2 = _interopRequireDefault(_CardMenu);
+
+var _helpersFunctions = __webpack_require__(42);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18479,7 +18485,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var MIN_NODES = 2;
+var MIN_NODES = 1;
 var MAX_NODES = 200;
 
 var Controls = function (_React$Component) {
@@ -18491,8 +18497,9 @@ var Controls = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Controls.__proto__ || Object.getPrototypeOf(Controls)).call(this, props));
 
         _this.state = {
-            nodesValue: 0,
-            generateNodes: 0
+            nodesValue: 2,
+            generateNodes: 0,
+            validationErr: false
         };
 
         _this.handleNodes = _this.handleNodes.bind(_this);
@@ -18503,17 +18510,33 @@ var Controls = function (_React$Component) {
     _createClass(Controls, [{
         key: 'handleNodes',
         value: function handleNodes(e) {
-            this.setState({
-                nodesValue: e.target.value
-            });
+            var nodesValue = e.target.value;
+            var validationErr = false;
+
+            if ((0, _helpersFunctions.validationNumberField)(MIN_NODES, MAX_NODES, nodesValue)) {
+                validationErr = (0, _helpersFunctions.validationNumberField)(MIN_NODES, MAX_NODES, nodesValue);
+
+                this.setState({
+                    nodesValue: MIN_NODES,
+                    validationErr: validationErr
+                });
+            } else {
+                this.setState({
+                    nodesValue: nodesValue,
+                    validationErr: validationErr
+                });
+            }
         }
     }, {
         key: 'handleGenerate',
         value: function handleGenerate(e) {
             e.preventDefault();
 
+            var nodesValue = this.state.nodesValue;
+
+
             this.setState({
-                generateNodes: 10
+                generateNodes: (0, _helpersFunctions.randomRange)(MIN_NODES, nodesValue)
             });
         }
     }, {
@@ -18521,10 +18544,14 @@ var Controls = function (_React$Component) {
         value: function render() {
             var _state = this.state,
                 nodesValue = _state.nodesValue,
-                generateNodes = _state.generateNodes;
+                generateNodes = _state.generateNodes,
+                validationErr = _state.validationErr;
 
 
-            console.log(generateNodes);
+            var inputNodes = (0, _classnames2.default)({
+                'form-control form-control-sm': true,
+                'is-invalid': validationErr
+            });
 
             return _react2.default.createElement(
                 _CardMenu2.default,
@@ -18544,7 +18571,7 @@ var Controls = function (_React$Component) {
                         { className: 'form-group' },
                         _react2.default.createElement('input', {
                             type: 'number',
-                            className: 'form-control form-control-sm',
+                            className: inputNodes,
                             id: 'exampleInputEmail1',
                             'aria-describedby': 'emailHelp',
                             placeholder: 'Please enter a number',
@@ -18553,10 +18580,14 @@ var Controls = function (_React$Component) {
                             value: nodesValue,
                             onChange: this.handleNodes
                         }),
-                        _react2.default.createElement(
+                        !validationErr ? _react2.default.createElement(
                             'small',
                             { id: 'emailHelp', className: 'form-text text-muted text-uppercase' },
-                            'Min 2 - Max 200'
+                            'Min ' + MIN_NODES + ' - Max ' + MAX_NODES
+                        ) : _react2.default.createElement(
+                            'div',
+                            { className: 'invalid-feedback' },
+                            validationErr
                         )
                     ),
                     _react2.default.createElement(
@@ -18585,8 +18616,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
@@ -18597,53 +18626,32 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var CardMenu = function (_Component) {
-    _inherits(CardMenu, _Component);
-
-    function CardMenu() {
-        _classCallCheck(this, CardMenu);
-
-        return _possibleConstructorReturn(this, (CardMenu.__proto__ || Object.getPrototypeOf(CardMenu)).apply(this, arguments));
-    }
-
-    _createClass(CardMenu, [{
-        key: 'render',
-        value: function render() {
-            var name = this.props.name;
-
-
-            return _react2.default.createElement(
-                'div',
-                { className: 'card custom-card' },
-                _react2.default.createElement(
-                    'div',
-                    { className: 'card-header b-r-0' },
-                    _react2.default.createElement(
-                        'h6',
-                        { className: 'm-0' },
-                        name
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'card-body b-r-0' },
-                    this.props.children
-                )
-            );
-        }
-    }]);
-
-    return CardMenu;
-}(_react.Component);
+var CardMenu = function CardMenu(_ref) {
+    var name = _ref.name,
+        children = _ref.children;
+    return _react2.default.createElement(
+        'div',
+        { className: 'card custom-card' },
+        _react2.default.createElement(
+            'div',
+            { className: 'card-header b-r-0' },
+            _react2.default.createElement(
+                'h6',
+                { className: 'm-0' },
+                name
+            )
+        ),
+        _react2.default.createElement(
+            'div',
+            { className: 'card-body b-r-0' },
+            children
+        )
+    );
+};
 
 CardMenu.propTypes = {
-    name: _propTypes2.default.string
+    name: _propTypes2.default.string,
+    children: _propTypes2.default.array
 };
 
 exports.default = CardMenu;
@@ -19357,6 +19365,91 @@ exports.default = MainLayout;
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var randomRange = exports.randomRange = function randomRange(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+var validationNumberField = exports.validationNumberField = function validationNumberField(min, max, val) {
+    var err = false;
+
+    if (val < min) {
+        err = "Value can not be less than " + min;
+    } else if (val > max) {
+        err = "Value can not be greater than " + max;
+    }
+
+    return err;
+};
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2016 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg)) {
+				classes.push(classNames.apply(null, arg));
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {
+		window.classNames = classNames;
+	}
+}());
+
 
 /***/ })
 /******/ ]);

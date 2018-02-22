@@ -1,15 +1,21 @@
 import React from 'react';
+import cx from 'classnames';
 import CardMenu from './CardMenu';
+import {
+    randomRange,
+    validationNumberField,
+} from './../../helpers/helpersFunctions';
 
-const MIN_NODES = 2;
+const MIN_NODES = 1;
 const MAX_NODES = 200;
 
 class Controls extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            nodesValue: 0,
+            nodesValue: 2,
             generateNodes: 0,
+            validationErr: false,
         };
 
         this.handleNodes = this.handleNodes.bind(this);
@@ -17,16 +23,33 @@ class Controls extends React.Component {
     }
 
     handleNodes(e) {
-        this.setState({
-            nodesValue: e.target.value,
-        });
+        const nodesValue = e.target.value;
+        let validationErr = false;
+
+        if (validationNumberField(MIN_NODES, MAX_NODES, nodesValue)) {
+            validationErr = validationNumberField(MIN_NODES, MAX_NODES, nodesValue);
+
+            this.setState({
+                nodesValue: MIN_NODES,
+                validationErr,
+            });
+        } else {
+            this.setState({
+                nodesValue,
+                validationErr,
+            });
+        }
     }
 
     handleGenerate(e) {
         e.preventDefault();
 
+        const {
+            nodesValue,
+        } = this.state;
+
         this.setState({
-            generateNodes: 10,
+            generateNodes: randomRange(MIN_NODES, nodesValue),
         });
     }
 
@@ -34,9 +57,13 @@ class Controls extends React.Component {
         const {
             nodesValue,
             generateNodes,
+            validationErr,
         } = this.state;
 
-        console.log(generateNodes);
+        const inputNodes = cx({
+            'form-control form-control-sm': true,
+            'is-invalid': validationErr,
+        });
 
         return (
             <CardMenu
@@ -47,7 +74,7 @@ class Controls extends React.Component {
                     <div className="form-group">
                         <input
                             type="number"
-                            className="form-control form-control-sm"
+                            className={inputNodes}
                             id="exampleInputEmail1"
                             aria-describedby="emailHelp"
                             placeholder="Please enter a number"
@@ -56,7 +83,11 @@ class Controls extends React.Component {
                             value={nodesValue}
                             onChange={this.handleNodes}
                         />
-                        <small id="emailHelp" className="form-text text-muted text-uppercase">Min 2 - Max 200</small>
+                        {
+                            !validationErr ?
+                                <small id="emailHelp" className="form-text text-muted text-uppercase">{`Min ${MIN_NODES} - Max ${MAX_NODES}`}</small> :
+                                <div className="invalid-feedback">{validationErr}</div>
+                        }
                     </div>
                     <button type="submit" className="btn btn-primary btn-sm" onClick={this.handleGenerate}>Generate</button>
                 </form>
