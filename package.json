@@ -61,7 +61,6 @@
       ],
       "jsx-a11y/aria-props": 2,
       "jsx-a11y/heading-has-content": 0,
-      "jsx-a11y/href-no-hash": 2,
       "jsx-a11y/label-has-for": 2,
       "jsx-a11y/mouse-events-have-key-events": 2,
       "jsx-a11y/role-has-required-aria-props": 2,
@@ -121,11 +120,14 @@
     "eslint-plugin-react": "^7.7.0",
     "eslint-plugin-redux-saga": "^0.6.0",
     "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.9",
+    "node-sass": "^4.7.2",
     "node-static": "^0.7.10",
     "postcss-loader": "^2.0.10",
     "redux-saga": "^0.16.0",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.1",
+    "upgrade": "^1.1.0",
     "url-loader": "^0.6.2",
     "webpack": "^3.10.0",
     "webpack-merge": "^4.1.1"
@@ -133,8 +135,10 @@
   "dependencies": {
     "bootstrap": "^4.0.0",
     "eslint-config-airbnb": "^16.1.0",
+    "jquery": "^3.3.1",
     "node-sass": "^4.7.2",
     "normalize.scss": "^0.1.0",
+    "popper.js": "^1.12.9",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"

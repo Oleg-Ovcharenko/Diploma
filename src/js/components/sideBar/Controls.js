@@ -61,7 +61,7 @@ class Controls extends React.Component {
                     <button type="submit" className="btn btn-primary btn-sm" onClick={this.handleGenerate}>Generate</button>
                 </form>
             </CardMenu>
-        )
+        );
     }
 }
 
