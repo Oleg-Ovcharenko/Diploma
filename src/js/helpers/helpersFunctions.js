@@ -1,13 +1,24 @@
 export const randomRange = (min, max) => Math.floor(Math.random() * ((max - min) + 1)) + min;
 
 export const validationNumberField = (min, max, val) => {
-    let err = false;
+    let errorMessage = null;
+    let hasError = false;
 
-    if (val < min) {
-        err = `Value can not be less than ${min}`;
-    } else if (val > max) {
-        err = `Value can not be greater than ${max}`;
+    if (val && val.length !== 0) {
+        if (val < min) {
+            errorMessage = `Value can not be less than ${min}`;
+            hasError = true;
+        } else if (val > max) {
+            errorMessage = `Value can not be greater than ${max}`;
+            hasError = true;
+        }
+    } else {
+        errorMessage = '';
+        hasError = true;
     }
 
-    return err;
+    return {
+        errorMessage,
+        hasError,
+    };
 };

@@ -13,9 +13,12 @@ class Controls extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            nodesValue: 2,
+            nodesValue: 10,
             generateNodes: 0,
-            validationErr: false,
+            error: {
+                errorMessage: '',
+                hasError: false,
+            },
         };
 
         this.handleNodes = this.handleNodes.bind(this);
@@ -24,21 +27,12 @@ class Controls extends React.Component {
 
     handleNodes(e) {
         const nodesValue = e.target.value;
-        let validationErr = false;
+        const validationErr = validationNumberField(MIN_NODES, MAX_NODES, nodesValue);
 
-        if (validationNumberField(MIN_NODES, MAX_NODES, nodesValue)) {
-            validationErr = validationNumberField(MIN_NODES, MAX_NODES, nodesValue);
-
-            this.setState({
-                nodesValue: MIN_NODES,
-                validationErr,
-            });
-        } else {
-            this.setState({
-                nodesValue,
-                validationErr,
-            });
-        }
+        this.setState({
+            nodesValue,
+            error: { ...validationErr },
+        });
     }
 
     handleGenerate(e) {
@@ -48,8 +42,9 @@ class Controls extends React.Component {
             nodesValue,
         } = this.state;
 
+        // to do
         this.setState({
-            generateNodes: randomRange(MIN_NODES, nodesValue),
+            generateNodes: nodesValue,
         });
     }
 
@@ -57,12 +52,17 @@ class Controls extends React.Component {
         const {
             nodesValue,
             generateNodes,
-            validationErr,
+            error: {
+                errorMessage,
+                hasError,
+            },
         } = this.state;
+
+        console.log(generateNodes);
 
         const inputNodes = cx({
             'form-control form-control-sm': true,
-            'is-invalid': validationErr,
+            'is-invalid': hasError,
         });
 
         return (
@@ -84,12 +84,12 @@ class Controls extends React.Component {
                             onChange={this.handleNodes}
                         />
                         {
-                            !validationErr ?
+                            !errorMessage ?
                                 <small id="emailHelp" className="form-text text-muted text-uppercase">{`Min ${MIN_NODES} - Max ${MAX_NODES}`}</small> :
-                                <div className="invalid-feedback">{validationErr}</div>
+                                <div className="invalid-feedback">{errorMessage}</div>
                         }
                     </div>
-                    <button type="submit" className="btn btn-primary btn-sm" onClick={this.handleGenerate}>Generate</button>
+                    <button type="submit" className="btn btn-primary btn-sm" onClick={this.handleGenerate} disabled={hasError}>Generate</button>
                 </form>
             </CardMenu>
         );

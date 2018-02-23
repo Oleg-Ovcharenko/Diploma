@@ -957,7 +957,7 @@ module.exports = focusNode;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(16);
-module.exports = __webpack_require__(37);
+module.exports = __webpack_require__(39);
 
 
 /***/ }),
@@ -18295,7 +18295,7 @@ var _SideBar = __webpack_require__(30);
 
 var _SideBar2 = _interopRequireDefault(_SideBar);
 
-var _MainLayout = __webpack_require__(36);
+var _MainLayout = __webpack_require__(38);
 
 var _MainLayout2 = _interopRequireDefault(_MainLayout);
 
@@ -18461,21 +18461,23 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _classnames = __webpack_require__(43);
+var _classnames = __webpack_require__(32);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _CardMenu = __webpack_require__(32);
+var _CardMenu = __webpack_require__(33);
 
 var _CardMenu2 = _interopRequireDefault(_CardMenu);
 
-var _helpersFunctions = __webpack_require__(42);
+var _helpersFunctions = __webpack_require__(37);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18497,9 +18499,12 @@ var Controls = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Controls.__proto__ || Object.getPrototypeOf(Controls)).call(this, props));
 
         _this.state = {
-            nodesValue: 2,
+            nodesValue: 10,
             generateNodes: 0,
-            validationErr: false
+            error: {
+                errorMessage: '',
+                hasError: false
+            }
         };
 
         _this.handleNodes = _this.handleNodes.bind(_this);
@@ -18511,21 +18516,12 @@ var Controls = function (_React$Component) {
         key: 'handleNodes',
         value: function handleNodes(e) {
             var nodesValue = e.target.value;
-            var validationErr = false;
+            var validationErr = (0, _helpersFunctions.validationNumberField)(MIN_NODES, MAX_NODES, nodesValue);
 
-            if ((0, _helpersFunctions.validationNumberField)(MIN_NODES, MAX_NODES, nodesValue)) {
-                validationErr = (0, _helpersFunctions.validationNumberField)(MIN_NODES, MAX_NODES, nodesValue);
-
-                this.setState({
-                    nodesValue: MIN_NODES,
-                    validationErr: validationErr
-                });
-            } else {
-                this.setState({
-                    nodesValue: nodesValue,
-                    validationErr: validationErr
-                });
-            }
+            this.setState({
+                nodesValue: nodesValue,
+                error: _extends({}, validationErr)
+            });
         }
     }, {
         key: 'handleGenerate',
@@ -18534,9 +18530,10 @@ var Controls = function (_React$Component) {
 
             var nodesValue = this.state.nodesValue;
 
+            // to do
 
             this.setState({
-                generateNodes: (0, _helpersFunctions.randomRange)(MIN_NODES, nodesValue)
+                generateNodes: nodesValue
             });
         }
     }, {
@@ -18545,12 +18542,16 @@ var Controls = function (_React$Component) {
             var _state = this.state,
                 nodesValue = _state.nodesValue,
                 generateNodes = _state.generateNodes,
-                validationErr = _state.validationErr;
+                _state$error = _state.error,
+                errorMessage = _state$error.errorMessage,
+                hasError = _state$error.hasError;
 
+
+            console.log(generateNodes);
 
             var inputNodes = (0, _classnames2.default)({
                 'form-control form-control-sm': true,
-                'is-invalid': validationErr
+                'is-invalid': hasError
             });
 
             return _react2.default.createElement(
@@ -18580,19 +18581,19 @@ var Controls = function (_React$Component) {
                             value: nodesValue,
                             onChange: this.handleNodes
                         }),
-                        !validationErr ? _react2.default.createElement(
+                        !errorMessage ? _react2.default.createElement(
                             'small',
                             { id: 'emailHelp', className: 'form-text text-muted text-uppercase' },
                             'Min ' + MIN_NODES + ' - Max ' + MAX_NODES
                         ) : _react2.default.createElement(
                             'div',
                             { className: 'invalid-feedback' },
-                            validationErr
+                            errorMessage
                         )
                     ),
                     _react2.default.createElement(
                         'button',
-                        { type: 'submit', className: 'btn btn-primary btn-sm', onClick: this.handleGenerate },
+                        { type: 'submit', className: 'btn btn-primary btn-sm', onClick: this.handleGenerate, disabled: hasError },
                         'Generate'
                     )
                 )
@@ -18609,6 +18610,61 @@ exports.default = Controls;
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2016 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg)) {
+				classes.push(classNames.apply(null, arg));
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {
+		window.classNames = classNames;
+	}
+}());
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -18620,7 +18676,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(33);
+var _propTypes = __webpack_require__(34);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -18657,7 +18713,7 @@ CardMenu.propTypes = {
 exports.default = CardMenu;
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -18682,17 +18738,17 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(34)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(35)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(35)();
+  module.exports = __webpack_require__(36)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19242,7 +19298,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19307,7 +19363,44 @@ module.exports = function() {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var randomRange = exports.randomRange = function randomRange(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+var validationNumberField = exports.validationNumberField = function validationNumberField(min, max, val) {
+    var errorMessage = null;
+    var hasError = false;
+
+    if (val && val.length !== 0) {
+        if (val < min) {
+            errorMessage = 'Value can not be less than ' + min;
+            hasError = true;
+        } else if (val > max) {
+            errorMessage = 'Value can not be greater than ' + max;
+            hasError = true;
+        }
+    } else {
+        errorMessage = '';
+        hasError = true;
+    }
+
+    return {
+        errorMessage: errorMessage,
+        hasError: hasError
+    };
+};
+
+/***/ }),
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19361,95 +19454,10 @@ var MainLayout = function (_Component) {
 exports.default = MainLayout;
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var randomRange = exports.randomRange = function randomRange(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-var validationNumberField = exports.validationNumberField = function validationNumberField(min, max, val) {
-    var err = false;
-
-    if (val < min) {
-        err = "Value can not be less than " + min;
-    } else if (val > max) {
-        err = "Value can not be greater than " + max;
-    }
-
-    return err;
-};
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-  Copyright (c) 2016 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
-*/
-/* global define */
-
-(function () {
-	'use strict';
-
-	var hasOwn = {}.hasOwnProperty;
-
-	function classNames () {
-		var classes = [];
-
-		for (var i = 0; i < arguments.length; i++) {
-			var arg = arguments[i];
-			if (!arg) continue;
-
-			var argType = typeof arg;
-
-			if (argType === 'string' || argType === 'number') {
-				classes.push(arg);
-			} else if (Array.isArray(arg)) {
-				classes.push(classNames.apply(null, arg));
-			} else if (argType === 'object') {
-				for (var key in arg) {
-					if (hasOwn.call(arg, key) && arg[key]) {
-						classes.push(key);
-					}
-				}
-			}
-		}
-
-		return classes.join(' ');
-	}
-
-	if (typeof module !== 'undefined' && module.exports) {
-		module.exports = classNames;
-	} else if (true) {
-		// register as 'classnames', consistent with npm package name
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
-			return classNames;
-		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else {
-		window.classNames = classNames;
-	}
-}());
-
 
 /***/ })
 /******/ ]);
