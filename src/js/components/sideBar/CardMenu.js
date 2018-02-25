@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const CardMenu = ({ name, children }) => (
-    <div className="card custom-card">
+    <div className="card custom-card b-r-0">
         <div className="card-header b-r-0">
             <h6 className="m-0">{name}</h6>
         </div>

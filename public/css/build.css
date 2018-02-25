@@ -7910,13 +7910,53 @@ a.text-dark:hover, a.text-dark:focus {
 .m-0 {
   margin: 0 !important; }
 
+.p-0 {
+  padding: 0 !important; }
+
 .m-b-1-rem {
   margin-bottom: 1rem; }
+
+.p-1-25 {
+  padding: 1.25rem; }
+
+/*=== margins 1.25rem ===*/
+.m-b-1-25 {
+  margin-bottom: 1.25rem; }
+
+.m-t-1-25 {
+  margin-top: 1.25rem; }
+
+.m-r-1-25 {
+  margin-right: 1.25rem; }
+
+.m-l-1-25 {
+  margin-left: 1.25rem; }
 
 /*=== common ===*/
 .b-r-0 {
   -webkit-border-radius: 0 !important;
           border-radius: 0 !important; }
+
+/*=== card for menu ===*/
+.custom-card {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  -webkit-border-radius: none !important;
+          border-radius: none !important; }
+
+/*=== flex ===*/
+.d-flex {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex; }
+
+.align-i-center {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center; }
 
 /*=== variables ===*/
 /*=== main ===*/
@@ -7975,21 +8015,19 @@ a {
       -ms-flex-positive: 0;
           flex-grow: 0; }
 
-/*=== card ===*/
-.custom-card {
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  -webkit-border-radius: none !important;
-          border-radius: none !important; }
-
 .main-layout {
   -webkit-box-flex: 1;
   -webkit-flex-grow: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
-  padding: 0 1.25rem; }
+  background-color: #f8f9fa; }
 
 /*=== components ===*/
+.control-networks {
+  height: 80px; }
+
+.network-layout {
+  height: -webkit-calc(100% - 80px - 4px - 1.25rem);
+  height: calc(100% - 80px - 4px - 1.25rem); }
 
 /*# sourceMappingURL=build.css.map*/

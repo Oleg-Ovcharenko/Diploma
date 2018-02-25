@@ -1,10 +1,13 @@
 import React from 'react';
 import cx from 'classnames';
+import PropTypes from 'prop-types';
 import CardMenu from './CardMenu';
+import { generateNodes } from '../../actions';
 import {
-    randomRange,
     validationNumberField,
+    randomRange,
 } from './../../helpers/helpersFunctions';
+import { NODE_RADIUS } from '../../constants';
 
 const MIN_NODES = 1;
 const MAX_NODES = 200;
@@ -14,7 +17,6 @@ class Controls extends React.Component {
         super(props);
         this.state = {
             nodesValue: 10,
-            generateNodes: 0,
             error: {
                 errorMessage: '',
                 hasError: false,
@@ -26,7 +28,7 @@ class Controls extends React.Component {
     }
 
     handleNodes(e) {
-        const nodesValue = e.target.value;
+        const nodesValue = e.target.value.match(/\d+/g).map(Number);
         const validationErr = validationNumberField(MIN_NODES, MAX_NODES, nodesValue);
 
         this.setState({
@@ -42,23 +44,35 @@ class Controls extends React.Component {
             nodesValue,
         } = this.state;
 
-        // to do
-        this.setState({
-            generateNodes: nodesValue,
-        });
+        const {
+            networkPanelWidth,
+            networkPanelHeight,
+        } = this.props;
+
+        const nodes = [];
+
+        for (let i = 0; i < nodesValue; i += 1) {
+            const node = {
+                id: i + 1,
+                x: randomRange(NODE_RADIUS, networkPanelWidth - NODE_RADIUS),
+                y: randomRange(NODE_RADIUS, networkPanelHeight - NODE_RADIUS),
+                params: {},
+            };
+
+            nodes.push(node);
+        }
+
+        this.props.dispatch(generateNodes(nodes));
     }
 
     render() {
         const {
             nodesValue,
-            generateNodes,
             error: {
                 errorMessage,
                 hasError,
             },
         } = this.state;
-
-        console.log(generateNodes);
 
         const inputNodes = cx({
             'form-control form-control-sm': true,
@@ -73,7 +87,7 @@ class Controls extends React.Component {
                 <form className="text-center">
                     <div className="form-group">
                         <input
-                            type="number"
+                            type="text"
                             className={inputNodes}
                             id="exampleInputEmail1"
                             aria-describedby="emailHelp"
@@ -95,5 +109,11 @@ class Controls extends React.Component {
         );
     }
 }
+
+Controls.propTypes = {
+    networkPanelWidth: PropTypes.number,
+    networkPanelHeight: PropTypes.number,
+    dispatch: PropTypes.func,
+};
 
 export default Controls;

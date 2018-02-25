@@ -5,12 +5,16 @@ import MainLayout from './MainLayout';
 
 class App extends Component {
     render() {
+        const {
+            dispatch,
+        } = this.props;
+
         return (
             <div className="app">
                 <Header />
                 <main className="app-main">
-                    <SideBar />
-                    <MainLayout />
+                    <SideBar dispatch={dispatch} />
+                    <MainLayout dispatch={dispatch} />
                 </main>
             </div>
         )
