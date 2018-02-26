@@ -1,5 +1,7 @@
 export const randomRange = (min, max) => Math.floor(Math.random() * ((max - min) + 1)) + min;
 
+export const randomFloatRange = (min, max) => Math.random() * (max - min) + min;
+
 export const validationNumberField = (min, max, val) => {
     let errorMessage = null;
     let hasError = false;

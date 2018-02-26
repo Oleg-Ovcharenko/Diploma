@@ -6,6 +6,7 @@ import { generateNodes } from '../../actions';
 import {
     validationNumberField,
     randomRange,
+    randomFloatRange,
 } from './../../helpers/helpersFunctions';
 import { NODE_RADIUS } from '../../constants';
 
@@ -50,12 +51,14 @@ class Controls extends React.Component {
         } = this.props;
 
         const nodes = [];
+        const nodeSizePercentX = (NODE_RADIUS * 100) / networkPanelWidth;
+        const nodeSizePercentY = (NODE_RADIUS * 100) / networkPanelHeight;
 
         for (let i = 0; i < nodesValue; i += 1) {
             const node = {
                 id: i + 1,
-                x: randomRange(NODE_RADIUS, networkPanelWidth - NODE_RADIUS),
-                y: randomRange(NODE_RADIUS, networkPanelHeight - NODE_RADIUS),
+                x: randomFloatRange(nodeSizePercentX, 100 - nodeSizePercentX),
+                y: randomFloatRange(nodeSizePercentY, 100 - nodeSizePercentY),
                 params: {},
             };
 

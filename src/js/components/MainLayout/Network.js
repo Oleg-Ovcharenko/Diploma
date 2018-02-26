@@ -17,6 +17,11 @@ class Network extends Component {
 
     componentDidMount() {
         this.setSvgSizes();
+        window.addEventListener('resize', this.reszeWindow);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.reszeWindow);
     }
 
     setSvgSizes = () => {
@@ -24,6 +29,8 @@ class Network extends Component {
             width,
             height,
         } = this.bodyRef.getBoundingClientRect();
+
+        console.log(height);
 
         this.props.dispatch(addNetworkWindowSize(width, height));
 
@@ -35,6 +42,10 @@ class Network extends Component {
 
     getNetworkBodyRef = (ref) => {
         this.bodyRef = ref;
+    }
+
+    reszeWindow = () => {
+        this.setSvgSizes();
     }
 
     render() {
@@ -51,15 +62,13 @@ class Network extends Component {
 
         return (
             <div className="card network-layout b-r-0">
-                <div className="card-body p-0" ref={this.getNetworkBodyRef}>
-                    <svg viewBox={viewBox} version="1.1" xmlns="http://www.w3.org/2000/svg" width={svgWidth} height={svgHeight}>
-                        <g className="lines">
-                            
-                        </g>
+                <div className="card-body p-0 w-100 h-100" ref={this.getNetworkBodyRef}>
+                    <svg viewBox={viewBox} version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                        <g className="lines"></g>
                         <g className="nodes">
                             {
                                 nodes.map((node) => (
-                                    <circle key={node.id} cx={node.x} cy={node.y} r={NODE_RADIUS} fill={NODE_COLOR}><title>{`NODE ${node}`}</title></circle>
+                                    <circle key={node.id} cx={`${node.x}%`} cy={`${node.y}%`} r={NODE_RADIUS} fill={NODE_COLOR}><title>{`NODE ${node}`}</title></circle>
                                 ))
                             }
                         </g>
