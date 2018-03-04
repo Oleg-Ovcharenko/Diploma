@@ -7,7 +7,9 @@ import App from './containers/App';
 import reducer from './reducers';
 import initStore from './store';
 
-const reduxDevTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
+import '../scss/index.scss'; // eslint-disable-line
+
+const reduxDevTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(); // eslint-disable-line
 const store = createStore(reducer, initStore, reduxDevTools);
 
 render(

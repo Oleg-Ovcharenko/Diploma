@@ -1,5 +1,4 @@
-const path    = require('path');
-const extract = require('extract-text-webpack-plugin');
+const path = require('path');
 
 module.exports = function(paths) {
     return {
@@ -46,8 +45,5 @@ module.exports = function(paths) {
                 },
             ],
         },
-        plugins: [
-            new extract('../../public/css/build.css'),
-        ],
     };
 };
