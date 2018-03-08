@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { addNetworkWindowSize } from '../../actions';
-import {
-    NODE_RADIUS,
-    NODE_COLOR,
-} from '../../constants';
+import Node from './Node';
 import eventEmmiter from '../../utils/eventEmmiter';
 
 class Network extends Component {
@@ -71,7 +68,10 @@ class Network extends Component {
                         <g className="nodes">
                             {
                                 nodes.map((node) => (
-                                    <circle key={node.id} cx={`${node.x}%`} cy={`${node.y}%`} r={NODE_RADIUS} fill={NODE_COLOR}><title>{`NODE ${node}`}</title></circle>
+                                    <Node 
+                                        key={node.id}
+                                        node={node}
+                                    />
                                 ))
                             }
                         </g>
