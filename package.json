@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "",
-    "build:dev": "webpack-dev-server --progress --color --inline --hot --config ./configs/webpack/webpack.config.js --env development",
+    "build:dev": "webpack-dev-server --progress --color --inline --config ./configs/webpack/webpack.config.js --env development",
     "build:prod": "webpack --display-error-details --env production --config ./configs/webpack/webpack.config.js --progress --color"
   },
   "eslintConfig": {
@@ -145,6 +145,7 @@
     "bootstrap": "^4.0.0",
     "classnames": "^2.2.5",
     "eslint-config-airbnb": "^16.1.0",
+    "fbemitter": "^2.1.1",
     "jquery": "^3.3.1",
     "node-sass": "^4.7.2",
     "normalize.scss": "^0.1.0",

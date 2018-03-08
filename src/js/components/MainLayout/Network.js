@@ -5,6 +5,7 @@ import {
     NODE_RADIUS,
     NODE_COLOR,
 } from '../../constants';
+import eventEmmiter from '../../utils/eventEmmiter';
 
 class Network extends Component {
     constructor(props) {
@@ -18,10 +19,12 @@ class Network extends Component {
     componentDidMount() {
         this.setSvgSizes();
         window.addEventListener('resize', this.reszeWindow);
+        eventEmmiter.addListener('generateNodes', this.setSvgSizes);
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.reszeWindow);
+        eventEmmiter.removeEventListener('generateNodes');
     }
 
     setSvgSizes = () => {
@@ -62,7 +65,7 @@ class Network extends Component {
 
         return (
             <div className="card network-layout b-r-0">
-                <div className="card-body p-0 w-100 h-100" ref={this.getNetworkBodyRef}>
+                <div className="card-body p-0 w-100 h-100 o-hidden" ref={this.getNetworkBodyRef}>
                     <svg viewBox={viewBox} version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
                         <g className="lines"></g>
                         <g className="nodes">

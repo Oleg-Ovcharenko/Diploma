@@ -9,6 +9,7 @@ import {
     randomFloatRange,
 } from './../../helpers/helpersFunctions';
 import { NODE_RADIUS } from '../../constants';
+import eventEmmiter from '../../utils/eventEmmiter';
 
 const MIN_NODES = 1;
 const MAX_NODES = 200;
@@ -29,8 +30,16 @@ class Controls extends React.Component {
     }
 
     handleNodes(e) {
-        const nodesValue = e.target.value.match(/\d+/g).map(Number);
-        const validationErr = validationNumberField(MIN_NODES, MAX_NODES, nodesValue);
+        const val = e.target.value.trim();
+        const validationErr = validationNumberField(MIN_NODES, MAX_NODES, val);
+
+        let nodesValue = 0;
+
+        if (val.length === 0) {
+            nodesValue = '';
+        } else {
+            nodesValue = val.match(/\d+/g).map(Number);
+        }
 
         this.setState({
             nodesValue,
@@ -40,6 +49,7 @@ class Controls extends React.Component {
 
     handleGenerate(e) {
         e.preventDefault();
+        eventEmmiter.emit('generateNodes');
 
         const {
             nodesValue,

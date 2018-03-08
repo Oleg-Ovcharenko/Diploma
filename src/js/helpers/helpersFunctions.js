@@ -7,10 +7,12 @@ export const validationNumberField = (min, max, val) => {
     let hasError = false;
 
     if (val && val.length !== 0) {
-        if (val < min) {
+        const num = val.match(/\d+/g).map(Number);
+
+        if (num < min) {
             errorMessage = `Value can not be less than ${min}`;
             hasError = true;
-        } else if (val > max) {
+        } else if (num > max) {
             errorMessage = `Value can not be greater than ${max}`;
             hasError = true;
         }

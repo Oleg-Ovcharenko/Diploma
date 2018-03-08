@@ -1,3 +1,5 @@
+const webpack   = require('webpack'); 
+
 module.exports = function(paths) {
     return {
         module: {
@@ -10,5 +12,9 @@ module.exports = function(paths) {
             ]
         },
         devtool: 'source-map',
+        plugins: [
+            new webpack.NamedModulesPlugin(),
+            new webpack.HotModuleReplacementPlugin()
+        ]
     };
 };

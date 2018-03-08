@@ -8,10 +8,10 @@ module.exports = function(paths) {
                 {
                     test: /\.scss$/,
                     exclude: /node_modules/,
-                    use: ExtractTextPlugin.extract({
-                        fallback: "style-loader",
-                        use: [
+                    use: [
                         {
+                            loader: "style-loader",
+                        }, {
                             loader: 'css-loader',
                             options: {
                                 sourceMap: true,
@@ -30,29 +30,26 @@ module.exports = function(paths) {
                             options: {
                                 sourceMap: true,
                             }
-                        }]
-                    })
+                        }
+                    ]
                 },
                 {
                     test: /\.css$/,
                     exclude: /node_modules/,
-                    use: ExtractTextPlugin.extract({
-                        fallback: "style-loader",
-                        use: [
-                            {
-                                loader: 'css-loader',
-                                options: {
-                                    sourceMap: true,
-                                    importLoaders: 1,
-                                }
+                    use: [
+                        {
+                            loader: "style-loader",
+                        },
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                sourceMap: true,
+                                importLoaders: 1,
                             }
-                        ]
-                    })
-                },
-            ],
-        },
-        plugins: [
-            new ExtractTextPlugin("style.css"),
-        ]
+                        }
+                    ]
+                }
+            ]
+        }
     };
 };
