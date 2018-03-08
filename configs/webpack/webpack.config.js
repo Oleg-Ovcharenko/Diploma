@@ -1,5 +1,6 @@
 const path      = require('path');
 const merge     = require('webpack-merge');
+const webpack   = require('webpack'); 
 
 const video     = require('./rules/video');
 const json      = require('./rules/json');
@@ -16,13 +17,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const PATHS = {
     js: path.join(__dirname, '../../src/js/index.js'),
+    scss: path.join(__dirname, '../../src/scss/index.scss'),
     output: path.join(__dirname, '../../public'),
 };
 
 const common = merge([
     {
         entry: {
-            main: [PATHS.js],
+            main: [PATHS.js, PATHS.scss],
         },
 
         output: {
@@ -35,6 +37,8 @@ const common = merge([
                 title: 'SELF-ORGANIZATION OF SENSOR NETWORKS',
                 template: path.join(__dirname, './template.html'),
             }),
+            new webpack.NamedModulesPlugin(),
+            new webpack.HotModuleReplacementPlugin()
         ],
     },
 
