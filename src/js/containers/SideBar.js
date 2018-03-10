@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Controls from '../components/sideBar/Controls';
+import NodeSettings from '../components/sideBar/NodeSettings';
 
 class SideBar extends Component {
     render() {
@@ -14,6 +15,11 @@ class SideBar extends Component {
         return (
             <section className="menu">
                 <Controls
+                    dispatch={dispatch}
+                    networkPanelWidth={networkPanelWidth}
+                    networkPanelHeight={networkPanelHeight}
+                />
+                <NodeSettings
                     dispatch={dispatch}
                     networkPanelWidth={networkPanelWidth}
                     networkPanelHeight={networkPanelHeight}

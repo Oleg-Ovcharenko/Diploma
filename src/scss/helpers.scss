@@ -53,10 +53,12 @@
 /*=== card for menu ===*/
 
 .custom-card {
-    border-top: none !important;
     border-left: none !important;
     border-right: none !important;
     border-radius: none !important;
+    .card-header {
+        border: none;
+    }
 }
 
 /*=== flex ===*/
