@@ -14,7 +14,6 @@ const CardMenu = ({ name, children }) => (
 
 CardMenu.propTypes = {
     name: PropTypes.string,
-    children: PropTypes.array,
 };
 
 export default CardMenu;
