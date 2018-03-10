@@ -2,9 +2,10 @@
     width: 100%;
     height: 60px;
     background-color: $header_bg;
-    border-bottom: 1px solid $main_border_color;
+    border-bottom: 2px solid $main_border_color;
     padding: 0 1.25rem;
     box-sizing: border-box;
+    background: linear-gradient(90deg, #0b5eb1, #dee2e6);
     &-title {
         font-size: 16px;
         line-height: 60px;
@@ -13,11 +14,10 @@
         text-transform: uppercase;
         a {
             text-decoration: none;
-            color: $header_title;
-            font-size: 18px;
-            font-weight: bold;
+            color: $white;
+            font-size: 14px;
             &:hover {
-                color: $header_title_hover;
+                color: rgba($white, .7);
             }
         }
     }

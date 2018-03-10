@@ -25,7 +25,10 @@ class Node extends Component {
                 className="cursor-pointer"
                 id={`nodePopover-${node.id}`}
             >
-                <title>{`NODE ${node}`}</title>
+                <title>
+                {
+                    `NODE #${node.id}\nx: ${node.x.toFixed(2)}\ny: ${node.y.toFixed(2)}`
+                }</title>
             </circle>
         );
     }
