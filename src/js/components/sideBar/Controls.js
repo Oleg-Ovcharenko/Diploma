@@ -96,8 +96,10 @@ class Controls extends React.Component {
             <CardMenu
                 name="Controls"
             >
-                <h6 className="text-center text-muted m-b-1-rem">Generate some nodes</h6>
-                <form className="text-center">
+                <p className="text-center text-muted mb-1">
+                    <small>Generate some nodes</small>
+                </p>
+                <form className="text-center mb-1">
                     <div className="form-group">
                         <input
                             type="text"
