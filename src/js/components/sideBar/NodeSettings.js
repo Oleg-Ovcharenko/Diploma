@@ -15,7 +15,7 @@ class NodeSettings extends React.Component {
             <CardMenu
                 name="Node settings"
             >
-                <span>sdf</span>
+                <span>Here will be node setting</span>
             </CardMenu>
         );
     }
