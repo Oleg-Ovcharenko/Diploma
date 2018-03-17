@@ -2,17 +2,16 @@ import React from 'react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import CardMenu from './CardMenu';
-import { generateNodes } from '../../actions';
+import { generateNodes, generateLines } from '../../actions';
 import {
     validationNumberField,
-    randomRange,
     randomFloatRange,
 } from './../../helpers/helpersFunctions';
 import { NODE_RADIUS } from '../../constants';
 import eventEmmiter from '../../utils/eventEmmiter';
 
 const MIN_NODES = 1;
-const MAX_NODES = 200;
+const MAX_NODES = 300;
 
 class Controls extends React.Component {
     constructor(props) {
@@ -29,28 +28,9 @@ class Controls extends React.Component {
         this.handleGenerate = this.handleGenerate.bind(this);
     }
 
-    handleNodes(e) {
-        const val = e.target.value.trim();
-        const validationErr = validationNumberField(MIN_NODES, MAX_NODES, val);
+    // getters
 
-        let nodesValue = 0;
-
-        if (val.length === 0) {
-            nodesValue = '';
-        } else {
-            nodesValue = val.match(/\d+/g).map(Number);
-        }
-
-        this.setState({
-            nodesValue,
-            error: { ...validationErr },
-        });
-    }
-
-    handleGenerate(e) {
-        e.preventDefault();
-        eventEmmiter.emit('generateNodes');
-
+    getNodes() {
         const {
             nodesValue,
         } = this.state;
@@ -75,7 +55,58 @@ class Controls extends React.Component {
             nodes.push(node);
         }
 
+        return nodes;
+    }
+
+    getLines(nodes) {
+        const rez = [];
+        let iter = 0;
+        let n = nodes;
+
+        while (n.length >= 2) {
+            n = n.slice(iter, n.length);
+            iter = +1;
+
+            for (let i = 1; i < n.length; i += 1) {
+                rez.push({
+                    id: `${n[0].id}${n[i].id}`,
+                    x1: n[0].x,
+                    y1: n[0].y,
+                    x2: n[i].x,
+                    y2: n[i].y,
+                });
+            }
+        }
+        return rez;
+    }
+
+    handleNodes(e) {
+        const val = e.target.value.trim();
+        const validationErr = validationNumberField(MIN_NODES, MAX_NODES, val);
+
+        let nodesValue = 0;
+
+        if (val.length === 0) {
+            nodesValue = '';
+        } else {
+            nodesValue = val.match(/\d+/g).map(Number);
+        }
+
+        this.setState({
+            nodesValue,
+            error: { ...validationErr },
+        });
+    }
+
+    handleGenerate(e) {
+        e.preventDefault();
+        eventEmmiter.emit('generateNodes');
+
+        const nodes = this.getNodes();
+        const lines = this.getLines(nodes);
+
         this.props.dispatch(generateNodes(nodes));
+        this.props.dispatch(generateLines(lines));
     }
 
     render() {

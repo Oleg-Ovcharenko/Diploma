@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { addNetworkWindowSize } from '../../actions';
 import Node from './Node';
+import Line from './Line';
 import eventEmmiter from '../../utils/eventEmmiter';
 
 class Network extends Component {
@@ -30,8 +31,6 @@ class Network extends Component {
             height,
         } = this.bodyRef.getBoundingClientRect();
 
-        console.log(height);
-
         this.props.dispatch(addNetworkWindowSize(width, height));
 
         this.setState({
@@ -56,6 +55,7 @@ class Network extends Component {
 
         const {
             nodes,
+            lines,
         } = this.props;
 
         const viewBox = `0 0 ${svgWidth} ${svgHeight}`;
@@ -64,11 +64,20 @@ class Network extends Component {
             <div className="card network-layout b-r-0">
                 <div className="card-body p-0 w-100 h-100 o-hidden" ref={this.getNetworkBodyRef}>
                     <svg viewBox={viewBox} version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-                        <g className="lines"></g>
+                        <g className="lines">
+                            {
+                                lines.map((line) => (
+                                    <Line
+                                        key={line.id}
+                                        line={line}
+                                    />
+                                ))
+                            }
+                        </g>
                         <g className="nodes">
                             {
                                 nodes.map((node) => (
-                                    <Node 
+                                    <Node
                                         key={node.id}
                                         node={node}
                                     />
@@ -85,6 +94,7 @@ class Network extends Component {
 Network.propTypes = {
     dispatch: PropTypes.func,
     nodes: PropTypes.array,
+    lines: PropTypes.array,
 };
 
 export default Network;

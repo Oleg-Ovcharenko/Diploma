@@ -1,10 +1,12 @@
 import {
     ADD_NETWORK_WINDOW_SIZES,
     GENERATE_NODES,
+    GENERATE_LINES,
 } from '../actions';
 
 export default function reducer(state = {}, action) {
     switch (action.type) {
+
         case ADD_NETWORK_WINDOW_SIZES: {
             const ui = {
                 ui: {
@@ -25,6 +27,15 @@ export default function reducer(state = {}, action) {
 
             return { ...state, ...nodes };
         }
+
+        case GENERATE_LINES: {
+            const lines = {
+                lines: action.lines,
+            };
+
+            return { ...state, ...lines };
+        }
+
         default:
             return state;
     }

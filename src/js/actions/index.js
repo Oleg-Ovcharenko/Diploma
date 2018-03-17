@@ -14,3 +14,12 @@ export function generateNodes(nodes) {
         nodes,
     };
 }
+
+export const GENERATE_LINES = 'GENERATE_LINES';
+export function generateLines(lines) {
+    return {
+        type: GENERATE_LINES,
+        lines,
+    };
+}
+
