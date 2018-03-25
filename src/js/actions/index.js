@@ -23,3 +23,11 @@ export function generateLines(lines) {
     };
 }
 
+export const GENERATE_MAIN_NODE = 'GENERATE_MAIN_NODE';
+export function generateMainNode(node) {
+    return {
+        type: GENERATE_MAIN_NODE,
+        node,
+    };
+}
+

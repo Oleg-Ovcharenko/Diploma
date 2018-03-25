@@ -6,5 +6,6 @@ export default {
         },
     },
     nodes: [],
+    mainNode: null,
     lines: [],
 };

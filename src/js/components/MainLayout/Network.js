@@ -4,6 +4,12 @@ import { addNetworkWindowSize } from '../../actions';
 import Node from './Node';
 import Line from './Line';
 import eventEmmiter from '../../utils/eventEmmiter';
+import {
+    NODE_RADIUS,
+    NODE_COLOR,
+    MAIN_NODE_COLOR,
+    MAIN_NODE_RADIUS,
+} from '../../constants';
 
 class Network extends Component {
     constructor(props) {
@@ -56,6 +62,7 @@ class Network extends Component {
         const {
             nodes,
             lines,
+            mainNode,
         } = this.props;
 
         const viewBox = `0 0 ${svgWidth} ${svgHeight}`;
@@ -80,8 +87,21 @@ class Network extends Component {
                                     <Node
                                         key={node.id}
                                         node={node}
+                                        nodeRadius={NODE_RADIUS}
+                                        nodeColor={NODE_COLOR}
                                     />
                                 ))
+                            }
+                        </g>
+                        <g className="mainNode">
+                            {
+                                mainNode ? (
+                                    <Node
+                                        node={mainNode}
+                                        nodeRadius={MAIN_NODE_RADIUS}
+                                        nodeColor={MAIN_NODE_COLOR}
+                                    />
+                                ) : null
                             }
                         </g>
                     </svg>
@@ -95,6 +115,7 @@ Network.propTypes = {
     dispatch: PropTypes.func,
     nodes: PropTypes.array,
     lines: PropTypes.array,
+    mainNode: PropTypes.object,
 };
 
 export default Network;

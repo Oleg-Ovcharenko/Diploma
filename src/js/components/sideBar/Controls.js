@@ -2,7 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import CardMenu from './CardMenu';
-import { generateNodes, generateLines } from '../../actions';
+import { generateNodes, generateLines, generateMainNode } from '../../actions';
 import {
     validationNumberField,
     randomFloatRange,
@@ -58,6 +58,23 @@ class Controls extends React.Component {
         return nodes;
     }
 
+    getMainNode() {
+        const {
+            networkPanelWidth,
+            networkPanelHeight,
+        } = this.props;
+
+        const nodeSizePercentX = (NODE_RADIUS * 100) / networkPanelWidth;
+        const nodeSizePercentY = (NODE_RADIUS * 100) / networkPanelHeight;
+
+        return {
+            id: 'MAIN',
+            x: randomFloatRange(nodeSizePercentX, 100 - nodeSizePercentX),
+            y: randomFloatRange(nodeSizePercentY, 100 - nodeSizePercentY),
+            params: {},
+        };
+    }
+
     getLines(nodes) {
         const rez = [];
         let iter = 0;
@@ -104,7 +121,9 @@ class Controls extends React.Component {
 
         const nodes = this.getNodes();
         const lines = this.getLines(nodes);
+        const mainNode = this.getMainNode();
 
+        this.props.dispatch(generateMainNode(mainNode));
         this.props.dispatch(generateNodes(nodes));
         this.props.dispatch(generateLines(lines));
     }

@@ -7,6 +7,7 @@ import Network from '../components/MainLayout/Network';
 const MainLayout = ({
     nodes,
     lines,
+    mainNode,
     dispatch,
 }) => (
     <section className="main-layout p-1-25">
@@ -14,6 +15,7 @@ const MainLayout = ({
         <Network
             nodes={nodes}
             lines={lines}
+            mainNode={mainNode}
             dispatch={dispatch}
         />
     </section>
@@ -24,12 +26,14 @@ MainLayout.propTypes = {
     dispatch: PropTypes.func,
     nodes: PropTypes.array,
     lines: PropTypes.array,
+    mainNode: PropTypes.object,
 };
 
 function mapStateToProps(state) {
     return {
         nodes: state.nodes,
         lines: state.lines,
+        mainNode: state.mainNode,
     };
 }
 

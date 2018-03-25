@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Controls from '../components/sideBar/Controls';
-import NodeSettings from '../components/sideBar/NodeSettings';
+import Controls from '../components/SideBar/Controls';
+import NodeSettings from '../components/SideBar/NodeSettings';
+import SelectAlgorithm from '../components/SideBar/SelectAlgorithm';
 
 class SideBar extends Component {
     render() {
@@ -14,6 +15,9 @@ class SideBar extends Component {
 
         return (
             <section className="menu">
+                <SelectAlgorithm
+                    dispatch={dispatch}
+                />
                 <Controls
                     dispatch={dispatch}
                     networkPanelWidth={networkPanelWidth}
