@@ -10,7 +10,7 @@ const MainLayout = ({
     mainNode,
     dispatch,
 }) => (
-    <section className="main-layout p-1-25">
+    <section className="main-layout p-3">
         <ControlsNetwork />
         <Network
             nodes={nodes}

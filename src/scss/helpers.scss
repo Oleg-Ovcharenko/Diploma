@@ -8,64 +8,18 @@
     cursor: pointer;
 }
 
-/*=== margins ===*/
-
-.m-0 {
-    margin: 0 !important;
-}
-
-.p-0 {
-    padding: 0 !important;
-}
-
-.m-b-1-rem {
-    margin-bottom: 1rem;
-}
-
-.p-1-25 {
-    padding: 1.25rem;
-}
-
-/*=== margins 1.25rem ===*/
-
-.m-b-1-25 {
-    margin-bottom: 1.25rem;
-}
-
-.m-t-1-25 {
-    margin-top: 1.25rem;
-}
-
-.m-r-1-25 {
-    margin-right: 1.25rem;
-}
-
-.m-l-1-25 {
-    margin-left: 1.25rem;
-}
-
-/*=== common ===*/
-
-.b-r-0 {
-    border-radius: 0 !important;
-}
-
 /*=== card for menu ===*/
 
 .custom-card {
-    border-left: none !important;
-    border-right: none !important;
-    border-radius: none !important;
     .card-header {
-        border: none;
+        padding: $list-inline-padding $font-size-base !important;
+    }
+    .card-body {
+        padding: $font-size-base !important;
     }
 }
 
 /*=== flex ===*/
-
-.d-flex {
-    display: flex;
-}
 
 .align-i-center {
     align-items: center;

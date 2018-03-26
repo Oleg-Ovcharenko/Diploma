@@ -1,15 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Header extends Component {
-    render() {
-        return (
-            <header className="app-header">
-                <h1 className="app-header-title">
-                    <a href="#">Self-Organization of Sensor Networks</a>
-                </h1>
-            </header>
-        )
-    }
-}
+const Header = () => (
+    <header className="app-header pl-3 pr-3">
+        <h1 className="app-header-title">
+            <span>Self-Organization of Sensor Networks</span>
+            <small className="float-right text-light text-small"><b>NURE</b> - ИMСС 16-2 Овчаренко Олег Игоревич</small>
+        </h1>
+    </header>
+);
 
 export default Header;

@@ -16,9 +16,7 @@ class SelectAlgorithm extends React.Component {
                 name="Algorithm"
             >
                 <div>
-                    <p className="text-center text-muted mb-1">
-                        <small>Select algorithm</small>
-                    </p>
+                    <p className="text-center text-muted mb-1">Select algorithm</p>
                     <select className="form-control form-control-sm">
                         <option>OPTICS</option>
                     </select>

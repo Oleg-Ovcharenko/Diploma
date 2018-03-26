@@ -49,7 +49,9 @@ class Controls extends React.Component {
                 id: i + 1,
                 x: randomFloatRange(nodeSizePercentX, 100 - nodeSizePercentX),
                 y: randomFloatRange(nodeSizePercentY, 100 - nodeSizePercentY),
-                params: {},
+                params: {
+                    //radius: 
+                },
             };
 
             nodes.push(node);
@@ -146,9 +148,7 @@ class Controls extends React.Component {
             <CardMenu
                 name="Controls"
             >
-                <p className="text-center text-muted mb-1">
-                    <small>Generate some nodes</small>
-                </p>
+                <p className="text-center text-muted mb-1">Generate some nodes</p>
                 <form className="text-center mb-1">
                     <div className="form-group">
                         <input
@@ -167,6 +167,17 @@ class Controls extends React.Component {
                                 <small id="emailHelp" className="form-text text-muted text-uppercase">{`Min ${MIN_NODES} - Max ${MAX_NODES}`}</small> :
                                 <div className="invalid-feedback">{errorMessage}</div>
                         }
+                        <p className="text-center text-muted mb-1 mt-2 border-top pt-2">Range</p>
+                        <div className="row">
+                            <div className="col-6 pr-2">
+                                <input type="text" className="form-control form-control-sm" />
+                                <p className="text-center text-muted mb-0"><small>Min 5%</small></p>
+                            </div>
+                            <div className="col-6 pl-2">
+                                <input type="text" className="form-control form-control-sm" />
+                                <p className="text-center text-muted mb-0"><small>Min 20%</small></p>
+                            </div>
+                        </div>
                     </div>
                     <button type="submit" className="btn btn-primary btn-sm" onClick={this.handleGenerate} disabled={hasError}>Generate</button>
                 </form>
