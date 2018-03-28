@@ -10,9 +10,9 @@ class App extends Component {
         } = this.props;
 
         return (
-            <div className="app">
+            <div className="app d-flex flex-column vh-height-100">
                 <Header />
-                <main className="app-main">
+                <main className="app-main d-flex flex-grow-1">
                     <SideBar dispatch={dispatch} />
                     <MainLayout dispatch={dispatch} />
                 </main>

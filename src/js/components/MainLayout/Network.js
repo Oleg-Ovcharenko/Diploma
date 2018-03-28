@@ -68,8 +68,8 @@ class Network extends Component {
         const viewBox = `0 0 ${svgWidth} ${svgHeight}`;
 
         return (
-            <div className="card network-layout rounded-0">
-                <div className="card-body p-0 w-100 h-100 o-hidden" ref={this.getNetworkBodyRef}>
+            <div className="card network-layout rounded-0 flex-grow-1">
+                <div className="card-body p-0 w-100 o-hidden" ref={this.getNetworkBodyRef}>
                     <svg viewBox={viewBox} version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
                         <g className="lines">
                             {

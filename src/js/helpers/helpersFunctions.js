@@ -10,14 +10,15 @@ export const validationNumberField = (min, max, val) => {
         const num = val.match(/\d+/g).map(Number);
 
         if (num < min) {
-            errorMessage = `Value can not be less than ${min}`;
+            errorMessage = `Min value ${min}`;
             hasError = true;
         } else if (num > max) {
-            errorMessage = `Value can not be greater than ${max}`;
+            errorMessage = `Max value ${max}`;
             hasError = true;
         }
     } else {
         errorMessage = '';
+        errorMessage = 'Required field';
         hasError = true;
     }
 

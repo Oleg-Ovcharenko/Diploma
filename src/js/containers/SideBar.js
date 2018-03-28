@@ -5,35 +5,30 @@ import Controls from '../components/SideBar/Controls';
 import NodeSettings from '../components/SideBar/NodeSettings';
 import SelectAlgorithm from '../components/SideBar/SelectAlgorithm';
 
-class SideBar extends Component {
-    render() {
-        const {
-            networkPanelWidth,
-            networkPanelHeight,
-            dispatch,
-        } = this.props;
-
-        return (
-            <section className="menu">
-                <SelectAlgorithm
-                    dispatch={dispatch}
-                />
-                <Controls
-                    dispatch={dispatch}
-                    networkPanelWidth={networkPanelWidth}
-                    networkPanelHeight={networkPanelHeight}
-                />
-                <NodeSettings
-                    dispatch={dispatch}
-                    networkPanelWidth={networkPanelWidth}
-                    networkPanelHeight={networkPanelHeight}
-                />
-            </section>
-        )
-    }
-}
+const SideBar = ({
+    networkPanelWidth,
+    networkPanelHeight,
+    dispatch,
+}) => (
+    <section className="menu overflow-x-a">
+        <SelectAlgorithm
+            dispatch={dispatch}
+        />
+        <Controls
+            dispatch={dispatch}
+            networkPanelWidth={networkPanelWidth}
+            networkPanelHeight={networkPanelHeight}
+        />
+        <NodeSettings
+            dispatch={dispatch}
+            networkPanelWidth={networkPanelWidth}
+            networkPanelHeight={networkPanelHeight}
+        />
+    </section>
+);
 
 SideBar.propTypes = {
+    dispatch: PropTypes.func,
     networkPanelWidth: PropTypes.number,
     networkPanelHeight: PropTypes.number,
 };

@@ -13,7 +13,7 @@ class Node extends Component {
             <circle
                 cx={`${node.x}%`}
                 cy={`${node.y}%`}
-                r={nodeRadius}
+                r={`${nodeRadius}`}
                 fill={nodeColor}
                 onClick={this.toggle}
                 className="cursor-pointer"
