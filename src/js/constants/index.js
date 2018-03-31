@@ -1,11 +1,11 @@
 export const DEFAULT_NODES = 10;
 
 // NODE SETTINGS
-export const NODE_RADIUS = 5;
+export const NODE_RADIUS = 10;
 export const NODE_COLOR = '#007bff';
 
 // MAIN NODE SETTINGS
-export const MAIN_NODE_RADIUS = 8;
+export const MAIN_NODE_RADIUS = 16;
 export const MAIN_NODE_COLOR = '#dc3545';
 
 // EMOUNT NODES

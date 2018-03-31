@@ -80,13 +80,13 @@ class Network extends Component {
         // all nodes
         nodes.forEach((node) => {
             ctx.beginPath();
-            ctx.arc(node.x, node.y, node.params.radius / 2, 2 * Math.PI, false);
+            ctx.arc(node.x, node.y, NODE_RADIUS / 2, 2 * Math.PI, false);
             ctx.fillStyle = NODE_COLOR;
             ctx.fill();
         });
         // main node
         ctx.beginPath();
-        ctx.arc(mainNode.x, mainNode.y, MAIN_NODE_RADIUS, 0, 2 * Math.PI, false);
+        ctx.arc(mainNode.x, mainNode.y, MAIN_NODE_RADIUS / 2, 0, 2 * Math.PI, false);
         ctx.fillStyle = MAIN_NODE_COLOR;
         ctx.fill();
     }
