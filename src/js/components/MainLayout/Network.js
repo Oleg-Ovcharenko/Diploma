@@ -15,19 +15,24 @@ class Network extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            svgWidth: 0,
-            svgHeight: 0,
+            layoutWidth: 0,
+            layoutHeight: 0,
         };
     }
 
+    // life
+
     componentDidMount() {
-        this.setSvgSizes();
-        window.addEventListener('resize', this.reszeWindow);
         eventEmmiter.addListener('generateNodes', this.setSvgSizes);
     }
 
+    componentWillReceiveProps(nextProps) {
+        setTimeout(() => {
+            this.renderNetwork(nextProps);
+        }, 0);
+    }
+
     componentWillUnmount() {
-        window.removeEventListener('resize', this.reszeWindow);
         eventEmmiter.removeEventListener('generateNodes');
     }
 
@@ -40,71 +45,68 @@ class Network extends Component {
         this.props.dispatch(addNetworkWindowSize(width, height));
 
         this.setState({
-            svgWidth: width,
-            svgHeight: height,
+            layoutWidth: width,
+            layoutHeight: height,
         });
     }
+
+    // refs
 
     getNetworkBodyRef = (ref) => {
         this.bodyRef = ref;
     }
 
-    reszeWindow = () => {
-        this.setSvgSizes();
+    getNetworkCanvas = (ref) => {
+        this.canvasRef = ref;
+    }
+
+    // renders
+
+    renderNetwork(nextProps) {
+        const {
+            nodes,
+            mainNode,
+        } = nextProps;
+
+        const {
+            layoutWidth,
+            layoutHeight,
+        } = this.state;
+
+        const canvas = this.canvasRef;
+        const ctx = canvas.getContext('2d');
+
+        ctx.clearRect(0, 0, layoutWidth, layoutHeight);
+        // all nodes
+        nodes.forEach((node) => {
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.params.radius / 2, 2 * Math.PI, false);
+            ctx.fillStyle = NODE_COLOR;
+            ctx.fill();
+        });
+        // main node
+        ctx.beginPath();
+        ctx.arc(mainNode.x, mainNode.y, MAIN_NODE_RADIUS, 0, 2 * Math.PI, false);
+        ctx.fillStyle = MAIN_NODE_COLOR;
+        ctx.fill();
     }
 
     render() {
         const {
-            svgWidth,
-            svgHeight,
+            layoutWidth,
+            layoutHeight,
         } = this.state;
-
-        const {
-            nodes,
-            lines,
-            mainNode,
-        } = this.props;
-
-        const viewBox = `0 0 ${svgWidth} ${svgHeight}`;
 
         return (
             <div className="card network-layout rounded-0 flex-grow-1">
-                <div className="card-body p-0 w-100 o-hidden" ref={this.getNetworkBodyRef}>
-                    <svg viewBox={viewBox} version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-                        <g className="lines">
-                            {
-                                lines.map((line) => (
-                                    <Line
-                                        key={line.id}
-                                        line={line}
-                                    />
-                                ))
-                            }
-                        </g>
-                        <g className="nodes">
-                            {
-                                nodes.map((node) => (
-                                    <Node
-                                        key={node.id}
-                                        node={node}
-                                        nodeRadius={NODE_RADIUS}
-                                        nodeColor={NODE_COLOR}
-                                    />
-                                ))
-                            }
-                        </g>
-                        <g className="mainNode">
-                            {
-                                mainNode ? (
-                                    <Node
-                                        node={mainNode}
-                                        nodeRadius={MAIN_NODE_RADIUS}
-                                        nodeColor={MAIN_NODE_COLOR}
-                                    />
-                                ) : null
-                            }
-                        </g>
-                    </svg>
+                <div className="card-body p-0 w-100 position-relative overflow-a" ref={this.getNetworkBodyRef}>
+                    <canvas
+                        className="position-absolute"
+                        ref={this.getNetworkCanvas}
+                        width={layoutWidth}
+                        height={layoutHeight}
+                    >
+                    </canvas>
                 </div>
             </div>
         );
@@ -113,9 +115,6 @@ class Network extends Component {
 
 Network.propTypes = {
     dispatch: PropTypes.func,
-    nodes: PropTypes.array,
-    lines: PropTypes.array,
-    mainNode: PropTypes.object,
 };
 
 export default Network;

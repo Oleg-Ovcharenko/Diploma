@@ -1,261 +1,244 @@
 import React from 'react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
+import { Formik } from 'formik';
 import CardMenu from './CardMenu';
-import { generateNodes, generateLines, generateMainNode } from '../../actions';
+import { generateNodes, generateMainNode } from '../../actions';
 import {
     validationNumberField,
     randomFloatRange,
 } from './../../helpers/helpersFunctions';
-import { NODE_RADIUS, RANGE_NODE_MIN, RANGE_NODE_MAX, MIN_NODES, MAX_NODES, DEFAULT_NODES, PADDING } from '../../constants';
+import { RANGE_NODE_MIN, RANGE_NODE_MAX, MIN_NODES, MAX_NODES, DEFAULT_NODES, PADDING } from '../../constants';
 import eventEmmiter from '../../utils/eventEmmiter';
 
 class Controls extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            nodesValue: DEFAULT_NODES,
-            nodeRadiusMin: RANGE_NODE_MIN,
-            nodeRadiusMax: RANGE_NODE_MAX,
-            errorNodesValue: {
-                errorMessage: '',
-                hasError: false,
-            },
-            errorNodeRadiusMin: {
-                errorMessage: '',
-                hasError: false,
-            },
-            errorNodeRadiusMax: {
-                errorMessage: '',
-                hasError: false,
-            },
+
+        this.initialValues = {
+            scale: 2,
+            nodes: DEFAULT_NODES,
+            nodeRangeMin: RANGE_NODE_MIN,
+            nodeRangeMax: RANGE_NODE_MAX,
         };
+
+        this.formValues = {
+            ...this.initialValues,
+        };
+    }
+
+    // life
+
+    componentWillReceiveProps(nextProps) {
+        const w = nextProps.networkPanelWidth;
+        const h = nextProps.networkPanelHeight;
+
+        if (w !== this.props.networkPanelWidth || h !== this.props.networkPanelHeight) {
+            this.onHandleGenerate(w, h);
+        }
     }
 
     // handlers
 
-    onHandleNodes = (e) => {
-        const val = e.target.value.trim();
-        const errorNodesValue = validationNumberField(MIN_NODES, MAX_NODES, val);
-
-        let nodesValue = 0;
-
-        if (val.length === 0) {
-            nodesValue = '';
-        } else {
-            nodesValue = val.match(/\d+/g).map(Number);
-        }
-
-        this.setState({
-            nodesValue,
-            errorNodesValue: { ...errorNodesValue },
-        });
-    }
-
-    onRangeMinChange = (e) => {
-        const val = e.target.value.trim();
-        const errorNodeRadiusMin = validationNumberField(RANGE_NODE_MIN, RANGE_NODE_MAX, val);
-
-        let nodeRadiusMin = 0;
-
-        if (val.length === 0) {
-            nodeRadiusMin = '';
-        } else {
-            nodeRadiusMin = val.match(/\d+/g).map(Number);
-        }
-
-        this.setState({
-            nodeRadiusMin,
-            errorNodeRadiusMin: { ...errorNodeRadiusMin },
-        });
-    }
-
-    onRangeMaxChange = (e) => {
-        const val = e.target.value.trim();
-        const errorNodeRadiusMax = validationNumberField(RANGE_NODE_MIN, RANGE_NODE_MAX, val);
-
-        let nodeRadiusMax = 0;
-
-        if (val.length === 0) {
-            nodeRadiusMax = '';
-        } else {
-            nodeRadiusMax = val.match(/\d+/g).map(Number);
-        }
-
-        this.setState({
-            nodeRadiusMax,
-            errorNodeRadiusMax: { ...errorNodeRadiusMax },
-        });
-    }
-
-    onHandleGenerate = (e) => {
-        e.preventDefault();
+    onHandleGenerate = (w, h) => {
         eventEmmiter.emit('generateNodes');
 
-        const nodes = this.getNodes();
-        const lines = this.getLines(nodes);
+        const nodes = this.getNodes(w, h);
         const mainNode = this.getMainNode();
 
         this.props.dispatch(generateMainNode(mainNode));
         this.props.dispatch(generateNodes(nodes));
-        this.props.dispatch(generateLines(lines));
     }
 
     // getters
 
-    getNodes() {
+    getNodes(w, h) {
         const {
-            nodesValue,
-            nodeRadiusMin,
-            nodeRadiusMax,
-        } = this.state;
+            scale,
+            nodes,
+            nodeRangeMin,
+            nodeRangeMax,
+        } = this.formValues;
 
         const {
             networkPanelWidth,
             networkPanelHeight,
         } = this.props;
 
-        const nodes = [];
-        const nodeSizePercentX = (NODE_RADIUS * PADDING) / networkPanelWidth;
-        const nodeSizePercentY = (NODE_RADIUS * PADDING) / networkPanelHeight;
+        const nodesArr = [];
 
-        for (let i = 0; i < nodesValue; i += 1) {
+        for (let i = 0; i < nodes; i += 1) {
             const node = {
                 id: i + 1,
-                x: randomFloatRange(nodeSizePercentX, PADDING - nodeSizePercentX),
-                y: randomFloatRange(nodeSizePercentY, PADDING - nodeSizePercentY),
+                x: randomFloatRange(PADDING, (networkPanelWidth || w) - PADDING),
+                y: randomFloatRange(PADDING, (networkPanelHeight || h) - PADDING),
                 params: {
-                    radius: randomFloatRange(nodeRadiusMin, nodeRadiusMax),
+                    radius: randomFloatRange(nodeRangeMin, nodeRangeMax) * scale,
                 },
             };
 
-            nodes.push(node);
+            nodesArr.push(node);
         }
 
-        return nodes;
+        return nodesArr;
     }
 
-    getMainNode() {
+    getMainNode(w, h) {
         const {
             networkPanelWidth,
             networkPanelHeight,
         } = this.props;
 
-        const nodeSizePercentX = (NODE_RADIUS * PADDING) / networkPanelWidth;
-        const nodeSizePercentY = (NODE_RADIUS * PADDING) / networkPanelHeight;
-
         return {
             id: 'MAIN',
-            x: randomFloatRange(nodeSizePercentX, PADDING - nodeSizePercentX),
-            y: randomFloatRange(nodeSizePercentY, PADDING - nodeSizePercentY),
+            x: randomFloatRange(PADDING, (networkPanelWidth || w) - PADDING),
+            y: randomFloatRange(PADDING, (networkPanelHeight || h) - PADDING),
             params: {},
         };
     }
 
-    getLines(nodes) {
-        const rez = [];
-        let iter = 0;
-        let n = nodes;
+    validationForm = (values) => {
+        const errors = { };
 
-        while (n.length >= 2) {
-            n = n.slice(iter, n.length);
-            iter = +1;
-
-            for (let i = 1; i < n.length; i += 1) {
-                rez.push({
-                    id: `${n[0].id}${n[i].id}`,
-                    x1: n[0].x,
-                    y1: n[0].y,
-                    x2: n[i].x,
-                    y2: n[i].y,
-                });
+        const required = Object.keys(this.initialValues);
+        required.forEach((field) => {
+            if (field && !values[field]) {
+                errors[field] = 'Required field';
             }
+        });
+
+        if (values.scale && validationNumberField(1, 2000, values.scale)) {
+            errors.scale = validationNumberField(1, 2000, values.scale);
         }
-        return rez;
+
+        if (values.nodes && validationNumberField(MIN_NODES, MAX_NODES, values.nodes)) {
+            errors.nodes = validationNumberField(MIN_NODES, MAX_NODES, values.nodes);
+        }
+
+        if (values.nodeRangeMin && validationNumberField(RANGE_NODE_MIN, RANGE_NODE_MAX, values.nodeRangeMin)) {
+            errors.nodeRangeMin = validationNumberField(RANGE_NODE_MIN, RANGE_NODE_MAX, values.nodeRangeMin);
+        }
+
+        if (values.nodeRangeMax && validationNumberField(RANGE_NODE_MIN, RANGE_NODE_MAX, values.nodeRangeMax)) {
+            errors.nodeRangeMax = validationNumberField(RANGE_NODE_MIN, RANGE_NODE_MAX, values.nodeRangeMax);
+        }
+
+        return errors;
     }
 
+    submitForm = (values) => {
+        this.formValues = { ...values };
+        this.onHandleGenerate();
+    }
+
+    renderForm = ({ values, errors, handleChange, handleBlur, handleSubmit }) => (
+        <form className="text-center mb-1">
+            <div className="form-group">
+                <p className="text-center text-muted mb-1">Scale</p>
+                <div className="input-group input-group-sm">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text" id="inputGroup-sizing-sm">1 meter</span>
+                    </div>
+                    <input
+                        type="number"
+                        className={cx({ 'is-invalid': errors.scale }, 'form-control form-control-sm')}
+                        value={values.scale}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        name="scale"
+                    />
+                    <div className="input-group-append">
+                        <span className="input-group-text">px</span>
+                    </div>
+                </div>
+                {
+                    <p className="text-center text-muted mb-0">
+                        {
+                            !errors.scale ?
+                                <small>Adjusting width and height in meters</small> :
+                                <small className="invalid-feedback d-inline">{errors.scale}</small>
+                        }
+                    </p>
+                }
+            </div>
+            <div className="form-group">
+                <p className="text-center text-muted mb-1 mt-2 border-top pt-2">Generate some nodes</p>
+                <input
+                    type="number"
+                    className={cx({ 'is-invalid': errors.nodes }, 'form-control form-control-sm')}
+                    placeholder="Please enter a number"
+                    value={values.nodes}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    name="nodes"
+                />
+                {
+                    !errors.nodes ?
+                        <small className="form-text text-muted text-uppercase">{`Min ${MIN_NODES} - Max ${MAX_NODES}`}</small> :
+                        <div className="invalid-feedback">{errors.nodes}</div>
+                }
+            </div>
+            <div className="form-group">
+                <p className="text-center text-muted mb-1 mt-2 border-top pt-2">Range</p>
+                <div className="row">
+                    <div className="col-6 pr-2">
+                        <input
+                            type="number"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.nodeRangeMin}
+                            className={cx({ 'is-invalid': errors.nodeRangeMin }, 'form-control form-control-sm')}
+                            name="nodeRangeMin"
+                        />
+                        <p className="text-center text-muted mb-0">
+                            {
+                                !errors.nodeRangeMin ?
+                                    <small>{`MIN ${RANGE_NODE_MIN} METERS`}</small> :
+                                    <small className="invalid-feedback d-inline">{errors.nodeRangeMin}</small>
+                            }
+                        </p>
+                    </div>
+                    <div className="col-6 pl-2">
+                        <input
+                            type="number"
+                            className={cx({ 'is-invalid': errors.nodeRangeMax }, 'form-control form-control-sm')}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.nodeRangeMax}
+                            name="nodeRangeMax"
+                        />
+                        <p className="text-center text-muted mb-0">
+                            {
+                                !errors.nodeRangeMax ?
+                                    <small>{`MAX ${RANGE_NODE_MAX} METERS`}</small> :
+                                    <small className="invalid-feedback d-inline">{errors.nodeRangeMax}</small>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <button
+                type="submit"
+                className="btn btn-primary btn-sm"
+                onClick={handleSubmit}
+            >
+                Generate
+            </button>
+        </form>
+    );
+
     render() {
-        const {
-            nodesValue,
-            nodeRadiusMin,
-            nodeRadiusMax,
-            errorNodesValue,
-            errorNodeRadiusMin,
-            errorNodeRadiusMax,
-        } = this.state;
-
-        const inputNodesCx = cx({
-            'form-control form-control-sm': true,
-            'is-invalid': errorNodesValue.hasError,
-        });
-
-        const nodeRadiusMinCx = cx({
-            'form-control form-control-sm': true,
-            'is-invalid': errorNodeRadiusMin.hasError,
-        });
-
-        const nodeRadiusMaxCx = cx({
-            'form-control form-control-sm': true,
-            'is-invalid': errorNodeRadiusMax.hasError,
-        });
-
-        const disabledSaveBtn = errorNodesValue.hasError || errorNodeRadiusMin.hasError || errorNodeRadiusMax.hasError;
-
         return (
             <CardMenu
                 name="Controls"
             >
-                <p className="text-center text-muted mb-1">Generate some nodes</p>
-                <form className="text-center mb-1">
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            className={inputNodesCx}
-                            placeholder="Please enter a number"
-                            value={nodesValue}
-                            onChange={this.onHandleNodes}
-                        />
-                        {
-                            !errorNodesValue.errorMessage ?
-                                <small id="emailHelp" className="form-text text-muted text-uppercase">{`Min ${MIN_NODES} - Max ${MAX_NODES}`}</small> :
-                                <div className="invalid-feedback">{errorNodesValue.errorMessage}</div>
-                        }
-                        <p className="text-center text-muted mb-1 mt-2 border-top pt-2">Range</p>
-                        <div className="row">
-                            <div className="col-6 pr-2">
-                                <input
-                                    type="text"
-                                    onChange={this.onRangeMinChange}
-                                    value={nodeRadiusMin}
-                                    className={nodeRadiusMinCx}
-                                />
-                                <p className="text-center text-muted mb-0">
-                                    {
-                                        !errorNodeRadiusMin.errorMessage ?
-                                            <small>{`Min ${RANGE_NODE_MIN}%`}</small> :
-                                            <small className="invalid-feedback d-inline">{errorNodeRadiusMin.errorMessage}</small>
-                                    }
-                                </p>
-                            </div>
-                            <div className="col-6 pl-2">
-                                <input
-                                    type="text"
-                                    className={nodeRadiusMaxCx}
-                                    onChange={this.onRangeMaxChange}
-                                    value={nodeRadiusMax}
-                                />
-                                <p className="text-center text-muted mb-0">
-                                    {
-                                        !errorNodeRadiusMax.errorMessage ?
-                                            <small>{`Max ${RANGE_NODE_MAX}%`}</small> :
-                                            <small className="invalid-feedback d-inline">{errorNodeRadiusMax.errorMessage}</small>
-                                    }
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="submit" className="btn btn-primary btn-sm" onClick={this.onHandleGenerate} disabled={disabledSaveBtn}>Generate</button>
-                </form>
+                <Formik
+                    initialValues={this.initialValues}
+                    validate={this.validationForm}
+                    onSubmit={this.submitForm}
+                    render={this.renderForm}
+                    handleChange={() => { console.log('asdfasdfasdfasdf'); }}
+                />
             </CardMenu>
         );
     }
