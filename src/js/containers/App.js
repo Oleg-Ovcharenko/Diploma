@@ -12,7 +12,7 @@ class App extends Component {
         return (
             <div className="app d-flex flex-column vh-height-100">
                 <Header />
-                <main className="app-main d-flex flex-grow-1">
+                <main className="app-main d-flex flex-grow-1 min-height-500">
                     <SideBar dispatch={dispatch} />
                     <MainLayout dispatch={dispatch} />
                 </main>
