@@ -44,7 +44,7 @@ class Controls extends React.Component {
         eventEmmiter.emit('generateNodes');
 
         const nodes = this.getNodes(w, h);
-        const mainNode = this.getMainNode();
+        const mainNode = this.getMainNode(w, h);
 
         this.props.dispatch(generateMainNode(mainNode));
         this.props.dispatch(generateNodes(nodes));
@@ -70,8 +70,8 @@ class Controls extends React.Component {
         for (let i = 0; i < nodes; i += 1) {
             const node = {
                 id: i + 1,
-                x: randomFloatRange(PADDING, (networkPanelWidth || w) - PADDING),
-                y: randomFloatRange(PADDING, (networkPanelHeight || h) - PADDING),
+                x: randomFloatRange(PADDING, (w || networkPanelWidth) - PADDING),
+                y: randomFloatRange(PADDING, (h || networkPanelHeight) - PADDING),
                 params: {
                     radius: randomFloatRange(nodeRangeMin, nodeRangeMax) * scale,
                 },
@@ -91,8 +91,8 @@ class Controls extends React.Component {
 
         return {
             id: 'MAIN',
-            x: randomFloatRange(PADDING, (networkPanelWidth || w) - PADDING),
-            y: randomFloatRange(PADDING, (networkPanelHeight || h) - PADDING),
+            x: randomFloatRange(PADDING, (w || networkPanelWidth) - PADDING),
+            y: randomFloatRange(PADDING, (h || networkPanelHeight) - PADDING),
             params: {},
         };
     }
@@ -237,7 +237,6 @@ class Controls extends React.Component {
                     validate={this.validationForm}
                     onSubmit={this.submitForm}
                     render={this.renderForm}
-                    handleChange={() => { console.log('asdfasdfasdfasdf'); }}
                 />
             </CardMenu>
         );

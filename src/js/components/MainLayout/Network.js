@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { addNetworkWindowSize } from '../../actions';
-import Node from './Node';
-import Line from './Line';
 import eventEmmiter from '../../utils/eventEmmiter';
 import {
     NODE_RADIUS,

@@ -1,7 +1,7 @@
 export const DEFAULT_NODES = 10;
 
 // NODE SETTINGS
-export const NODE_RADIUS = 10;
+export const NODE_RADIUS = 8;
 export const NODE_COLOR = '#007bff';
 
 // MAIN NODE SETTINGS
