@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import ControlsNetwork from '../components/MainLayout/ControlsNetwork';
-import Network from '../components/MainLayout/Network';
+import ControlsNetwork from '../components/mainlayout/ControlsNetwork';
+import Network from '../components/mainlayout/Network';
 
 const MainLayout = ({
     nodes,

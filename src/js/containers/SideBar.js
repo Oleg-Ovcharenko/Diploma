@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Controls from '../components/SideBar/Controls';
-import NodeSettings from '../components/SideBar/NodeSettings';
-import SelectAlgorithm from '../components/SideBar/SelectAlgorithm';
+import Controls from '../components/sidebar/Controls';
+import NodeSettings from '../components/sidebar/NodeSettings';
+import SelectAlgorithm from '../components/sidebar/SelectAlgorithm';
 
 const SideBar = ({
     networkPanelWidth,

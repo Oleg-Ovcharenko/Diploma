@@ -2,8 +2,8 @@ import React from 'react';
 
 const ControlsNetwork = () => (
     <div className="card mb-3 control-networks rounded-0">
-        <div className="card-body d-flex align-i-center rounded-0">
-            <button type="submit" className="btn btn-primary btn-sm">Reconfigured network</button>
+        <div className="card-body d-flex align-i-center rounded-0 d-flex">
+            <button type="submit" className="btn btn-success btn-sm">Start algorithm</button>
         </div>
     </div>
 );

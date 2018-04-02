@@ -230,7 +230,7 @@ class Controls extends React.Component {
     render() {
         return (
             <CardMenu
-                name="Controls"
+                name="Controls app"
             >
                 <Formik
                     initialValues={this.initialValues}
