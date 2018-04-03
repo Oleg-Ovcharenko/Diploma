@@ -8,6 +8,7 @@ import {
     MAIN_NODE_COLOR,
     MAIN_NODE_RADIUS,
 } from '../../constants';
+import Animations from '../../services/Animations';
 
 class Network extends Component {
     constructor(props) {
