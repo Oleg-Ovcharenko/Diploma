@@ -2,13 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { addNetworkWindowSize } from '../../actions';
 import eventEmmiter from '../../utils/eventEmmiter';
-import {
-    NODE_RADIUS,
-    NODE_COLOR,
-    MAIN_NODE_COLOR,
-    MAIN_NODE_RADIUS,
-} from '../../constants';
-import Animations from '../../services/Animations';
+import CanvasService from '../../services/CanvasService';
 
 class Network extends Component {
     constructor(props) {
@@ -26,9 +20,16 @@ class Network extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        setTimeout(() => {
-            this.renderNetwork(nextProps);
-        }, 0);
+        if (!this.props.nodes[0] || nextProps.nodes[0].x !== this.props.nodes[0].x) { // TODO
+            setTimeout(() => {
+                this.renderNetwork(nextProps);
+            }, 0);
+        }
+        console.log(nextProps.startAlgorithm);
+
+        if (nextProps.startAlgorithm === true) {
+            this.selectNode(nextProps.nodes);
+        }
     }
 
     componentWillUnmount() {
@@ -59,6 +60,39 @@ class Network extends Component {
         this.canvasRef = ref;
     }
 
+    selectNode = (nodes) => {
+        nodes.map((node) => {
+            this.growNode(node);
+        });
+    }
+
+    growNode = (node) => {
+        const canvas = this.canvasRef;
+        const ctx = canvas.getContext('2d');
+
+        let i = 0;
+        function animate() {
+            ctx.save();
+            ctx.clearRect(0, 0, ctx.width, ctx.height);
+
+            if (i > node.params.radius) {
+                i = 1;
+            }
+
+            if (i > 40) {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, i / 2, 0, 2 * Math.PI, false);
+                ctx.fillStyle = 'rgba(41,118,196,.2)';
+                ctx.fill();
+            }
+            i += 1;
+            ctx.restore();
+            setTimeout(animate, 10);
+        }
+
+        animate();
+    }
+
     // renders
 
     renderNetwork(nextProps) {
@@ -75,19 +109,11 @@ class Network extends Component {
         const canvas = this.canvasRef;
         const ctx = canvas.getContext('2d');
 
-        ctx.clearRect(0, 0, layoutWidth, layoutHeight);
+        CanvasService.clearCanvas(ctx, layoutWidth, layoutHeight);
         // all nodes
-        nodes.forEach((node) => {
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, NODE_RADIUS / 2, 2 * Math.PI, false);
-            ctx.fillStyle = NODE_COLOR;
-            ctx.fill();
-        });
+        CanvasService.renderNodes(ctx, nodes);
         // main node
-        ctx.beginPath();
-        ctx.arc(mainNode.x, mainNode.y, MAIN_NODE_RADIUS / 2, 0, 2 * Math.PI, false);
-        ctx.fillStyle = MAIN_NODE_COLOR;
-        ctx.fill();
+        CanvasService.renderMainNode(ctx, mainNode);
     }
 
     render() {
@@ -114,6 +140,8 @@ class Network extends Component {
 
 Network.propTypes = {
     dispatch: PropTypes.func,
+    startAlgorithm: PropTypes.bool,
+    nodes: PropTypes.array,
 };
 
 export default Network;

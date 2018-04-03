@@ -31,3 +31,10 @@ export function generateMainNode(node) {
     };
 }
 
+export const CHANGE_ALGORITHM_STATUS = 'CHANGE_ALGORITHM_STATUS';
+export function changeAlgorithmStatus(status) {
+    return {
+        type: CHANGE_ALGORITHM_STATUS,
+        status,
+    };
+}

@@ -3,7 +3,7 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import CardMenu from './CardMenu';
-import { generateNodes, generateMainNode } from '../../actions';
+import { generateNodes, generateMainNode, changeAlgorithmStatus } from '../../actions';
 import {
     validationNumberField,
     randomFloatRange,
@@ -48,6 +48,7 @@ class Controls extends React.Component {
 
         this.props.dispatch(generateMainNode(mainNode));
         this.props.dispatch(generateNodes(nodes));
+        this.props.dispatch(changeAlgorithmStatus(false));
     }
 
     // getters

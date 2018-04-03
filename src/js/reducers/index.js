@@ -2,6 +2,7 @@ import {
     ADD_NETWORK_WINDOW_SIZES,
     GENERATE_NODES,
     GENERATE_MAIN_NODE,
+    CHANGE_ALGORITHM_STATUS,
 } from '../actions';
 
 export default function reducer(state = {}, action) {
@@ -29,6 +30,14 @@ export default function reducer(state = {}, action) {
                 mainNode: action.node,
             };
             return { ...state, ...mainNode };
+        }
+        case CHANGE_ALGORITHM_STATUS: {
+            const start = {
+                controlNetwork: {
+                    start: action.status,
+                },
+            };
+            return { ...state, ...start };
         }
         default:
             return state;

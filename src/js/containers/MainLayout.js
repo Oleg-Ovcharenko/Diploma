@@ -9,14 +9,19 @@ const MainLayout = ({
     lines,
     mainNode,
     dispatch,
+    startAlgorithm,
 }) => (
     <section className="main-layout d-flex flex-column p-3">
-        <ControlsNetwork />
+        <ControlsNetwork
+            dispatch={dispatch}
+            disableStartAlgorithm={!nodes || nodes.length === 0}  
+        />
         <Network
             nodes={nodes}
             lines={lines}
             mainNode={mainNode}
             dispatch={dispatch}
+            startAlgorithm={startAlgorithm}
         />
     </section>
 );
@@ -27,10 +32,12 @@ MainLayout.propTypes = {
     nodes: PropTypes.array,
     lines: PropTypes.array,
     mainNode: PropTypes.object,
+    startAlgorithm: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
     return {
+        startAlgorithm: state.controlNetwork.start,
         nodes: state.nodes,
         lines: state.lines,
         mainNode: state.mainNode,
