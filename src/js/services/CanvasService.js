@@ -25,6 +25,17 @@ class Animations {
         ctx.fillStyle = MAIN_NODE_COLOR;
         ctx.fill();
     }
+
+    static renderLines(ctx, lines) {
+        lines.forEach((line) => {
+            ctx.beginPath();
+            ctx.moveTo(line.x1, line.y1);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = NODE_COLOR;
+            ctx.lineTo(line.x2, line.y2);
+            ctx.stroke();
+        });
+    }
 }
 
 export default Animations;

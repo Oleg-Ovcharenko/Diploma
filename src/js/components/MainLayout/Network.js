@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { addNetworkWindowSize } from '../../actions';
+import { addNetworkWindowSize, generateLines } from '../../actions';
 import eventEmmiter from '../../utils/eventEmmiter';
 import CanvasService from '../../services/CanvasService';
 
@@ -25,10 +25,15 @@ class Network extends Component {
                 this.renderNetwork(nextProps);
             }, 0);
         }
-        console.log(nextProps.startAlgorithm);
 
-        if (nextProps.startAlgorithm === true) {
-            this.selectNode(nextProps.nodes);
+        if (this.props.startAlgorithm !== nextProps.startAlgorithm) { // TODO
+            this.opticsAlgorithm(nextProps.nodes);
+        }
+
+        if (this.props.lines.length === 0 && nextProps.lines.length) { // TODO
+            setTimeout(() => {
+                this.renderNetwork(nextProps);
+            }, 0);
         }
     }
 
@@ -59,14 +64,7 @@ class Network extends Component {
     getNetworkCanvas = (ref) => {
         this.canvasRef = ref;
     }
-
-    selectNode = (nodes) => {
-        nodes.map((node) => {
-            this.growNode(node);
-        });
-    }
-
-    growNode = (node) => {
+    /* growNode = (node) => {
         const canvas = this.canvasRef;
         const ctx = canvas.getContext('2d');
 
@@ -91,7 +89,50 @@ class Network extends Component {
         }
 
         animate();
+    } */
+
+
+    // ALGORITHM ----------------------------
+
+    getCircleNode(x0, y0, r, x1, y1) {
+        return Math.sqrt(((x0 - x1) * (x0 - x1)) + ((y0 - y1) * (y0 - y1))) <= r;
     }
+
+    
+    smallPerimeter() {
+
+    }
+
+
+    opticsAlgorithm = (nodes) => {
+        const lines = [];
+        for (let i = 0; i < nodes.length; i += 1) {
+            let shortest = null;
+            for (let j = 0; j < nodes.length; j += 1) {
+                if (nodes[i].id === nodes[j].id) continue; // same id
+
+                if (this.getCircleNode(nodes[j].x, nodes[j].y, nodes[j].params.radius, nodes[i].x, nodes[i].y)) {
+
+                    this.smallPerimeter();
+
+                    shortest = {
+                        x1: nodes[j].x,
+                        y1: nodes[j].y,
+                        x2: nodes[i].x,
+                        y2: nodes[i].y,
+                    };
+                }
+            }
+
+            if (shortest) {
+                lines.push(shortest);
+            }
+        }
+
+        this.props.dispatch(generateLines(lines));
+    }
+
+    // --------------------------------------
 
     // renders
 
@@ -99,6 +140,7 @@ class Network extends Component {
         const {
             nodes,
             mainNode,
+            lines,
         } = nextProps;
 
         const {
@@ -114,6 +156,8 @@ class Network extends Component {
         CanvasService.renderNodes(ctx, nodes);
         // main node
         CanvasService.renderMainNode(ctx, mainNode);
+        // lines
+        CanvasService.renderLines(ctx, lines);
     }
 
     render() {
@@ -142,6 +186,7 @@ Network.propTypes = {
     dispatch: PropTypes.func,
     startAlgorithm: PropTypes.bool,
     nodes: PropTypes.array,
+    lines: PropTypes.array,
 };
 
 export default Network;
