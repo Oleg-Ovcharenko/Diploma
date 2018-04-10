@@ -91,41 +91,128 @@ class Network extends Component {
         animate();
     } */
 
+    // BASE ALGORITHM -----------------------
 
-    // ALGORITHM ----------------------------
+    // Получить точки которые входят в радиус действия определенной точки
+    getRadiusNodes(nodes) {
+        let nodesInRadius = [];
+        for (let i = 0; i < nodes.length; i += 1) {
+            let nearNodes = [];
+            for (let j = 0; j < nodes.length; j += 1) {
+                if (nodes[i].id !== nodes[j].id 
+                    && this.checkNodeInRadius(nodes[j].x, nodes[j].y, nodes[j].params.radius, nodes[i].x, nodes[i].y)) {
+                    nearNodes.push({
+                        id: nodes[j].id,
+                        x: nodes[j].x,
+                        y: nodes[j].y,
+                    })
+                }
+            }
+            nodesInRadius.push({
+                id: nodes[i].id,
+                x: nodes[i].x,
+                y: nodes[i].y,
+                nodesInRadius: nearNodes,
+            })
+        }
 
-    getCircleNode(x0, y0, r, x1, y1) {
+        return nodesInRadius;
+    }
+
+    checkNodeInRadius(x0, y0, r, x1, y1) {
         return Math.sqrt(((x0 - x1) * (x0 - x1)) + ((y0 - y1) * (y0 - y1))) <= r;
     }
 
     
-    smallPerimeter() {
-
+    distanceBetweenNodes(x0, x1, y0, y1) {
+        return Math.sqrt(Math.pow(x0 - x1) + Math.pow(y0 - y1));
     }
 
+    trianglePerimeter(x0, y0, x1, y1, x2, y2) {
+        return this.distanceBetweenNodes(x0, x1, y0, y1) 
+                + this.distanceBetweenNodes(x0, x2, y0, y2)
+                + this.distanceBetweenNodes(x1, x2, y1, y2);
+    }
 
-    opticsAlgorithm = (nodes) => {
-        const lines = [];
-        for (let i = 0; i < nodes.length; i += 1) {
-            let shortest = null;
-            for (let j = 0; j < nodes.length; j += 1) {
-                if (nodes[i].id === nodes[j].id) continue; // same id
+    // ALGORITHM ----------------------------
 
-                if (this.getCircleNode(nodes[j].x, nodes[j].y, nodes[j].params.radius, nodes[i].x, nodes[i].y)) {
+    makeOpticsCluster(nodes) {
+        let nodesWithLines = [];
+        for(let i = 0; i < nodes.length; i++) {
+            let minDistance = null;
+            let minPerimeter = null;
+            let lines = [];
+            let firstLine = null;
+            let secondLine = null;
+            // Поиск точки с минимальным расстоянием
+            for(let j = 0; j < nodes[i].nodesInRadius.length; j++) {
+                const distance = this.distanceBetweenNodes(
+                    nodes[i].x,
+                    nodes[i].nodesInRadius[j].x,
+                    nodes[i].y,
+                    nodes[i].nodesInRadius[j].y,
+                );
 
-                    this.smallPerimeter();
-
-                    shortest = {
-                        x1: nodes[j].x,
-                        y1: nodes[j].y,
-                        x2: nodes[i].x,
-                        y2: nodes[i].y,
-                    };
+                if (!minDistance || minDistance > distance) { 
+                    minDistance = distance
+                    firstLine = {
+                        id: nodes[i].nodesInRadius[j].id,
+                        x1: nodes[i].x,
+                        x2: nodes[i].nodesInRadius[j].x,
+                        y1: nodes[i].y,
+                        y2: nodes[i].nodesInRadius[j].y,
+                    }
                 }
             }
+            // Поиск второй точки по минимальному периметру
+            if (nodes[i].nodesInRadius.length > 1) {
+                for(let k = 0; k < nodes[i].nodesInRadius.length; k++) {
+                    if (firstLine.id !== nodes[i].nodesInRadius[k].id) {
+                        const perim = this.trianglePerimeter(
+                            firstLine.x1,
+                            firstLine.y1,
+                            firstLine.x2,
+                            firstLine.y2,
+                            nodes[i].nodesInRadius[k].x,
+                            nodes[i].nodesInRadius[k].y,
+                        );
 
-            if (shortest) {
-                lines.push(shortest);
+                        if (!minPerimeter || minPerimeter > perim) {
+                            minPerimeter = perim;
+                            secondLine = {
+                                id: nodes[i].nodesInRadius[k].id,
+                                x1: nodes[i].x,
+                                x2: nodes[i].nodesInRadius[k].x,
+                                y1: nodes[i].y,
+                                y2: nodes[i].nodesInRadius[k].y,
+                            }
+                        }
+                    }
+                }               
+            }
+            nodesWithLines.push({
+                id: nodes[i].id,
+                lines: [firstLine, secondLine]
+            })
+        }
+        return nodesWithLines;
+    }
+
+    opticsAlgorithm = (nodes) => {
+        const nodesWithNearNodes = this.getRadiusNodes(nodes);
+        const linesWithNodes = this.makeOpticsCluster(nodesWithNearNodes);
+        const lines = [];
+
+        for (let i = 0; i < linesWithNodes.length; i++) {
+            for (let j = 0; j < linesWithNodes[i].lines.length; j++) {
+                if (linesWithNodes[i].lines[j]) {
+                    lines.push({
+                        x1: linesWithNodes[i].lines[j].x1,
+                        x2: linesWithNodes[i].lines[j].x2,
+                        y1: linesWithNodes[i].lines[j].y1,
+                        y2: linesWithNodes[i].lines[j].y2,
+                    })
+                }
             }
         }
 
