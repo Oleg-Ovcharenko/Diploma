@@ -95,11 +95,11 @@ class Network extends Component {
 
     // Получить точки которые входят в радиус действия определенной точки
     getRadiusNodes(nodes) {
-        let nodesInRadius = [];
+        const nodesInRadius = [];
         for (let i = 0; i < nodes.length; i += 1) {
-            let nearNodes = [];
+            const nearNodes = [];
             for (let j = 0; j < nodes.length; j += 1) {
-                if (nodes[i].id !== nodes[j].id 
+                if (nodes[i].id !== nodes[j].id
                     && this.checkNodeInRadius(nodes[j].x, nodes[j].y, nodes[j].params.radius, nodes[i].x, nodes[i].y)) {
                     nearNodes.push({
                         id: nodes[j].id,
@@ -129,7 +129,7 @@ class Network extends Component {
     }
 
     trianglePerimeter(x0, y0, x1, y1, x2, y2) {
-        return this.distanceBetweenNodes(x0, x1, y0, y1) 
+        return this.distanceBetweenNodes(x0, x1, y0, y1)
                 + this.distanceBetweenNodes(x0, x2, y0, y2)
                 + this.distanceBetweenNodes(x1, x2, y1, y2);
     }
@@ -138,14 +138,14 @@ class Network extends Component {
 
     makeOpticsCluster(nodes) {
         let nodesWithLines = [];
-        for(let i = 0; i < nodes.length; i++) {
+        for (let i = 0; i < nodes.length; i++) {
             let minDistance = null;
             let minPerimeter = null;
             let lines = [];
             let firstLine = null;
             let secondLine = null;
             // Поиск точки с минимальным расстоянием
-            for(let j = 0; j < nodes[i].nodesInRadius.length; j++) {
+            for (let j = 0; j < nodes[i].nodesInRadius.length; j++) {
                 const distance = this.distanceBetweenNodes(
                     nodes[i].x,
                     nodes[i].nodesInRadius[j].x,
@@ -154,7 +154,7 @@ class Network extends Component {
                 );
 
                 if (!minDistance || minDistance > distance) { 
-                    minDistance = distance
+                    minDistance = distance;
                     firstLine = {
                         id: nodes[i].nodesInRadius[j].id,
                         x1: nodes[i].x,
@@ -166,7 +166,7 @@ class Network extends Component {
             }
             // Поиск второй точки по минимальному периметру
             if (nodes[i].nodesInRadius.length > 1) {
-                for(let k = 0; k < nodes[i].nodesInRadius.length; k++) {
+                for (let k = 0; k < nodes[i].nodesInRadius.length; k++) {
                     if (firstLine.id !== nodes[i].nodesInRadius[k].id) {
                         const perim = this.trianglePerimeter(
                             firstLine.x1,
@@ -185,14 +185,14 @@ class Network extends Component {
                                 x2: nodes[i].nodesInRadius[k].x,
                                 y1: nodes[i].y,
                                 y2: nodes[i].nodesInRadius[k].y,
-                            }
+                            };
                         }
                     }
-                }               
+                }
             }
             nodesWithLines.push({
                 id: nodes[i].id,
-                lines: [firstLine, secondLine]
+                lines: [firstLine, secondLine],
             })
         }
         return nodesWithLines;
