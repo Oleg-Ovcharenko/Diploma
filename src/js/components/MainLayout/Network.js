@@ -100,7 +100,7 @@ class Network extends Component {
             const nearNodes = [];
             for (let j = 0; j < nodes.length; j += 1) {
                 if (nodes[i].id !== nodes[j].id
-                    && this.checkNodeInRadius(nodes[j].x, nodes[j].y, nodes[j].params.radius, nodes[i].x, nodes[i].y)) {
+                    && this.checkNodeInRadius(nodes[j].x, nodes[j].y, nodes[j].params.radius / 2, nodes[i].x, nodes[i].y)) {
                     nearNodes.push({
                         id: nodes[j].id,
                         x: nodes[j].x,
@@ -241,6 +241,8 @@ class Network extends Component {
         CanvasService.clearCanvas(ctx, layoutWidth, layoutHeight);
         // all nodes
         CanvasService.renderNodes(ctx, nodes);
+        // render radius
+        CanvasService.renderNodesRadius(ctx, nodes);
         // main node
         CanvasService.renderMainNode(ctx, mainNode);
         // lines

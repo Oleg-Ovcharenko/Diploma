@@ -36,6 +36,14 @@ class Animations {
             ctx.stroke();
         });
     }
+
+    static renderNodesRadius(ctx, nodes) {
+        nodes.forEach((node) => {
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.params.radius / 2, 2 * Math.PI, false);
+            ctx.stroke();
+        });
+    }
 }
 
 export default Animations;
