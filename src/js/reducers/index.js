@@ -32,14 +32,6 @@ export default function reducer(state = {}, action) {
             };
             return { ...state, ...mainNode };
         }
-        case CHANGE_ALGORITHM_STATUS: {
-            const start = {
-                controlNetwork: {
-                    start: action.status,
-                },
-            };
-            return { ...state, ...start };
-        }
         case GENERATE_LINES: {
             const lines = {
                 lines: action.lines,

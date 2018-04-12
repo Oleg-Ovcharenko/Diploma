@@ -41,6 +41,7 @@ class Animations {
         nodes.forEach((node) => {
             ctx.beginPath();
             ctx.arc(node.x, node.y, node.params.radius / 2, 2 * Math.PI, false);
+            ctx.strokeStyle = '#e9ecef';
             ctx.stroke();
         });
     }

@@ -1,34 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { changeAlgorithmStatus } from '../../actions';
+import eventEmmiter from '../../utils/eventEmmiter';
 
 class ControlsNetwork extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            algorithmStatus: false,
-        };
     }
 
     onChangeAlgorithmStatus = () => {
-        const {
-            algorithmStatus,
-        } = this.state;
-
-        this.props.dispatch(changeAlgorithmStatus(!algorithmStatus));
-
-        this.setState({
-            algorithmStatus: !this.state.algorithmStatus,
-        });
+        eventEmmiter.emit('buildAlgorithm');
     }
 
     render() {
         const {
-            algorithmStatus,
-        } = this.state;
-
-        const {
-            disableStartAlgorithm,
+            nodes,
         } = this.props;
 
         return (
@@ -38,11 +23,9 @@ class ControlsNetwork extends Component {
                         type="submit"
                         className="btn btn-success btn-sm"
                         onClick={this.onChangeAlgorithmStatus}
-                        disabled={disableStartAlgorithm}
+                        disabled={nodes.length === 0}
                     >
-                        {
-                            algorithmStatus ? 'Stop algorithm' : 'Start algorithm'
-                        }
+                        Build algorithm
                     </button>
                 </div>
             </div>
@@ -51,8 +34,7 @@ class ControlsNetwork extends Component {
 }
 
 ControlsNetwork.propTypes = {
-    dispatch: PropTypes.func,
-    disableStartAlgorithm: PropTypes.bool,
+    nodes: PropTypes.array,
 };
 
 export default ControlsNetwork;

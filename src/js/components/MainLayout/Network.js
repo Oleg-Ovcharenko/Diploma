@@ -17,6 +17,7 @@ class Network extends Component {
 
     componentDidMount() {
         eventEmmiter.addListener('generateNodes', this.setSvgSizes);
+        eventEmmiter.addListener('buildAlgorithm', this.buildAlgorthm);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -24,10 +25,6 @@ class Network extends Component {
             setTimeout(() => {
                 this.renderNetwork(nextProps);
             }, 0);
-        }
-
-        if (this.props.startAlgorithm !== nextProps.startAlgorithm) { // TODO
-            this.opticsAlgorithm(nextProps.nodes);
         }
 
         if (this.props.lines.length === 0 && nextProps.lines.length) { // TODO
@@ -105,7 +102,7 @@ class Network extends Component {
                         id: nodes[j].id,
                         x: nodes[j].x,
                         y: nodes[j].y,
-                    })
+                    });
                 }
             }
             nodesInRadius.push({
@@ -113,10 +110,14 @@ class Network extends Component {
                 x: nodes[i].x,
                 y: nodes[i].y,
                 nodesInRadius: nearNodes,
-            })
+            });
         }
 
         return nodesInRadius;
+    }
+
+    buildAlgorthm = () => {
+        this.opticsAlgorithm(this.props.nodes);
     }
 
     checkNodeInRadius(x0, y0, r, x1, y1) {
@@ -153,7 +154,7 @@ class Network extends Component {
                     nodes[i].nodesInRadius[j].y,
                 );
 
-                if (!minDistance || minDistance > distance) { 
+                if (!minDistance || minDistance > distance) {
                     minDistance = distance;
                     firstLine = {
                         id: nodes[i].nodesInRadius[j].id,
@@ -161,7 +162,7 @@ class Network extends Component {
                         x2: nodes[i].nodesInRadius[j].x,
                         y1: nodes[i].y,
                         y2: nodes[i].nodesInRadius[j].y,
-                    }
+                    };
                 }
             }
             // Поиск второй точки по минимальному периметру
@@ -193,7 +194,7 @@ class Network extends Component {
             nodesWithLines.push({
                 id: nodes[i].id,
                 lines: [firstLine, secondLine],
-            })
+            });
         }
         return nodesWithLines;
     }
@@ -211,7 +212,7 @@ class Network extends Component {
                         x2: linesWithNodes[i].lines[j].x2,
                         y1: linesWithNodes[i].lines[j].y1,
                         y2: linesWithNodes[i].lines[j].y2,
-                    })
+                    });
                 }
             }
         }
@@ -273,7 +274,6 @@ class Network extends Component {
 
 Network.propTypes = {
     dispatch: PropTypes.func,
-    startAlgorithm: PropTypes.bool,
     nodes: PropTypes.array,
     lines: PropTypes.array,
 };
