@@ -9,6 +9,7 @@ const MainLayout = ({
     lines,
     mainNode,
     dispatch,
+    showRange,
 }) => (
     <section className="main-layout d-flex flex-column p-3">
         <ControlsNetwork
@@ -20,6 +21,7 @@ const MainLayout = ({
             lines={lines}
             mainNode={mainNode}
             dispatch={dispatch}
+            showRange={showRange}
         />
     </section>
 );
@@ -30,12 +32,14 @@ MainLayout.propTypes = {
     nodes: PropTypes.array,
     lines: PropTypes.array,
     mainNode: PropTypes.object,
+    showRange: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
     return {
         nodes: state.nodes,
         lines: state.lines,
+        showRange: state.ui.show,
         mainNode: state.mainNode,
     };
 }

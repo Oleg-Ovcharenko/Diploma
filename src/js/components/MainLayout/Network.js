@@ -21,17 +21,9 @@ class Network extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!this.props.nodes[0] || nextProps.nodes[0].x !== this.props.nodes[0].x) { // TODO
-            setTimeout(() => {
-                this.renderNetwork(nextProps);
-            }, 0);
-        }
-
-        if (this.props.lines.length === 0 && nextProps.lines.length) { // TODO
-            setTimeout(() => {
-                this.renderNetwork(nextProps);
-            }, 0);
-        }
+        setTimeout(() => {
+            this.renderNetwork(nextProps);
+        }, 0);
     }
 
     componentWillUnmount() {
@@ -61,32 +53,6 @@ class Network extends Component {
     getNetworkCanvas = (ref) => {
         this.canvasRef = ref;
     }
-    /* growNode = (node) => {
-        const canvas = this.canvasRef;
-        const ctx = canvas.getContext('2d');
-
-        let i = 0;
-        function animate() {
-            ctx.save();
-            ctx.clearRect(0, 0, ctx.width, ctx.height);
-
-            if (i > node.params.radius) {
-                i = 1;
-            }
-
-            if (i > 40) {
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, i / 2, 0, 2 * Math.PI, false);
-                ctx.fillStyle = 'rgba(41,118,196,.2)';
-                ctx.fill();
-            }
-            i += 1;
-            ctx.restore();
-            setTimeout(animate, 10);
-        }
-
-        animate();
-    } */
 
     // BASE ALGORITHM -----------------------
 
@@ -124,7 +90,6 @@ class Network extends Component {
         return Math.sqrt(((x0 - x1) * (x0 - x1)) + ((y0 - y1) * (y0 - y1))) <= r;
     }
 
-    
     distanceBetweenNodes(x0, x1, y0, y1) {
         return Math.sqrt(Math.pow(x0 - x1) + Math.pow(y0 - y1));
     }
@@ -138,15 +103,14 @@ class Network extends Component {
     // ALGORITHM ----------------------------
 
     makeOpticsCluster(nodes) {
-        let nodesWithLines = [];
-        for (let i = 0; i < nodes.length; i++) {
+        const nodesWithLines = [];
+        for (let i = 0; i < nodes.length; i += 1) {
             let minDistance = null;
             let minPerimeter = null;
-            let lines = [];
             let firstLine = null;
             let secondLine = null;
             // Поиск точки с минимальным расстоянием
-            for (let j = 0; j < nodes[i].nodesInRadius.length; j++) {
+            for (let j = 0; j < nodes[i].nodesInRadius.length; j += 1) {
                 const distance = this.distanceBetweenNodes(
                     nodes[i].x,
                     nodes[i].nodesInRadius[j].x,
@@ -167,7 +131,7 @@ class Network extends Component {
             }
             // Поиск второй точки по минимальному периметру
             if (nodes[i].nodesInRadius.length > 1) {
-                for (let k = 0; k < nodes[i].nodesInRadius.length; k++) {
+                for (let k = 0; k < nodes[i].nodesInRadius.length; k += 1) {
                     if (firstLine.id !== nodes[i].nodesInRadius[k].id) {
                         const perim = this.trianglePerimeter(
                             firstLine.x1,
@@ -199,13 +163,13 @@ class Network extends Component {
         return nodesWithLines;
     }
 
-    opticsAlgorithm = (nodes) => {
+    getOpticsAlgorithmLines(nodes) {
         const nodesWithNearNodes = this.getRadiusNodes(nodes);
         const linesWithNodes = this.makeOpticsCluster(nodesWithNearNodes);
         const lines = [];
 
-        for (let i = 0; i < linesWithNodes.length; i++) {
-            for (let j = 0; j < linesWithNodes[i].lines.length; j++) {
+        for (let i = 0; i < linesWithNodes.length; i += 1) {
+            for (let j = 0; j < linesWithNodes[i].lines.length; j += 1) {
                 if (linesWithNodes[i].lines[j]) {
                     lines.push({
                         x1: linesWithNodes[i].lines[j].x1,
@@ -217,7 +181,11 @@ class Network extends Component {
             }
         }
 
-        this.props.dispatch(generateLines(lines));
+        return lines;
+    }
+
+    opticsAlgorithm = (nodes) => {
+        this.props.dispatch(generateLines(this.getOpticsAlgorithmLines(nodes)));
     }
 
     // --------------------------------------
@@ -229,6 +197,7 @@ class Network extends Component {
             nodes,
             mainNode,
             lines,
+            showRange,
         } = nextProps;
 
         const {
@@ -243,7 +212,7 @@ class Network extends Component {
         // all nodes
         CanvasService.renderNodes(ctx, nodes);
         // render radius
-        CanvasService.renderNodesRadius(ctx, nodes);
+        if (showRange) CanvasService.renderNodesRadius(ctx, nodes);
         // main node
         CanvasService.renderMainNode(ctx, mainNode);
         // lines

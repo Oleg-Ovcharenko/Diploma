@@ -30,3 +30,10 @@ export function generateMainNode(node) {
         node,
     };
 }
+
+export const SHOW_RANGE_NODES = 'SHOW_RANGE_NODES';
+export function showRangeNodes() {
+    return {
+        type: SHOW_RANGE_NODES,
+    };
+}

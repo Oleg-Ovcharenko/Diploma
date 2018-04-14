@@ -2,8 +2,8 @@ import {
     ADD_NETWORK_WINDOW_SIZES,
     GENERATE_NODES,
     GENERATE_MAIN_NODE,
-    CHANGE_ALGORITHM_STATUS,
     GENERATE_LINES,
+    SHOW_RANGE_NODES,
 } from '../actions';
 
 export default function reducer(state = {}, action) {
@@ -15,6 +15,7 @@ export default function reducer(state = {}, action) {
                         width: action.width,
                         height: action.height,
                     },
+                    show: state.ui.show,
                 },
             };
             return { ...state, ...ui };
@@ -37,6 +38,15 @@ export default function reducer(state = {}, action) {
                 lines: action.lines,
             };
             return { ...state, ...lines };
+        }
+        case SHOW_RANGE_NODES: {
+            const ui = {
+                ui: {
+                    networkPanel: state.ui.networkPanel,
+                    show: !state.ui.show,
+                },
+            };
+            return { ...state, ...ui };
         }
         default:
             return state;
