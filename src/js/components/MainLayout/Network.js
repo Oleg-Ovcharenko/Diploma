@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { addNetworkWindowSize, generateLines } from '../../actions';
 import eventEmmiter from '../../utils/eventEmmiter';
 import CanvasService from '../../services/CanvasService';
+import { randomRange } from './../../helpers/helpersFunctions';
 
 class Network extends Component {
     constructor(props) {
@@ -59,11 +60,12 @@ class Network extends Component {
     // Получить точки которые входят в радиус действия определенной точки
     getRadiusNodes(nodes) {
         const nodesInRadius = [];
+
         for (let i = 0; i < nodes.length; i += 1) {
             const nearNodes = [];
             for (let j = 0; j < nodes.length; j += 1) {
                 if (nodes[i].id !== nodes[j].id
-                    && this.checkNodeInRadius(nodes[j].x, nodes[j].y, nodes[j].params.radius / 2, nodes[i].x, nodes[i].y)) {
+                    && this.checkNodeInRadius(nodes[i].x, nodes[i].y, nodes[i].params.radius / 2, nodes[j].x, nodes[j].y)) {
                     nearNodes.push({
                         id: nodes[j].id,
                         x: nodes[j].x,
@@ -75,6 +77,7 @@ class Network extends Component {
                 id: nodes[i].id,
                 x: nodes[i].x,
                 y: nodes[i].y,
+                inRoute: false,
                 nodesInRadius: nearNodes,
             });
         }
@@ -86,12 +89,12 @@ class Network extends Component {
         this.opticsAlgorithm(this.props.nodes);
     }
 
-    checkNodeInRadius(x0, y0, r, x1, y1) {
-        return Math.sqrt(((x0 - x1) * (x0 - x1)) + ((y0 - y1) * (y0 - y1))) <= r;
+    checkNodeInRadius(Xc, Yc, Rc, x, y) {
+        return ((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc)) < Rc * Rc;
     }
 
     distanceBetweenNodes(x0, x1, y0, y1) {
-        return Math.sqrt(Math.pow(x0 - x1) + Math.pow(y0 - y1));
+        return Math.sqrt(Math.pow(x0 - x1, 2) + Math.pow(y0 - y1, 2));
     }
 
     trianglePerimeter(x0, y0, x1, y1, x2, y2) {
@@ -102,8 +105,87 @@ class Network extends Component {
 
     // ALGORITHM ----------------------------
 
-    makeOpticsCluster(nodes) {
-        const nodesWithLines = [];
+    // получить ребро для ближайшей точки в радиусе
+    getLineForNearNode(node) {
+        let minDistance = null;
+        let nearNode = null;
+
+        node.nodesInRadius.map((item) => {
+            const distanceNow = this.distanceBetweenNodes(node.x, item.x, node.y, item.y);
+            if (!minDistance || minDistance > distanceNow) {
+                minDistance = distanceNow;
+                nearNode = item;
+            }
+        });
+
+        return {
+            id1: node.id,
+            id2: nearNode.id,
+            x1: node.x,
+            x2: nearNode.x,
+            y1: node.y,
+            y2: nearNode.y,
+        };
+    }
+
+    getLineForMinimumPerimeter(prevLine, node) {
+        let minPerimeter = null;
+        let nearNode = null;
+
+        node.nodesInRadius.map((item) => {
+            const perimeterNow = this.trianglePerimeter(prevLine.x1, prevLine.y1, prevLine.x2, prevLine.y2, item.x, item.y);
+
+            if ((!minPerimeter || minPerimeter > perimeterNow) && item.id !== prevLine.id1) {
+                minPerimeter = perimeterNow;
+                nearNode = item;
+            }
+        });
+
+        return {
+            id1: node.id,
+            id2: nearNode.id,
+            x1: node.x,
+            x2: nearNode.x,
+            y1: node.y,
+            y2: nearNode.y,
+        };
+    }
+
+    makeOpticsCluster(n) {
+        const nodes = n;
+        const lines = [];
+        let line = null;
+        let iterations = 0;
+
+        // first line
+        const randomNode = randomRange(0, nodes.length);
+        if (!nodes[randomNode].inRoute) {
+            nodes[randomNode].inRoute = true; // TODO 
+            line = this.getLineForNearNode(nodes[randomNode]);
+            iterations += 1;
+        }
+
+        console.log(line);
+        
+        lines.push(line);
+
+
+        while (iterations !== nodes.length) {
+            const nextItem = nodes.find((item) => {
+                if (item.id === line.id2) {
+                    iterations += 1;
+                    return item;
+                }
+            });
+
+            line = this.getLineForMinimumPerimeter(line, nextItem);
+            lines.push(line);
+        }
+
+        return lines;
+
+
+/*        const nodesWithLines = [];
         for (let i = 0; i < nodes.length; i += 1) {
             let minDistance = null;
             let minPerimeter = null;
@@ -160,28 +242,32 @@ class Network extends Component {
                 lines: [firstLine, secondLine],
             });
         }
-        return nodesWithLines;
+        return nodesWithLines;*/
     }
 
     getOpticsAlgorithmLines(nodes) {
         const nodesWithNearNodes = this.getRadiusNodes(nodes);
+
         const linesWithNodes = this.makeOpticsCluster(nodesWithNearNodes);
+
+        console.log(linesWithNodes);
+
         const lines = [];
 
-        for (let i = 0; i < linesWithNodes.length; i += 1) {
-            for (let j = 0; j < linesWithNodes[i].lines.length; j += 1) {
-                if (linesWithNodes[i].lines[j]) {
-                    lines.push({
-                        x1: linesWithNodes[i].lines[j].x1,
-                        x2: linesWithNodes[i].lines[j].x2,
-                        y1: linesWithNodes[i].lines[j].y1,
-                        y2: linesWithNodes[i].lines[j].y2,
-                    });
-                }
-            }
-        }
+        // for (let i = 0; i < linesWithNodes.length; i += 1) {
+        //     for (let j = 0; j < linesWithNodes[i].lines.length; j += 1) {
+        //         if (linesWithNodes[i].lines[j]) {
+        //             lines.push({
+        //                 x1: linesWithNodes[i].lines[j].x1,
+        //                 x2: linesWithNodes[i].lines[j].x2,
+        //                 y1: linesWithNodes[i].lines[j].y1,
+        //                 y2: linesWithNodes[i].lines[j].y2,
+        //             });
+        //         }
+        //     }
+        // }
 
-        return lines;
+        return linesWithNodes;
     }
 
     opticsAlgorithm = (nodes) => {
