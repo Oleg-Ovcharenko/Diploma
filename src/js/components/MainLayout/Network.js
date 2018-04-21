@@ -73,11 +73,11 @@ class Network extends Component {
                     });
                 }
             }
+
             nodesInRadius.push({
                 id: nodes[i].id,
                 x: nodes[i].x,
                 y: nodes[i].y,
-                inRoute: false,
                 nodesInRadius: nearNodes,
             });
         }
@@ -119,8 +119,8 @@ class Network extends Component {
         });
 
         return {
-            id1: node.id,
-            id2: nearNode.id,
+            idNode: node.id,
+            idNexNode: nearNode.id,
             x1: node.x,
             x2: nearNode.x,
             y1: node.y,
@@ -128,150 +128,100 @@ class Network extends Component {
         };
     }
 
-    getLineForMinimumPerimeter(prevLine, node) {
+    // получить ребро по минимальному периметру
+    getLineForMinimumPerimeter(node, prevLine, nodesIdsInRoutes) {
         let minPerimeter = null;
         let nearNode = null;
 
         node.nodesInRadius.map((item) => {
-            const perimeterNow = this.trianglePerimeter(prevLine.x1, prevLine.y1, prevLine.x2, prevLine.y2, item.x, item.y);
-
-            if ((!minPerimeter || minPerimeter > perimeterNow) && item.id !== prevLine.id1) {
-                minPerimeter = perimeterNow;
-                nearNode = item;
+            if (item.id !== prevLine.idNode && item.id !== prevLine.idNexNode && nodesIdsInRoutes.indexOf(item.id) === -1) {
+                const perimeterNow = this.trianglePerimeter(prevLine.x1, prevLine.y1, prevLine.x2, prevLine.y2, item.x, item.y);
+                if (!minPerimeter || minPerimeter > perimeterNow) {
+                    minPerimeter = perimeterNow;
+                    nearNode = item;
+                }
             }
         });
 
-        return {
-            id1: node.id,
-            id2: nearNode.id,
-            x1: node.x,
-            x2: nearNode.x,
-            y1: node.y,
-            y2: nearNode.y,
-        };
+        if (nearNode) {
+            return {
+                idNode: node.id,
+                idNexNode: nearNode.id,
+                x1: node.x,
+                x2: nearNode.x,
+                y1: node.y,
+                y2: nearNode.y,
+            };
+        } else {
+            return false;
+        }
     }
 
-    makeOpticsCluster(n) {
-        const nodes = n;
+    getNodeWithLine = (nodes, line) => {
+        return nodes.find((item) => {
+            if (item.id === line.idNexNode) {
+                return item;
+            }
+        });
+    }
+
+    makeOpticsCluster(nodes) {
         const lines = [];
+        const nodesIdsInRoutes = [];
         let line = null;
-        let iterations = 0;
 
         // first line
         const randomNode = randomRange(0, nodes.length);
-        if (!nodes[randomNode].inRoute) {
-            nodes[randomNode].inRoute = true; // TODO 
+        // line for near node
+        if (!nodes[randomNode].nodesInRadius || nodes[randomNode].nodesInRadius.length === 0) {
+            // TDOD Можно эту ноду подсвечивать крассным
+            alert(`Для точки ${nodes[randomNode].id} нет ближайших мотов.`);
+        } else {
             line = this.getLineForNearNode(nodes[randomNode]);
-            iterations += 1;
-        }
-
-        console.log(line);
-        
-        lines.push(line);
-
-
-        while (iterations !== nodes.length) {
-            const nextItem = nodes.find((item) => {
-                if (item.id === line.id2) {
-                    iterations += 1;
-                    return item;
-                }
-            });
-
-            line = this.getLineForMinimumPerimeter(line, nextItem);
+            nodesIdsInRoutes.push([line.idNode, line.idNexNode]);
             lines.push(line);
         }
 
-        return lines;
+        // ---test---
 
+        while (nodesIdsInRoutes.length !== nodes.length) {
+            const nextNode = this.getNodeWithLine(nodes, line);
 
-/*        const nodesWithLines = [];
-        for (let i = 0; i < nodes.length; i += 1) {
-            let minDistance = null;
-            let minPerimeter = null;
-            let firstLine = null;
-            let secondLine = null;
-            // Поиск точки с минимальным расстоянием
-            for (let j = 0; j < nodes[i].nodesInRadius.length; j += 1) {
-                const distance = this.distanceBetweenNodes(
-                    nodes[i].x,
-                    nodes[i].nodesInRadius[j].x,
-                    nodes[i].y,
-                    nodes[i].nodesInRadius[j].y,
-                );
+            if (!nextNode || !nextNode.nodesInRadius || nextNode.nodesInRadius.length === 0) {
+                // TDOD Можно эту ноду подсвечивать крассным
+                console.log(`Для точки ${nodes[randomNode].id} нет ближайших мотов.`);
+                nodesIdsInRoutes.push(line.idNexNode);
+            } else {
+                line = this.getLineForMinimumPerimeter(nextNode, line, nodesIdsInRoutes);
 
-                if (!minDistance || minDistance > distance) {
-                    minDistance = distance;
-                    firstLine = {
-                        id: nodes[i].nodesInRadius[j].id,
-                        x1: nodes[i].x,
-                        x2: nodes[i].nodesInRadius[j].x,
-                        y1: nodes[i].y,
-                        y2: nodes[i].nodesInRadius[j].y,
-                    };
+                if (!line) {
+                    // TDOD Можно эту ноду подсвечивать крассным
+                    console.log('Маршрут окончен нет ближайших точек');
                 }
-            }
-            // Поиск второй точки по минимальному периметру
-            if (nodes[i].nodesInRadius.length > 1) {
-                for (let k = 0; k < nodes[i].nodesInRadius.length; k += 1) {
-                    if (firstLine.id !== nodes[i].nodesInRadius[k].id) {
-                        const perim = this.trianglePerimeter(
-                            firstLine.x1,
-                            firstLine.y1,
-                            firstLine.x2,
-                            firstLine.y2,
-                            nodes[i].nodesInRadius[k].x,
-                            nodes[i].nodesInRadius[k].y,
-                        );
 
-                        if (!minPerimeter || minPerimeter > perim) {
-                            minPerimeter = perim;
-                            secondLine = {
-                                id: nodes[i].nodesInRadius[k].id,
-                                x1: nodes[i].x,
-                                x2: nodes[i].nodesInRadius[k].x,
-                                y1: nodes[i].y,
-                                y2: nodes[i].nodesInRadius[k].y,
-                            };
-                        }
-                    }
-                }
+                lines.push(line);
+                nodesIdsInRoutes.push(line.idNexNode);
             }
-            nodesWithLines.push({
-                id: nodes[i].id,
-                lines: [firstLine, secondLine],
-            });
         }
-        return nodesWithLines;*/
+        // ---test---
+
+        return lines;
     }
 
     getOpticsAlgorithmLines(nodes) {
         const nodesWithNearNodes = this.getRadiusNodes(nodes);
-
         const linesWithNodes = this.makeOpticsCluster(nodesWithNearNodes);
 
-        console.log(linesWithNodes);
-
-        const lines = [];
-
-        // for (let i = 0; i < linesWithNodes.length; i += 1) {
-        //     for (let j = 0; j < linesWithNodes[i].lines.length; j += 1) {
-        //         if (linesWithNodes[i].lines[j]) {
-        //             lines.push({
-        //                 x1: linesWithNodes[i].lines[j].x1,
-        //                 x2: linesWithNodes[i].lines[j].x2,
-        //                 y1: linesWithNodes[i].lines[j].y1,
-        //                 y2: linesWithNodes[i].lines[j].y2,
-        //             });
-        //         }
-        //     }
-        // }
 
         return linesWithNodes;
     }
 
     opticsAlgorithm = (nodes) => {
-        this.props.dispatch(generateLines(this.getOpticsAlgorithmLines(nodes)));
+        const lines = this.getOpticsAlgorithmLines(nodes);
+
+        if (lines.length !== 0) {
+            this.props.dispatch(generateLines(lines));
+        }
     }
 
     // --------------------------------------
