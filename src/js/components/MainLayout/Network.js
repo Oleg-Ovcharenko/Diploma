@@ -1,9 +1,15 @@
+// LIBRARIES
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { addNetworkWindowSize, generateLines } from '../../actions';
 import eventEmmiter from '../../utils/eventEmmiter';
+// SERVICE
 import CanvasService from '../../services/CanvasService';
+// ACTIONS
+import { addNetworkWindowSize, generateLines } from '../../actions';
+// HELPERS
 import { randomRange } from './../../helpers/helpersFunctions';
+// CONSTANTS
+import { NODE_RADIUS } from '../../constants';
 
 class Network extends Component {
     constructor(props) {
@@ -11,24 +17,36 @@ class Network extends Component {
         this.state = {
             layoutWidth: 0,
             layoutHeight: 0,
+            nodes: [],
+            showTooltip: false,
         };
     }
 
     // life
-
     componentDidMount() {
+        const canvas = this.canvasRef;
         eventEmmiter.addListener('generateNodes', this.setSvgSizes);
         eventEmmiter.addListener('buildAlgorithm', this.buildAlgorthm);
+        canvas.addEventListener('mousemove', this.showNodeTooltip);
     }
 
     componentWillReceiveProps(nextProps) {
         setTimeout(() => {
             this.renderNetwork(nextProps);
+            this.setState({
+                nodes: nextProps.nodes,
+            });
         }, 0);
     }
 
+    componentWillUpdate(nextProps, nextState) {
+        this.renderNetwork(nextProps);
+    }
+
     componentWillUnmount() {
-        eventEmmiter.removeEventListener('generateNodes');
+        const canvas = this.canvasRef;
+        eventEmmiter.removeAllListeners();
+        canvas.removeEventListener('mousemove', this.showNodeTooltip);
     }
 
     setSvgSizes = () => {
@@ -165,6 +183,10 @@ class Network extends Component {
         });
     }
 
+    getMainNodeInRadius() {
+
+    }
+
     makeOpticsCluster(nodes) {
         const lines = [];
         const nodesIdsInRoutes = [];
@@ -175,10 +197,10 @@ class Network extends Component {
         // line for near node
         if (!nodes[randomNode].nodesInRadius || nodes[randomNode].nodesInRadius.length === 0) {
             // TDOD Можно эту ноду подсвечивать крассным
-            alert(`Для точки ${nodes[randomNode].id} нет ближайших мотов.`);
+            console.log(`Для точки ${nodes[randomNode].id} нет ближайших мотов.`);
         } else {
             line = this.getLineForNearNode(nodes[randomNode]);
-            nodesIdsInRoutes.push([line.idNode, line.idNexNode]);
+            nodesIdsInRoutes.push(line.idNode, line.idNexNode);
             lines.push(line);
         }
 
@@ -203,8 +225,8 @@ class Network extends Component {
                 nodesIdsInRoutes.push(line.idNexNode);
             }
         }
-        // ---test---
 
+        // ---test---
         return lines;
     }
 
@@ -226,8 +248,35 @@ class Network extends Component {
 
     // --------------------------------------
 
-    // renders
+    // TOOLTIPS
+    showNodeTooltip = (e) => {
+        const canvas = this.canvasRef;
+        const {
+            nodes,
+        } = this.state;
+        const {
+            top,
+            left,
+        } = canvas.getBoundingClientRect();
 
+        const mouseX = parseInt(e.clientX - left, 10);
+        const mouseY = parseInt(e.clientY - top, 10);
+
+        let tooltip = false;
+
+        for (let i = 0; i < nodes.length; i += 1) {
+            if (this.checkNodeInRadius(nodes[i].x, nodes[i].y, NODE_RADIUS / 2, mouseX, mouseY)) {
+                tooltip = true;
+                break;
+            }
+        }
+
+        this.setState({
+            showTooltip: tooltip,
+        });
+    }
+
+    // renders
     renderNetwork(nextProps) {
         const {
             nodes,
@@ -239,11 +288,15 @@ class Network extends Component {
         const {
             layoutWidth,
             layoutHeight,
+            showTooltip,
         } = this.state;
 
         const canvas = this.canvasRef;
         const ctx = canvas.getContext('2d');
 
+        console.log(showTooltip);
+
+        // clear canvas
         CanvasService.clearCanvas(ctx, layoutWidth, layoutHeight);
         // all nodes
         CanvasService.renderNodes(ctx, nodes);
@@ -271,6 +324,7 @@ class Network extends Component {
                         height={layoutHeight}
                     >
                     </canvas>
+                    <div />
                 </div>
             </div>
         );
