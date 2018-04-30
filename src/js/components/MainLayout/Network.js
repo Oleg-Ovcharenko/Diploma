@@ -64,7 +64,6 @@ class Network extends Component {
     }
 
     // refs
-
     getNetworkBodyRef = (ref) => {
         this.bodyRef = ref;
     }
@@ -257,6 +256,7 @@ class Network extends Component {
         const {
             top,
             left,
+            showTooltip,
         } = canvas.getBoundingClientRect();
 
         const mouseX = parseInt(e.clientX - left, 10);
@@ -266,14 +266,21 @@ class Network extends Component {
 
         for (let i = 0; i < nodes.length; i += 1) {
             if (this.checkNodeInRadius(nodes[i].x, nodes[i].y, NODE_RADIUS / 2, mouseX, mouseY)) {
-                tooltip = true;
+                tooltip = {
+                    id: nodes[i].id,
+                    x: nodes[i].x,
+                    y: nodes[i].y,
+                    radius: nodes[i].params.radius,
+                };
                 break;
             }
         }
 
-        this.setState({
-            showTooltip: tooltip,
-        });
+        if (tooltip !== showTooltip) {
+            this.setState({
+                showTooltip: tooltip,
+            });
+        }
     }
 
     // renders
@@ -294,8 +301,6 @@ class Network extends Component {
         const canvas = this.canvasRef;
         const ctx = canvas.getContext('2d');
 
-        console.log(showTooltip);
-
         // clear canvas
         CanvasService.clearCanvas(ctx, layoutWidth, layoutHeight);
         // all nodes
@@ -306,6 +311,8 @@ class Network extends Component {
         CanvasService.renderMainNode(ctx, mainNode);
         // lines
         CanvasService.renderLines(ctx, lines);
+        // tooltips
+        CanvasService.renderTooltip(ctx, showTooltip);
     }
 
     render() {
@@ -324,7 +331,6 @@ class Network extends Component {
                         height={layoutHeight}
                     >
                     </canvas>
-                    <div />
                 </div>
             </div>
         );
