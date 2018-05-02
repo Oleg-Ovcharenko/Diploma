@@ -46,6 +46,7 @@ class Animations {
         });
     }
 
+    // TODO need behavior on the edge of canvas
     static renderTooltip(ctx, tooltip) {
         const FONT_SIZE = 12;
         const TOOLTIP_X = tooltip.x;

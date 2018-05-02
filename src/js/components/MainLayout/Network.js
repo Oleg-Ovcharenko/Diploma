@@ -75,7 +75,7 @@ class Network extends Component {
     // BASE ALGORITHM -----------------------
 
     // Получить точки которые входят в радиус действия определенной точки
-    getRadiusNodes(nodes) {
+    getRadiusNodes(nodes, mainNode) {
         const nodesInRadius = [];
 
         for (let i = 0; i < nodes.length; i += 1) {
@@ -91,6 +91,14 @@ class Network extends Component {
                 }
             }
 
+            if (this.checkNodeInRadius(nodes[i].x, nodes[i].y, nodes[i].params.radius / 2, mainNode.x, mainNode.y)) {
+                nearNodes.push({
+                    id: mainNode.id,
+                    x: mainNode.x,
+                    y: mainNode.y,
+                });
+            }
+
             nodesInRadius.push({
                 id: nodes[i].id,
                 x: nodes[i].x,
@@ -103,7 +111,7 @@ class Network extends Component {
     }
 
     buildAlgorthm = () => {
-        this.opticsAlgorithm(this.props.nodes);
+        this.opticsAlgorithm(this.props.nodes, this.props.mainNode);
     }
 
     checkNodeInRadius(Xc, Yc, Rc, x, y) {
@@ -189,56 +197,107 @@ class Network extends Component {
     makeOpticsCluster(nodes) {
         const lines = [];
         const nodesIdsInRoutes = [];
+        const nodesIdsWithoutNearNodes = [];
         let line = null;
+        let iteration = 0;
 
-        // first line
-        const randomNode = randomRange(0, nodes.length);
-        // line for near node
-        if (!nodes[randomNode].nodesInRadius || nodes[randomNode].nodesInRadius.length === 0) {
-            // TDOD Можно эту ноду подсвечивать крассным
-            console.log(`Для точки ${nodes[randomNode].id} нет ближайших мотов.`);
-        } else {
-            line = this.getLineForNearNode(nodes[randomNode]);
-            nodesIdsInRoutes.push(line.idNode, line.idNexNode);
-            lines.push(line);
+
+        let selectedNewNearNode = false;
+
+        console.log(nodes[iteration].nodesInRadius);
+
+        while ((nodesIdsInRoutes.length + nodesIdsWithoutNearNodes.length) !== nodes.length) {
+            // new line for near node
+            if (!selectedNewNearNode) {
+                if (!nodes[iteration] || !nodes[iteration].nodesInRadius || nodes[iteration].nodesInRadius.length === 0) {
+                    // TDOD Можно эту ноду подсвечивать крассным
+                    console.log(`Для точки ${nodes[iteration] && nodes[iteration].id} нет ближайших мотов.`);
+                    nodesIdsWithoutNearNodes.push(nodes[iteration] && nodes[iteration].id);
+                    selectedNewNearNode = false;
+                    line = false;
+                } else {
+                    line = this.getLineForNearNode(nodes[iteration]);
+                    nodesIdsInRoutes.push(line.idNode, line.idNexNode);
+                    lines.push(line);
+                    selectedNewNearNode = true;
+                    if (nodesIdsInRoutes.indexOf(line.idNexNode) !== -1) {
+                        selectedNewNearNode = false;
+                        line = false;
+                        nodesIdsInRoutes.push(line.idNode);
+                    }
+                }
+            }
+
+            if (line) {
+                const nextNode = this.getNodeWithLine(nodes, line);
+
+                if (!nextNode || !nextNode.nodesInRadius || nextNode.nodesInRadius.length === 0) {
+                    // TODO Можно эту ноду подсвечивать крассным
+                    console.log(`Для точки ${nodes[iteration] && nodes[iteration].id} нет ближайших мотов.`);
+                    nodesIdsWithoutNearNodes.push(nodes[iteration] && nodes[iteration].id);
+                    line = false;
+                    selectedNewNearNode = false;
+                } else {
+                    line = this.getLineForMinimumPerimeter(nextNode, line, nodesIdsInRoutes);
+
+                    lines.push(line);
+                    nodesIdsInRoutes.push(line.idNexNode);
+
+                    if (line.idNexNode === 'MAIN') {
+                        line = false;
+                        selectedNewNearNode = false;
+                        console.log('ПОПАЛИ В ГЛАВНУЮ ТОЧКУ');
+                    }
+
+                    if (!line) {
+                        // TODO Можно эту ноду подсвечивать крассным
+                        line = false;
+                        selectedNewNearNode = false;
+                        console.log('Маршрут окончен нет ближайших точек');
+                    }
+                }
+            }
+
+
+            iteration += 1;
         }
 
         // ---test---
 
-        while (nodesIdsInRoutes.length !== nodes.length) {
-            const nextNode = this.getNodeWithLine(nodes, line);
+        // while (nodesIdsInRoutes.length !== nodes.length) {
+        //     const nextNode = this.getNodeWithLine(nodes, line);
 
-            if (!nextNode || !nextNode.nodesInRadius || nextNode.nodesInRadius.length === 0) {
-                // TDOD Можно эту ноду подсвечивать крассным
-                console.log(`Для точки ${nodes[randomNode].id} нет ближайших мотов.`);
-                nodesIdsInRoutes.push(line.idNexNode);
-            } else {
-                line = this.getLineForMinimumPerimeter(nextNode, line, nodesIdsInRoutes);
+        //     if (!nextNode || !nextNode.nodesInRadius || nextNode.nodesInRadius.length === 0) {
+        //         // TDOD Можно эту ноду подсвечивать крассным
+        //         console.log(`Для точки ${nodes[0].id} нет ближайших мотов.`);
+        //         nodesIdsInRoutes.push(line.idNexNode);
+        //     } else {
+        //         line = this.getLineForMinimumPerimeter(nextNode, line, nodesIdsInRoutes);
 
-                if (!line) {
-                    // TDOD Можно эту ноду подсвечивать крассным
-                    console.log('Маршрут окончен нет ближайших точек');
-                }
+        //         if (!line) {
+        //             // TDOD Можно эту ноду подсвечивать крассным
+        //             console.log('Маршрут окончен нет ближайших точек');
+        //         }
 
-                lines.push(line);
-                nodesIdsInRoutes.push(line.idNexNode);
-            }
-        }
+        //         lines.push(line);
+        //         nodesIdsInRoutes.push(line.idNexNode);
+        //     }
+        // }
 
         // ---test---
         return lines;
     }
 
-    getOpticsAlgorithmLines(nodes) {
-        const nodesWithNearNodes = this.getRadiusNodes(nodes);
+    getOpticsAlgorithmLines(nodes, mainNode) {
+        const nodesWithNearNodes = this.getRadiusNodes(nodes, mainNode);
         const linesWithNodes = this.makeOpticsCluster(nodesWithNearNodes);
 
 
         return linesWithNodes;
     }
 
-    opticsAlgorithm = (nodes) => {
-        const lines = this.getOpticsAlgorithmLines(nodes);
+    opticsAlgorithm = (nodes, mainNode) => {
+        const lines = this.getOpticsAlgorithmLines(nodes, mainNode);
 
         if (lines.length !== 0) {
             this.props.dispatch(generateLines(lines));
