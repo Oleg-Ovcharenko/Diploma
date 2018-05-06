@@ -154,12 +154,12 @@ class Network extends Component {
     }
 
     // получить ребро по минимальному периметру
-    getLineForMinimumPerimeter(node, prevLine) {
+    getLineForMinimumPerimeter(node, prevLine, buildRouteIds) {
         let minPerimeter = null;
         let nearNode = null;
 
         node.nodesInRadius.map((item) => {
-            if (item.id !== prevLine.idNode && item.id !== prevLine.idNexNode) {
+            if (item.id !== prevLine.idNode && item.id !== prevLine.idNexNode && buildRouteIds.indexOf(item.id) === -1) {
                 const perimeterNow = this.trianglePerimeter(prevLine.x1, prevLine.y1, prevLine.x2, prevLine.y2, item.x, item.y);
                 if (!minPerimeter || minPerimeter > perimeterNow) {
                     minPerimeter = perimeterNow;
@@ -194,117 +194,71 @@ class Network extends Component {
         const lines = [];
         const idNodeInRoute = [];
         const idNodeWithoutRoute = [];
-        let line = null;
+        let line = false;
         let i = 0;
 
-        while ((idNodeInRoute.length + idNodeWithoutRoute.length) <= nodes.length) {
+        let buildRouteIds = [];
+
+        while ((idNodeInRoute.length + idNodeWithoutRoute.length) !== nodes.length) {
             if (!line) {
                 if (!nodes[i] || !nodes[i].nodesInRadius || nodes[i].nodesInRadius.length === 0) {
                     console.log(`Для точки ${nodes[i] && nodes[i].id} нет ближайших мотов.`);
                     idNodeWithoutRoute.push(nodes[i] && nodes[i].id);
                     line = null;
+                    buildRouteIds = [];
                 } else {
                     line = this.getLineForNearNode(nodes[i]);
-
-                    if (idNodeInRoute.indexOf(line.idNexNode) !== -1) {
-                        console.log(`Точка ${line.idNexNode} уже есть в маршруте`);
-                        idNodeInRoute(line.idNode);
+                    console.log(line);
+                    if (line.idNexNode === 'MAIN') {
+                        idNodeInRoute.push(line.idNode);
                         lines.push(line);
                         line = null;
-                    } else {
-                        idNodeInRoute(line.idNode, line.idNexNode);
+                        console.log('Попали в главную точку');
+                    } else if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
+                        idNodeInRoute.push(line.idNode, line.idNexNode);
+                        buildRouteIds.push(line.idNode, line.idNexNode);
                         lines.push(line);
+                    } else {
+                        console.log(`Точка ${line.idNexNode} уже есть в маршруте`);
+                        idNodeInRoute.push(line.idNode);
+                        lines.push(line);
+                        buildRouteIds = [];
+                        line = null;
                     }
                 }
             } else {
                 const nextNode = this.getNodeWithLine(nodes, line);
 
-                
+                if (!nextNode || !nextNode.nodesInRadius || nextNode.nodesInRadius.length === 0) {
+                    console.log(`Для точки ${nodes[i] && nodes[i].id} нет ближайших мотов.`);
+                    line = null;
+                    buildRouteIds = [];
+                } else {
+                    line = this.getLineForMinimumPerimeter(nextNode, line, buildRouteIds);
+
+                    if (!line) {
+                        buildRouteIds = [];
+                    } else if (line && line.idNexNode === 'MAIN') {
+                        lines.push(line);
+                        buildRouteIds = [];
+                        line = null;
+                    } else if (line && idNodeInRoute.indexOf(line.idNexNode) === -1) {
+                        idNodeInRoute.push(line.idNexNode);
+                        buildRouteIds.push(line.idNexNode);
+                        lines.push(line);
+                    } else {
+                        lines.push(line);
+                        buildRouteIds = [];
+                        line = null;
+                    }
+                }
             }
+
+            i += 1;
         }
 
-
-
-        // const lines = [];
-        // const nodesIdsInRoutes = [];
-        // const nodesIdsWithoutNearNodes = [];
-        // let line = null;
-        // let iteration = 0;
-
-        // let selectedNewNearNode = false;
-
-        // console.log(nodes[iteration]);
-
-        // while ((nodesIdsInRoutes.length + nodesIdsWithoutNearNodes.length) <= nodes.length + 1) {
-        //     // new line for near node
-        //     if (!selectedNewNearNode) {
-        //         if (!nodes[iteration] || !nodes[iteration].nodesInRadius || nodes[iteration].nodesInRadius.length === 0) {
-        //             // TDOD Можно эту ноду подсвечивать крассным
-        //             console.log(`Для точки ${nodes[iteration] && nodes[iteration].id} нет ближайших мотов.`);
-        //             nodesIdsWithoutNearNodes.push(nodes[iteration] && nodes[iteration].id);
-        //             selectedNewNearNode = false;
-        //             line = false;
-        //         } else {
-        //             line = this.getLineForNearNode(nodes[iteration]);
-
-        //             if (nodesIdsInRoutes.indexOf(line.idNexNode) !== -1) {
-        //                 nodesIdsInRoutes.push(line.idNode);
-        //                 lines.push(line);
-        //                 selectedNewNearNode = false;
-        //                 line = false;
-        //             } else {
-        //                 nodesIdsInRoutes.push(line.idNode, line.idNexNode);
-        //                 selectedNewNearNode = true;
-        //                 lines.push(line);
-        //             }
-        //         }
-        //     }
-
-        //     if (line) {
-        //         const nextNode = this.getNodeWithLine(nodes, line);
-
-        //         if (!nextNode || !nextNode.nodesInRadius || nextNode.nodesInRadius.length === 0) {
-        //             // TODO Можно эту ноду подсвечивать крассным
-        //             console.log(`Для точки ${nodes[iteration] && nodes[iteration].id} нет ближайших мотов.`);
-        //             nodesIdsWithoutNearNodes.push(nodes[iteration] && nodes[iteration].id);
-        //             line = false;
-        //             selectedNewNearNode = false;
-        //         } else {
-        //             line = this.getLineForMinimumPerimeter(nextNode, line);
-
-        //             if (line.idNexNode === 'MAIN' && nodesIdsInRoutes.indexOf(line.idNexNode) !== -1) {
-        //                 lines.push(line);
-        //                 line = false;
-        //                 selectedNewNearNode = false;
-        //                 console.log('ПОПАЛИ В ГЛАВНУЮ ТОЧКУ');
-        //             } else if (line.idNexNode === 'MAIN' && nodesIdsInRoutes.indexOf(line.idNexNode) === -1) {
-        //                 lines.push(line);
-        //                 nodesIdsInRoutes.push(line.idNexNode);
-        //                 line = false;
-        //                 selectedNewNearNode = false;
-        //                 console.log('ПОПАЛИ В ГЛАВНУЮ ТОЧКУ');
-        //             } else if (nodesIdsInRoutes.indexOf(line.idNexNode) !== -1) {
-        //                 lines.push(line);
-        //                 line = false;
-        //                 selectedNewNearNode = false;
-        //                 console.log('Точка уже есть в маршруте стопаем');
-        //             } else if (!line) {
-        //                 line = false;
-        //                 selectedNewNearNode = false;
-        //                 console.log('Маршрут окончен нет ближайших точек');
-        //             } else if (nodesIdsInRoutes.indexOf(line.idNexNode) === -1 && line) {
-        //                 lines.push(line);
-        //                 nodesIdsInRoutes.push(line.idNexNode);
-        //             }
-        //         }
-        //     }
-
-        //     console.log(nodesIdsInRoutes);
-        //     console.log(nodesIdsWithoutNearNodes);
-        //     console.log('----------');
-
-        //     iteration += 1;
-        // }
+        console.log(idNodeInRoute);
+        console.log(idNodeWithoutRoute);
 
         return lines;
     }
