@@ -143,14 +143,18 @@ class Network extends Component {
             }
         });
 
-        return {
-            idNode: node.id,
-            idNexNode: nearNode.id,
-            x1: node.x,
-            x2: nearNode.x,
-            y1: node.y,
-            y2: nearNode.y,
-        };
+        if (nearNode) {
+            return {
+                idNode: node.id,
+                idNexNode: nearNode.id,
+                x1: node.x,
+                x2: nearNode.x,
+                y1: node.y,
+                y2: nearNode.y,
+            };
+        } else {
+            return false;
+        }
     }
 
     // получить ребро по минимальному периметру
@@ -194,32 +198,60 @@ class Network extends Component {
         const lines = [];
         const idNodeInRoute = [];
         const idNodeWithoutRoute = [];
-        let line = false;
-        let i = 0;
-
         let buildRouteIds = [];
+        let line = false;
+
+        const randomIds = [];
+        nodes.map((item) => {
+            randomIds.push(item.id);
+        });
+
+        /*----*/
 
         while ((idNodeInRoute.length + idNodeWithoutRoute.length) !== nodes.length) {
             if (!line) {
-                if (!nodes[i] || !nodes[i].nodesInRadius || nodes[i].nodesInRadius.length === 0) {
-                    console.log(`Для точки ${nodes[i] && nodes[i].id} нет ближайших мотов.`);
-                    idNodeWithoutRoute.push(nodes[i] && nodes[i].id);
-                    line = null;
+                const indexRandomNode = randomRange(0, randomIds.length - 1);
+                const idRandomNode = randomIds[indexRandomNode];
+                randomIds.splice(indexRandomNode, 1);
+
+                const node = nodes.find((item) => {
+                    if (item.id === idRandomNode) {
+                        return item;
+                    }
+                });
+
+                if (!node.nodesInRadius || node.nodesInRadius.length === 0) {
+                    console.log(`Для точки ${node.id} нет ближайших мотов.`);
+                    // предварительно заносим точку как в радиусе которой нет ближайших точек
+                    if (idNodeInRoute.indexOf(node.id) === -1) {
+                        idNodeWithoutRoute.push(node.id);
+                    }
                     buildRouteIds = [];
+                    line = false;
                 } else {
-                    line = this.getLineForNearNode(nodes[i]);
-                    console.log(line);
+                    line = this.getLineForNearNode(node);
+
                     if (line.idNexNode === 'MAIN') {
                         idNodeInRoute.push(line.idNode);
                         lines.push(line);
+                        buildRouteIds = [];
                         line = null;
-                        console.log('Попали в главную точку');
+
+                        if (randomIds.indexOf(line.idNexNode) !== -1) {
+                            randomIds.splice(randomIds.indexOf(line.idNexNode), 1);
+                        }
                     } else if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
-                        idNodeInRoute.push(line.idNode, line.idNexNode);
-                        buildRouteIds.push(line.idNode, line.idNexNode);
                         lines.push(line);
+
+                        if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
+                            idNodeInRoute.push(line.idNode, line.idNexNode);
+                            buildRouteIds.push(line.idNode, line.idNexNode);
+                        }
+
+                        if (randomIds.indexOf(line.idNexNode) !== -1) {
+                            randomIds.splice(randomIds.indexOf(line.idNexNode), 1);
+                        }
                     } else {
-                        console.log(`Точка ${line.idNexNode} уже есть в маршруте`);
                         idNodeInRoute.push(line.idNode);
                         lines.push(line);
                         buildRouteIds = [];
@@ -230,22 +262,33 @@ class Network extends Component {
                 const nextNode = this.getNodeWithLine(nodes, line);
 
                 if (!nextNode || !nextNode.nodesInRadius || nextNode.nodesInRadius.length === 0) {
-                    console.log(`Для точки ${nodes[i] && nodes[i].id} нет ближайших мотов.`);
                     line = null;
                     buildRouteIds = [];
                 } else {
                     line = this.getLineForMinimumPerimeter(nextNode, line, buildRouteIds);
 
                     if (!line) {
+                        line = null;
                         buildRouteIds = [];
-                    } else if (line && line.idNexNode === 'MAIN') {
+                    } else if (line.idNexNode === 'MAIN') {
                         lines.push(line);
                         buildRouteIds = [];
                         line = null;
-                    } else if (line && idNodeInRoute.indexOf(line.idNexNode) === -1) {
-                        idNodeInRoute.push(line.idNexNode);
-                        buildRouteIds.push(line.idNexNode);
+                    } else if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
                         lines.push(line);
+
+                        if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
+                            idNodeInRoute.push(line.idNexNode);
+                            buildRouteIds.push(line.idNexNode);
+                        }
+
+                        if (randomIds.indexOf(line.idNexNode) !== -1) {
+                            randomIds.splice(randomIds.indexOf(line.idNexNode), 1);
+                        }
+
+                        if (idNodeWithoutRoute.indexOf(line.idNexNode) !== -1) {
+                            idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNexNode), 1);
+                        }
                     } else {
                         lines.push(line);
                         buildRouteIds = [];
@@ -253,9 +296,123 @@ class Network extends Component {
                     }
                 }
             }
-
-            i += 1;
         }
+
+
+    //     while ((idNodeInRoute.length + idNodeWithoutRoute.length) !== nodes.length) {
+    //         if (!line) {
+    //             const randomNode = randomRange(0, randomIds.length - 1);
+    //             const id = randomIds[randomNode];
+    //             randomIds.splice(randomNode, 1);
+
+    //             const node = nodes.find((item) => {
+    //                 if (item.id === id) {
+    //                     return item;
+    //                 }
+    //             });
+
+    //             if (!node || !node.nodesInRadius || node.nodesInRadius.length === 0) {
+    //                 console.log(`Для точки ${node.id} нет ближайших мотов.`);
+    //                 if (idNodeInRoute.indexOf(node.id) === -1) {
+    //                     idNodeWithoutRoute.push(node.id);
+    //                 }
+    //                 buildRouteIds = [];
+    //                 line = null;
+    //             } else {
+    //                 line = this.getLineForNearNode(node);
+
+    //                 console.log(line);
+
+    //                 if (!line) {
+    //                     buildRouteIds = [];
+    //                     line = null;
+    //                 } else if (line.idNexNode === 'MAIN') {
+    //                     if (idNodeInRoute.indexOf(line.idNode) === -1) {
+    //                         idNodeInRoute.push(line.idNode);
+    //                     }
+
+    //                     if (idNodeWithoutRoute.indexOf(line.idNode) !== -1) {
+    //                         idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNode), 1);
+    //                     }
+
+    //                     lines.push(line);
+    //                     line = null;
+    //                     console.log('Попали в главную точку');
+    //                 } else if (idNodeInRoute.indexOf(line.idNexNode) === -1 && idNodeInRoute.indexOf(line.idNode) === -1) {
+    //                     if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
+    //                         idNodeInRoute.push(line.idNexNode);
+    //                         buildRouteIds.push(line.idNexNode);
+
+    //                         //randomIds.splice(randomIds.indexOf(line.idNexNode), 1);
+    //                     }
+
+    //                     if (idNodeInRoute.indexOf(line.idNode) === -1) {
+    //                         idNodeInRoute.push(line.idNode);
+    //                         buildRouteIds.push(line.idNode);
+
+    //                         //randomIds.splice(randomIds.indexOf(line.idNode), 1);
+    //                     }
+
+    //                     if (idNodeWithoutRoute.indexOf(line.idNode) !== -1) {
+    //                         idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNode), 1);
+    //                     }
+
+    //                     if (idNodeWithoutRoute.indexOf(line.idNexNode) !== -1) {
+    //                         idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNexNode), 1);
+    //                     }
+
+    //                     lines.push(line);
+    //                 } else {
+    //                     console.log(`Точка ${line.idNexNode} уже есть в маршруте`);
+    //                     if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
+    //                         idNodeInRoute.push(line.idNode);
+
+    //                         //randomIds.splice(randomIds.indexOf(line.idNode), 1);
+    //                     }
+
+    //                     if (idNodeWithoutRoute.indexOf(line.idNexNode) !== -1) {
+    //                         idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNexNode), 1);
+    //                     }
+
+    //                     lines.push(line);
+    //                     buildRouteIds = [];
+    //                     line = null;
+    //                 }
+    //             }
+    //         } else {
+    //             const nextNode = this.getNodeWithLine(nodes, line);
+
+    //             if (!nextNode || !nextNode.nodesInRadius || nextNode.nodesInRadius.length === 0) {
+    //                 line = null;
+    //                 buildRouteIds = [];
+    //             } else {
+    //                 line = this.getLineForMinimumPerimeter(nextNode, line, buildRouteIds);
+
+    //                 if (!line) {
+    //                     buildRouteIds = [];
+    //                 } else if (line && line.idNexNode === 'MAIN') {
+    //                     lines.push(line);
+    //                     buildRouteIds = [];
+    //                     line = null;
+    //                 } else if (line && idNodeInRoute.indexOf(line.idNexNode) === -1) {
+    //                     if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
+    //                         idNodeInRoute.push(line.idNexNode);
+    //                         buildRouteIds.push(line.idNexNode);
+
+    //                         //randomIds.splice(randomIds.indexOf(line.idNexNode), 1);
+    //                     }
+    //                     if (idNodeWithoutRoute.indexOf(line.idNexNode) !== -1) {
+    //                         idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNexNode), 1);
+    //                     }
+    //                     lines.push(line);
+    //                 } else {
+    //                     lines.push(line);
+    //                     buildRouteIds = [];
+    //                     line = null;
+    //                 }
+    //             }
+    //         }
+    //     }
 
         console.log(idNodeInRoute);
         console.log(idNodeWithoutRoute);
