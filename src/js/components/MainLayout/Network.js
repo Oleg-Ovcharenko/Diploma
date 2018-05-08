@@ -206,9 +206,7 @@ class Network extends Component {
             randomIds.push(item.id);
         });
 
-        /*----*/
-
-        while ((idNodeInRoute.length + idNodeWithoutRoute.length) !== nodes.length) {
+        while (randomIds.length !== 0 && ((idNodeInRoute.length + idNodeWithoutRoute.length) !== nodes.length)) {
             if (!line) {
                 const indexRandomNode = randomRange(0, randomIds.length - 1);
                 const idRandomNode = randomIds[indexRandomNode];
@@ -220,9 +218,7 @@ class Network extends Component {
                     }
                 });
 
-                if (!node.nodesInRadius || node.nodesInRadius.length === 0) {
-                    console.log(`Для точки ${node.id} нет ближайших мотов.`);
-                    // предварительно заносим точку как в радиусе которой нет ближайших точек
+                if (!node || !node.nodesInRadius || node.nodesInRadius.length === 0) {
                     if (idNodeInRoute.indexOf(node.id) === -1) {
                         idNodeWithoutRoute.push(node.id);
                     }
@@ -234,12 +230,11 @@ class Network extends Component {
                     if (line.idNexNode === 'MAIN') {
                         idNodeInRoute.push(line.idNode);
                         lines.push(line);
+                        if (randomIds.indexOf(line.idNode) !== -1) {
+                            randomIds.splice(randomIds.indexOf(line.idNode), 1);
+                        }
                         buildRouteIds = [];
                         line = null;
-
-                        if (randomIds.indexOf(line.idNexNode) !== -1) {
-                            randomIds.splice(randomIds.indexOf(line.idNexNode), 1);
-                        }
                     } else if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
                         lines.push(line);
 
@@ -297,122 +292,6 @@ class Network extends Component {
                 }
             }
         }
-
-
-    //     while ((idNodeInRoute.length + idNodeWithoutRoute.length) !== nodes.length) {
-    //         if (!line) {
-    //             const randomNode = randomRange(0, randomIds.length - 1);
-    //             const id = randomIds[randomNode];
-    //             randomIds.splice(randomNode, 1);
-
-    //             const node = nodes.find((item) => {
-    //                 if (item.id === id) {
-    //                     return item;
-    //                 }
-    //             });
-
-    //             if (!node || !node.nodesInRadius || node.nodesInRadius.length === 0) {
-    //                 console.log(`Для точки ${node.id} нет ближайших мотов.`);
-    //                 if (idNodeInRoute.indexOf(node.id) === -1) {
-    //                     idNodeWithoutRoute.push(node.id);
-    //                 }
-    //                 buildRouteIds = [];
-    //                 line = null;
-    //             } else {
-    //                 line = this.getLineForNearNode(node);
-
-    //                 console.log(line);
-
-    //                 if (!line) {
-    //                     buildRouteIds = [];
-    //                     line = null;
-    //                 } else if (line.idNexNode === 'MAIN') {
-    //                     if (idNodeInRoute.indexOf(line.idNode) === -1) {
-    //                         idNodeInRoute.push(line.idNode);
-    //                     }
-
-    //                     if (idNodeWithoutRoute.indexOf(line.idNode) !== -1) {
-    //                         idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNode), 1);
-    //                     }
-
-    //                     lines.push(line);
-    //                     line = null;
-    //                     console.log('Попали в главную точку');
-    //                 } else if (idNodeInRoute.indexOf(line.idNexNode) === -1 && idNodeInRoute.indexOf(line.idNode) === -1) {
-    //                     if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
-    //                         idNodeInRoute.push(line.idNexNode);
-    //                         buildRouteIds.push(line.idNexNode);
-
-    //                         //randomIds.splice(randomIds.indexOf(line.idNexNode), 1);
-    //                     }
-
-    //                     if (idNodeInRoute.indexOf(line.idNode) === -1) {
-    //                         idNodeInRoute.push(line.idNode);
-    //                         buildRouteIds.push(line.idNode);
-
-    //                         //randomIds.splice(randomIds.indexOf(line.idNode), 1);
-    //                     }
-
-    //                     if (idNodeWithoutRoute.indexOf(line.idNode) !== -1) {
-    //                         idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNode), 1);
-    //                     }
-
-    //                     if (idNodeWithoutRoute.indexOf(line.idNexNode) !== -1) {
-    //                         idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNexNode), 1);
-    //                     }
-
-    //                     lines.push(line);
-    //                 } else {
-    //                     console.log(`Точка ${line.idNexNode} уже есть в маршруте`);
-    //                     if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
-    //                         idNodeInRoute.push(line.idNode);
-
-    //                         //randomIds.splice(randomIds.indexOf(line.idNode), 1);
-    //                     }
-
-    //                     if (idNodeWithoutRoute.indexOf(line.idNexNode) !== -1) {
-    //                         idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNexNode), 1);
-    //                     }
-
-    //                     lines.push(line);
-    //                     buildRouteIds = [];
-    //                     line = null;
-    //                 }
-    //             }
-    //         } else {
-    //             const nextNode = this.getNodeWithLine(nodes, line);
-
-    //             if (!nextNode || !nextNode.nodesInRadius || nextNode.nodesInRadius.length === 0) {
-    //                 line = null;
-    //                 buildRouteIds = [];
-    //             } else {
-    //                 line = this.getLineForMinimumPerimeter(nextNode, line, buildRouteIds);
-
-    //                 if (!line) {
-    //                     buildRouteIds = [];
-    //                 } else if (line && line.idNexNode === 'MAIN') {
-    //                     lines.push(line);
-    //                     buildRouteIds = [];
-    //                     line = null;
-    //                 } else if (line && idNodeInRoute.indexOf(line.idNexNode) === -1) {
-    //                     if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
-    //                         idNodeInRoute.push(line.idNexNode);
-    //                         buildRouteIds.push(line.idNexNode);
-
-    //                         //randomIds.splice(randomIds.indexOf(line.idNexNode), 1);
-    //                     }
-    //                     if (idNodeWithoutRoute.indexOf(line.idNexNode) !== -1) {
-    //                         idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNexNode), 1);
-    //                     }
-    //                     lines.push(line);
-    //                 } else {
-    //                     lines.push(line);
-    //                     buildRouteIds = [];
-    //                     line = null;
-    //                 }
-    //             }
-    //         }
-    //     }
 
         console.log(idNodeInRoute);
         console.log(idNodeWithoutRoute);
