@@ -8,8 +8,7 @@ class ControlsNetwork extends Component {
         super(props);
     }
 
-    // handlers 
-
+    // handlers
     onChangeAlgorithmStatus = () => {
         eventEmmiter.emit('buildAlgorithm');
     }

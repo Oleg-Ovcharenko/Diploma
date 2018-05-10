@@ -11,10 +11,8 @@ export const validationNumberField = (min, max, v) => {
 
         if (num < min) {
             error = `Min value ${min}`;
-
         } else if (num > max) {
             error = `Max value ${max}`;
-
         }
     } else {
         error = 'Required field';
