@@ -1,1 +1,1 @@
-# Topologies wireless sensor networks
+# Modeling self-organization for sensor wireless network
