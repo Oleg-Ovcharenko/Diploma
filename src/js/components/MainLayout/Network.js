@@ -28,7 +28,7 @@ class Network extends Component {
     // life
     componentDidMount() {
         const canvas = this.canvasRef;
-        eventEmmiter.addListener('generateNodes', this.setSvgSizes);
+        eventEmmiter.addListener('generateNodes', this.setCanvasSize);
         eventEmmiter.addListener('buildAlgorithm', this.buildAlgorthm);
         canvas.addEventListener('mousemove', this.showNodeTooltip);
     }
@@ -42,7 +42,7 @@ class Network extends Component {
         }, 0);
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    componentWillUpdate(nextProps) {
         this.renderNetwork(nextProps);
     }
 
@@ -52,7 +52,7 @@ class Network extends Component {
         canvas.removeEventListener('mousemove', this.showNodeTooltip);
     }
 
-    setSvgSizes = () => {
+    setCanvasSize = () => {
         const {
             width,
             height,
@@ -135,9 +135,9 @@ class Network extends Component {
                 y1: node.y,
                 y2: nearNode.y,
             };
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     // получить ребро по минимальному периметру
@@ -164,9 +164,9 @@ class Network extends Component {
                 y1: node.y,
                 y2: nearNode.y,
             };
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     getNodeWithLine = (nodes, line) => {
@@ -175,14 +175,6 @@ class Network extends Component {
                 return item;
             }
         });
-    }
-
-    getOpticsAlgorithmLines(nodes, mainNode) {
-        const nodesWithNearNodes = this.getRadiusNodes(nodes, mainNode);
-        const linesWithNodes = this.makeOpticsCluster(nodesWithNearNodes);
-
-
-        return linesWithNodes;
     }
 
     makeOpticsCluster(nodes) {
@@ -312,10 +304,11 @@ class Network extends Component {
     }
 
     opticsAlgorithm = (nodes, mainNode) => {
-        const lines = this.getOpticsAlgorithmLines(nodes, mainNode);
+        const nodesWithNearNodes = this.getRadiusNodes(nodes, mainNode);
+        const linesWithNodes = this.makeOpticsCluster(nodesWithNearNodes);
 
-        if (lines.length !== 0) {
-            this.props.dispatch(generateLines(lines));
+        if (linesWithNodes.length !== 0) {
+            this.props.dispatch(generateLines(linesWithNodes));
         }
     }
 

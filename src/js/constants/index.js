@@ -1,5 +1,8 @@
 export const DEFAULT_NODES = 700;
 
+// SCALE
+export const DEFAULT_SCALE = 8;
+
 // NODE SETTINGS
 export const NODE_RADIUS = 6;
 export const NODE_COLOR = '#007bff';

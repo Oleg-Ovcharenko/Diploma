@@ -7,6 +7,6 @@ export default {
         showRange: false,
     },
     nodes: [],
-    mainNode: null,
     lines: [],
+    mainNode: null,
 };

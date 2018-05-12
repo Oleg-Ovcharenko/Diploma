@@ -23,7 +23,7 @@ class ControlsNetwork extends Component {
         } = this.props;
 
         return (
-            <div className="card mb-3 control-networks rounded-0">
+            <div className="card mb-3 h-80 bg-white rounded-0">
                 <div className="card-body d-flex align-i-center rounded-0 d-flex justify-content-between">
                     <div className="custom-control custom-checkbox">
                         <input

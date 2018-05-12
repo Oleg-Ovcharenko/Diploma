@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+// LIBRARIES
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+// COMPONENTS
 import Controls from '../components/sidebar/Controls';
 import NodeSettings from '../components/sidebar/NodeSettings';
 import SelectAlgorithm from '../components/sidebar/SelectAlgorithm';

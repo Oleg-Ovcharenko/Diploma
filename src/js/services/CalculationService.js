@@ -4,7 +4,7 @@ class CalculationService {
     }
 
     static distanceBetweenNodes(x0, x1, y0, y1) {
-        return Math.sqrt(Math.pow(x0 - x1, 2) + Math.pow(y0 - y1, 2));
+        return Math.sqrt(((x0 - x1) ** 2) + ((y0 - y1) ** 2));
     }
 
     static trianglePerimeter(x0, y0, x1, y1, x2, y2) {

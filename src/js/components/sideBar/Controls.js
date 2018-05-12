@@ -8,7 +8,7 @@ import {
     validationNumberField,
     randomFloatRange,
 } from './../../helpers/helpersFunctions';
-import { RANGE_NODE_MIN, RANGE_NODE_MAX, MIN_NODES, MAX_NODES, DEFAULT_NODES, PADDING } from '../../constants';
+import { RANGE_NODE_MIN, RANGE_NODE_MAX, MIN_NODES, MAX_NODES, DEFAULT_NODES, PADDING, DEFAULT_SCALE } from '../../constants';
 import eventEmmiter from '../../utils/eventEmmiter';
 
 class Controls extends React.Component {
@@ -16,7 +16,7 @@ class Controls extends React.Component {
         super(props);
 
         this.initialValues = {
-            scale: 2,
+            scale: DEFAULT_SCALE,
             nodes: DEFAULT_NODES,
             nodeRangeMin: RANGE_NODE_MIN,
             nodeRangeMax: RANGE_NODE_MAX,
@@ -132,7 +132,13 @@ class Controls extends React.Component {
         this.onHandleGenerate();
     }
 
-    renderForm = ({ values, errors, handleChange, handleBlur, handleSubmit }) => (
+    renderForm = ({
+        values,
+        errors,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+    }) => (
         <form className="text-center mb-1">
             <div className="form-group">
                 <p className="text-center text-muted mb-1">Scale</p>

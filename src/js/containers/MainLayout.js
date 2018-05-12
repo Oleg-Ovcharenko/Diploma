@@ -1,6 +1,8 @@
+// LIBRARIES
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+// COMPONENTS
 import ControlsNetwork from '../components/mainlayout/ControlsNetwork';
 import Network from '../components/mainlayout/Network';
 
@@ -11,7 +13,7 @@ const MainLayout = ({
     dispatch,
     showRange,
 }) => (
-    <section className="main-layout d-flex flex-column p-3">
+    <section className="flex-grow-1 bg-gray-200 d-flex flex-column p-3">
         <ControlsNetwork
             dispatch={dispatch}
             nodes={nodes}
@@ -25,7 +27,6 @@ const MainLayout = ({
         />
     </section>
 );
-
 
 MainLayout.propTypes = {
     dispatch: PropTypes.func,

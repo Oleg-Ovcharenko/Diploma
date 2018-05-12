@@ -6,7 +6,7 @@ import CardMenu from './CardMenu';
 class NodeSettings extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
         };
     }
 
