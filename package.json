@@ -117,7 +117,7 @@
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-import-resolver-webpack": "^0.8.4",
-    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0",
     "eslint-plugin-redux-saga": "^0.6.0",
@@ -128,7 +128,7 @@
     "node-sass": "^4.7.2",
     "node-static": "^0.7.10",
     "postcss-loader": "^2.1.1",
-    "react-hot-loader": "^4.0.0",
+    "react-hot-loader": "^4.2.0",
     "redux-devtools": "^3.4.1",
     "redux-saga": "^0.16.0",
     "sass-loader": "^6.0.7",
@@ -155,8 +155,8 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.7",
-    "react-transition-group": "^2.2.1",
-    "reactstrap": "^4.8.0",
+    "react-transition-group": "^2.3.1",
+    "reactstrap": "^5.0.0",
     "redux": "^3.7.2"
   }
 }
