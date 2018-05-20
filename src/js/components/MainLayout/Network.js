@@ -186,7 +186,7 @@ class Network extends Component {
         // lines
         CanvasService.renderLines(ctx, lines);
         // tooltips
-        CanvasService.renderTooltip(ctx, showTooltip);
+        CanvasService.renderTooltipAndNodeRadius(ctx, showTooltip);
     }
 
     render() {

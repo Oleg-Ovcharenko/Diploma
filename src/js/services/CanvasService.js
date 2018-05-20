@@ -3,6 +3,8 @@ import {
     NODE_COLOR,
     MAIN_NODE_COLOR,
     MAIN_NODE_RADIUS,
+    NODE_RADIUS_COLOR,
+    NODE_RADIUS_FILL_COLOR,
 } from '../constants';
 
 class Animations {
@@ -41,13 +43,13 @@ class Animations {
         nodes.forEach((node) => {
             ctx.beginPath();
             ctx.arc(node.x, node.y, node.params.radius / 2, 2 * Math.PI, false);
-            ctx.strokeStyle = '#e9ecef';
+            ctx.strokeStyle = NODE_RADIUS_COLOR;
             ctx.stroke();
         });
     }
 
     // TODO need behavior on the edge of canvas
-    static renderTooltip(ctx, tooltip) {
+    static renderTooltipAndNodeRadius(ctx, tooltip) {
         const FONT_SIZE = 12;
         const TOOLTIP_X = tooltip.x;
         const TOOLTIP_Y = tooltip.y;
@@ -61,15 +63,25 @@ class Animations {
             const x = TOOLTIP_X + PADDING;
             const y = TOOLTIP_Y - (tooltipHeight / 2);
 
+            // Node radius
+            ctx.beginPath();
+            ctx.arc(tooltip.x, tooltip.y, tooltip.radius / 2, 2 * Math.PI, false);
+            ctx.strokeStyle = NODE_RADIUS_COLOR;
+            ctx.stroke();
+            ctx.fillStyle = NODE_RADIUS_FILL_COLOR;
+            ctx.fill();
+
+            // Tooltip
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 1;
             ctx.strokeRect(x, y, TOOLTIP_WIDTH, tooltipHeight);
-            ctx.fillStyle = '#e9ecef';
+            ctx.fillStyle = NODE_RADIUS_COLOR;
             ctx.fillRect(x, y, TOOLTIP_WIDTH, tooltipHeight);
             ctx.textBaseline = 'middle';
             ctx.font = `${FONT_SIZE}px Arial`;
             ctx.fillStyle = 'black';
-            // fields
+
+            // Fields
             let top = y + 10;
             FIELDS.map((item) => {
                 ctx.fillText(`${item}: ${Math.round(tooltip[item])}`, x + PADDING, top);

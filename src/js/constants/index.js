@@ -6,10 +6,12 @@ export const DEFAULT_SCALE = 8;
 // NODE SETTINGS
 export const NODE_RADIUS = 6;
 export const NODE_COLOR = '#007bff';
+export const NODE_RADIUS_COLOR = '#e9ecef';
+export const NODE_RADIUS_FILL_COLOR = 'rgba(0,123,255,0.1)';
 
 // MAIN NODE SETTINGS
 export const MAIN_NODE_RADIUS = 16;
-export const MAIN_NODE_COLOR = '#dc3545';
+export const MAIN_NODE_COLOR = '#007bff';
 
 // EMOUNT NODES
 export const MIN_NODES = 1;
