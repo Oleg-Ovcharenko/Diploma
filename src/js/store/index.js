@@ -5,6 +5,7 @@ export default {
             height: 0,
         },
         showRange: false,
+        selectedAlghoritm: null,
     },
     nodes: [],
     lines: [],

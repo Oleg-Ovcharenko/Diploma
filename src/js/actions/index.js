@@ -37,3 +37,11 @@ export function showRangeNodes() {
         type: SHOW_RANGE_NODES,
     };
 }
+
+export const SELECT_ALGHORITHM = 'SELECT_ALGHORITHM';
+export function selectAlgorithm(data) {
+    return {
+        type: SELECT_ALGHORITHM,
+        data,
+    };
+}

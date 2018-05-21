@@ -4,6 +4,7 @@ import {
     GENERATE_MAIN_NODE,
     GENERATE_LINES,
     SHOW_RANGE_NODES,
+    SELECT_ALGHORITHM,
 } from '../actions';
 
 export default function reducer(state = {}, action) {
@@ -44,6 +45,15 @@ export default function reducer(state = {}, action) {
                 ui: {
                     networkPanel: state.ui.networkPanel,
                     show: !state.ui.show,
+                },
+            };
+            return { ...state, ...ui };
+        }
+        case SELECT_ALGHORITHM: {
+            const ui = {
+                ui: {
+                    ...state.ui,
+                    selectedAlghoritm: action.data,
                 },
             };
             return { ...state, ...ui };
