@@ -50,13 +50,8 @@ export default function reducer(state = {}, action) {
             return { ...state, ...ui };
         }
         case SELECT_ALGHORITHM: {
-            const ui = {
-                ui: {
-                    ...state.ui,
-                    selectedAlghoritm: action.data,
-                },
-            };
-            return { ...state, ...ui };
+            const selectedAlghorithm = action.data;
+            return { ...state, selectedAlghorithm };
         }
         default:
             return state;

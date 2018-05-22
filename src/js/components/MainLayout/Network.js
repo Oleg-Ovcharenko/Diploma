@@ -8,7 +8,7 @@ import CalculationService from '../../services/CalculationService';
 // ACTIONS
 import { addNetworkWindowSize, generateLines } from '../../actions';
 // CONSTANTS
-import { NODE_RADIUS } from '../../constants';
+import { NODE_RADIUS, ALGHORITHM_OPTICS } from '../../constants';
 // ALGORITHMS
 import Optics from '../../algorithms/optics';
 
@@ -32,12 +32,14 @@ class Network extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        setTimeout(() => {
-            this.renderNetwork(nextProps);
-            this.setState({
-                nodes: nextProps.nodes,
-            });
-        }, 0);
+        if (this.props.selectedAlghorithm && (nextProps.selectedAlghorithm === this.props.selectedAlghorithm)) {
+            setTimeout(() => {
+                this.renderNetwork(nextProps);
+                this.setState({
+                    nodes: nextProps.nodes,
+                });
+            }, 0);
+        }
     }
 
     componentWillUpdate(nextProps) {
@@ -111,13 +113,19 @@ class Network extends Component {
 
     // BUILD ALGHORITHMS
     buildAlgorthm = () => {
+        const {
+            selectedAlghoritm,
+        } = this.props;
+
         const nodesWithNearNodes = this.getRadiusNodes(this.props.nodes, this.props.mainNode);
 
         // МОДЕЛИРОВАНИЕ АЛГОРИТМА OPTICS
-        const linesWithNodes = Optics.makeOpticsCluster(nodesWithNearNodes);
+        if (selectedAlghoritm === ALGHORITHM_OPTICS) {
+            const linesWithNodes = Optics.makeOpticsCluster(nodesWithNearNodes);
 
-        if (linesWithNodes.length !== 0) {
-            this.props.dispatch(generateLines(linesWithNodes));
+            if (linesWithNodes.length !== 0) {
+                this.props.dispatch(generateLines(linesWithNodes));
+            }
         }
     }
 
@@ -215,6 +223,7 @@ Network.propTypes = {
     dispatch: PropTypes.func,
     nodes: PropTypes.array,
     mainNode: PropTypes.object,
+    selectedAlghoritm: PropTypes.any,
 };
 
 export default Network;

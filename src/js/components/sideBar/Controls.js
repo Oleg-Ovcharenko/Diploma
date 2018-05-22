@@ -19,11 +19,15 @@ class Controls extends React.Component {
             scale: DEFAULT_SCALE,
             nodes: DEFAULT_NODES,
             nodeRangeMin: RANGE_NODE_MIN,
-            nodeRangeMax: RANGE_NODE_MAX,
+            nodeRangeMax: RANGE_NODE_MAX, 
         };
 
         this.formValues = {
             ...this.initialValues,
+        };
+
+        this.state = {
+            selectedAlghoritm: null,
         };
     }
 
@@ -35,6 +39,14 @@ class Controls extends React.Component {
 
         if (w !== this.props.networkPanelWidth || h !== this.props.networkPanelHeight) {
             this.onHandleGenerate(w, h);
+        }
+
+        console.log(nextProps.selectedAlghoritm);
+
+        if (this.props.selectedAlghoritm !== nextProps.selectedAlghoritm) {
+            this.setState({
+                selectedAlghoritm: nextProps.selectedAlghoritm,
+            });
         }
     }
 
@@ -228,6 +240,7 @@ class Controls extends React.Component {
                 type="submit"
                 className="btn btn-primary btn-sm"
                 onClick={handleSubmit}
+                disabled={!this.state.selectedAlghoritm}
             >
                 Generate
             </button>
@@ -254,6 +267,7 @@ Controls.propTypes = {
     networkPanelWidth: PropTypes.number,
     networkPanelHeight: PropTypes.number,
     dispatch: PropTypes.func,
+    selectedAlghoritm: PropTypes.any,
 };
 
 export default Controls;
