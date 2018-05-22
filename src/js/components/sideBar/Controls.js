@@ -27,7 +27,7 @@ class Controls extends React.Component {
         };
 
         this.state = {
-            selectedAlghoritm: null,
+            selectedAlghorithm: null,
         };
     }
 
@@ -41,11 +41,11 @@ class Controls extends React.Component {
             this.onHandleGenerate(w, h);
         }
 
-        console.log(nextProps.selectedAlghoritm);
+        console.log(nextProps.selectedAlghorithm);
 
-        if (this.props.selectedAlghoritm !== nextProps.selectedAlghoritm) {
+        if (this.props.selectedAlghorithm !== nextProps.selectedAlghorithm) {
             this.setState({
-                selectedAlghoritm: nextProps.selectedAlghoritm,
+                selectedAlghorithm: nextProps.selectedAlghorithm,
             });
         }
     }
@@ -240,7 +240,7 @@ class Controls extends React.Component {
                 type="submit"
                 className="btn btn-primary btn-sm"
                 onClick={handleSubmit}
-                disabled={!this.state.selectedAlghoritm}
+                disabled={!this.state.selectedAlghorithm}
             >
                 Generate
             </button>
@@ -267,7 +267,7 @@ Controls.propTypes = {
     networkPanelWidth: PropTypes.number,
     networkPanelHeight: PropTypes.number,
     dispatch: PropTypes.func,
-    selectedAlghoritm: PropTypes.any,
+    selectedAlghorithm: PropTypes.any,
 };
 
 export default Controls;

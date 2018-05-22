@@ -32,7 +32,7 @@ class Network extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.selectedAlghorithm && (nextProps.selectedAlghorithm === this.props.selectedAlghorithm)) {
+        if (nextProps.nodes.length !== 0 && nextProps.mainNode) {
             setTimeout(() => {
                 this.renderNetwork(nextProps);
                 this.setState({
@@ -43,7 +43,9 @@ class Network extends Component {
     }
 
     componentWillUpdate(nextProps) {
-        this.renderNetwork(nextProps);
+        if (nextProps.nodes.length !== 0 && nextProps.mainNode) {
+            this.renderNetwork(nextProps);
+        }
     }
 
     componentWillUnmount() {
@@ -114,13 +116,13 @@ class Network extends Component {
     // BUILD ALGHORITHMS
     buildAlgorthm = () => {
         const {
-            selectedAlghoritm,
+            selectedAlghorithm,
         } = this.props;
 
         const nodesWithNearNodes = this.getRadiusNodes(this.props.nodes, this.props.mainNode);
 
         // МОДЕЛИРОВАНИЕ АЛГОРИТМА OPTICS
-        if (selectedAlghoritm === ALGHORITHM_OPTICS) {
+        if (selectedAlghorithm === ALGHORITHM_OPTICS) {
             const linesWithNodes = Optics.makeOpticsCluster(nodesWithNearNodes);
 
             if (linesWithNodes.length !== 0) {
@@ -223,7 +225,7 @@ Network.propTypes = {
     dispatch: PropTypes.func,
     nodes: PropTypes.array,
     mainNode: PropTypes.object,
-    selectedAlghoritm: PropTypes.any,
+    selectedAlghorithm: PropTypes.any,
 };
 
 export default Network;
