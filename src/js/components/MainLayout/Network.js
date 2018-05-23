@@ -113,7 +113,7 @@ class Network extends Component {
         return nodesInRadius;
     }
 
-    // BUILD ALGHORITHMS
+    // BUILD ALGORITHMS
     buildAlgorthm = () => {
         const {
             selectedAlghorithm,
@@ -121,7 +121,7 @@ class Network extends Component {
 
         const nodesWithNearNodes = this.getRadiusNodes(this.props.nodes, this.props.mainNode);
 
-        // МОДЕЛИРОВАНИЕ АЛГОРИТМА OPTICS
+        // MODELING OPTICS ALGORITHM
         if (selectedAlghorithm === ALGHORITHM_OPTICS) {
             const linesWithNodes = Optics.makeOpticsCluster(nodesWithNearNodes);
 
@@ -131,7 +131,7 @@ class Network extends Component {
         }
     }
 
-    // TOOLTIPS
+    // TOOLTIP
     showNodeTooltip = (e) => {
         const canvas = this.canvasRef;
         const {
