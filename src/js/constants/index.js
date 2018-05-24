@@ -1,4 +1,5 @@
 export const DEFAULT_NODES = 700;
+export const MAIN_NODE = 'MAIN';
 
 // SCALE
 export const DEFAULT_SCALE = 8;

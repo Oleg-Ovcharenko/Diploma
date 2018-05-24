@@ -1,6 +1,8 @@
+// LIBRARIES
 import React from 'react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
+// COMPONENTS
 import CardMenu from './CardMenu';
 
 class NodeSettings extends React.Component {

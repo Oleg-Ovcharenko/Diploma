@@ -1,14 +1,17 @@
+// LIBRARIES
 import React from 'react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
+// COMPONENTS
 import CardMenu from './CardMenu';
+// ACTIONS
 import { generateNodes, generateMainNode, generateLines } from '../../actions';
-import {
-    validationNumberField,
-    randomFloatRange,
-} from './../../helpers/helpersFunctions';
+// HELPERS
+import { validationNumberField, randomFloatRange } from './../../helpers/helpersFunctions';
+// CONSTANTS
 import { RANGE_NODE_MIN, RANGE_NODE_MAX, MIN_NODES, MAX_NODES, DEFAULT_NODES, PADDING, DEFAULT_SCALE } from '../../constants';
+// UTILS
 import eventEmmiter from '../../utils/eventEmmiter';
 
 class Controls extends React.Component {
@@ -19,7 +22,7 @@ class Controls extends React.Component {
             scale: DEFAULT_SCALE,
             nodes: DEFAULT_NODES,
             nodeRangeMin: RANGE_NODE_MIN,
-            nodeRangeMax: RANGE_NODE_MAX, 
+            nodeRangeMax: RANGE_NODE_MAX,
         };
 
         this.formValues = {

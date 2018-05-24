@@ -2,14 +2,13 @@
 import CalculationService from '../services/CalculationService';
 // HELPERS
 import { randomRange } from './../helpers/helpersFunctions';
-
-const MAIN_NODE = 'MAIN';
+import { MAIN_NODE } from '../constants';
 
 class Optics {
-    // получить следующую точку с линии
+    // Получить следующую точку с линии
     static getNodeWithLine = (nodes, line) => nodes.find((item) => item.id === line.idNexNode ? item : null);
 
-    // получить ребро для ближайшей точки в радиусе
+    // Получить ребро для ближайшей точки в радиусе
     static getLineForNearNode(node) {
         let minDistance = null;
         let nearNode = null;
@@ -36,13 +35,15 @@ class Optics {
         return false;
     }
 
-    // получить ребро по минимальному периметру
+    // Получить ребро по минимальному периметру
     static getLineForMinimumPerimeter(node, prevLine, buildRouteIds) {
         let minPerimeter = null;
         let nearNode = null;
 
         node.nodesInRadius.map((item) => {
-            if (item.id !== prevLine.idNode && item.id !== prevLine.idNexNode && buildRouteIds.indexOf(item.id) === -1) {
+            if (item.id !== prevLine.idNode
+                && item.id !== prevLine.idNexNode
+                && buildRouteIds.indexOf(item.id) === -1) {
                 const perimeterNow = CalculationService.trianglePerimeter(prevLine.x1, prevLine.y1, prevLine.x2, prevLine.y2, item.x, item.y);
                 if (!minPerimeter || minPerimeter > perimeterNow) {
                     minPerimeter = perimeterNow;
@@ -74,12 +75,10 @@ class Optics {
 
         // Генерируем массив id с полученных нод
         const randomIds = [];
-        nodes.map((item) => {
-            randomIds.push(item.id);
-        });
+        nodes.map((item) => randomIds.push(item.id));
 
         while (randomIds.length !== 0 && ((idNodeInRoute.length + idNodeWithoutRoute.length) !== nodes.length)) {
-            // ПОЛУЧЕНИЕ ЛИНИИ ДЛЯ ТОЧКИ НА МИНИМАЛЬНОМ РАССТОЯНИИ
+            // Получение точки для минимального растояния
             if (!line) {
                 // Выбираем случайный элемент массива
                 const indexRandomNode = randomRange(0, randomIds.length - 1);
@@ -136,7 +135,7 @@ class Optics {
                         line = null;
                     }
                 }
-                // Если на предущем этапе была полученна линия
+            // Если на предущем этапе была полученна линия
             } else {
                 // получаем крайнюю в линии точку
                 const nextNode = Optics.getNodeWithLine(nodes, line);
