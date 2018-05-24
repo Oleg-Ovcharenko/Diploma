@@ -8,7 +8,7 @@ import CalculationService from '../../services/CalculationService';
 // ACTIONS
 import { addNetworkWindowSize, generateLines } from '../../actions';
 // CONSTANTS
-import { NODE_RADIUS, ALGHORITHM_OPTICS } from '../../constants';
+import { NODE_RADIUS, ALGORITHM_OPTICS } from '../../constants';
 // ALGORITHMS
 import Optics from '../../algorithms/optics';
 
@@ -27,7 +27,7 @@ class Network extends Component {
     componentDidMount() {
         const canvas = this.canvasRef;
         eventEmmiter.addListener('generateNodes', this.setCanvasSize);
-        eventEmmiter.addListener('buildAlgorithm', this.buildAlgorthm);
+        eventEmmiter.addListener('buildAlgorithm', this.buildAlgorithm);
         canvas.addEventListener('mousemove', this.showNodeTooltip);
     }
 
@@ -114,15 +114,15 @@ class Network extends Component {
     }
 
     // BUILD ALGORITHMS
-    buildAlgorthm = () => {
+    buildAlgorithm = () => {
         const {
-            selectedAlghorithm,
+            selectedAlgorithm,
         } = this.props;
 
         const nodesWithNearNodes = this.getRadiusNodes(this.props.nodes, this.props.mainNode);
 
         // MODELING OPTICS ALGORITHM
-        if (selectedAlghorithm === ALGHORITHM_OPTICS) {
+        if (selectedAlgorithm === ALGORITHM_OPTICS) {
             const linesWithNodes = Optics.makeOpticsCluster(nodesWithNearNodes);
 
             if (linesWithNodes.length !== 0) {
@@ -225,7 +225,7 @@ Network.propTypes = {
     dispatch: PropTypes.func,
     nodes: PropTypes.array,
     mainNode: PropTypes.object,
-    selectedAlghorithm: PropTypes.any,
+    selectedAlgorithm: PropTypes.any,
 };
 
 export default Network;

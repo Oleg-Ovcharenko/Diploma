@@ -38,10 +38,10 @@ export function showRangeNodes() {
     };
 }
 
-export const SELECT_ALGHORITHM = 'SELECT_ALGHORITHM';
+export const SELECT_ALGORITHM = 'SELECT_ALGORITHM';
 export function selectAlgorithm(data) {
     return {
-        type: SELECT_ALGHORITHM,
+        type: SELECT_ALGORITHM,
         data,
     };
 }

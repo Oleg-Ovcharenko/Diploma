@@ -6,7 +6,7 @@ export default {
         },
         showRange: false,
     },
-    selectedAlghorithm: null,
+    selectedAlgorithm: null,
     nodes: [],
     lines: [],
     mainNode: null,

@@ -77,13 +77,13 @@ class ControlsNetwork extends Component {
                                 <input
                                     type="checkbox"
                                     className="custom-control-input custom-control-input-sm"
-                                    id="customCheck1"
+                                    id="showRanges"
                                     disabled={nodes.length === 0}
                                     onClick={this.onShowRange}
                                 />
                                 <label
                                     className="custom-control-label small cursor-pointer"
-                                    htmlFor="customCheck1"
+                                    htmlFor="showRanges"
                                 >
                                     Show range
                                 </label>
@@ -107,9 +107,7 @@ class ControlsNetwork extends Component {
                         </div>
                     </div>
                 </div>
-                {
-                    this.renderModals()
-                }
+                {this.renderModals()}
             </div>
         );
     }
