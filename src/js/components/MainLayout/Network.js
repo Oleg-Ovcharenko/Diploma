@@ -185,17 +185,17 @@ class Network extends Component {
         const canvas = this.canvasRef;
         const ctx = canvas.getContext('2d');
 
-        // clear canvas
+        // Clear canvas
         CanvasService.clearCanvas(ctx, layoutWidth, layoutHeight);
-        // all nodes
+        // All nodes
         CanvasService.renderNodes(ctx, nodes);
-        // render radius
+        // Render radius
         if (showRange) CanvasService.renderNodesRadius(ctx, nodes);
-        // main node
+        // Main node
         CanvasService.renderMainNode(ctx, mainNode);
-        // lines
+        // Lines
         CanvasService.renderLines(ctx, lines);
-        // tooltips
+        // Tooltips
         CanvasService.renderTooltipAndNodeRadius(ctx, showTooltip);
     }
 
