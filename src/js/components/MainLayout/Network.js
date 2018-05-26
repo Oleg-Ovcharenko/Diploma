@@ -1,16 +1,16 @@
 // LIBRARIES
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import eventEmmiter from '../../utils/eventEmmiter';
 // SERVICE
 import CanvasService from '../../services/CanvasService';
 import CalculationService from '../../services/CalculationService';
 // ACTIONS
-import { addNetworkWindowSize, generateLines } from '../../actions';
+import { addNetworkWindowSize, generateLines, buildAlgoritmChangeStatus } from '../../actions';
 // CONSTANTS
-import { NODE_RADIUS, ALGORITHM_OPTICS } from '../../constants';
+import { NODE_RADIUS, ALGORITHM_OPTICS, ALGORITHM_AODV } from '../../constants';
 // ALGORITHMS
 import Optics from '../../algorithms/optics';
+import Aodv from '../../algorithms/aodv';
 
 class Network extends Component {
     constructor(props) {
@@ -18,40 +18,30 @@ class Network extends Component {
         this.state = {
             layoutWidth: 0,
             layoutHeight: 0,
-            nodes: [],
-            showTooltip: false,
         };
     }
 
     // life
     componentDidMount() {
-        const canvas = this.canvasRef;
-        eventEmmiter.addListener('generateNodes', this.setCanvasSize);
-        eventEmmiter.addListener('buildAlgorithm', this.buildAlgorithm);
-        canvas.addEventListener('mousemove', this.showNodeTooltip);
+        this.canvasRef.addEventListener('mousemove', this.showNodeTooltip);
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.nodes.length !== 0 && nextProps.mainNode) {
-            setTimeout(() => {
-                this.renderNetwork(nextProps);
-                this.setState({
-                    nodes: nextProps.nodes,
-                });
-            }, 0);
+        if (nextProps.generateNodes && (nextProps.generateNodes !== this.props.generateNodes)) {
+            this.setCanvasSize();
         }
-    }
 
-    componentWillUpdate(nextProps) {
-        if (nextProps.nodes.length !== 0 && nextProps.mainNode) {
+        if (nextProps.buildAlgorithm && (nextProps.buildAlgorithm !== this.props.buildAlgorithm)) {
+            this.buildAlgorithm();
+        }
+
+        if (nextProps.nodes.length !== 0) {
             this.renderNetwork(nextProps);
         }
     }
 
     componentWillUnmount() {
-        const canvas = this.canvasRef;
-        eventEmmiter.removeAllListeners();
-        canvas.removeEventListener('mousemove', this.showNodeTooltip);
+        this.canvasRef.removeEventListener('mousemove', this.showNodeTooltip);
     }
 
     setCanvasSize = () => {
@@ -78,7 +68,7 @@ class Network extends Component {
     }
 
     // Получить точки которые входят в радиус действия определенной точки
-    getRadiusNodes(nodes, mainNode) {
+    getNodesInNode(nodes, mainNode) {
         const nodesInRadius = [];
 
         for (let i = 0; i < nodes.length; i += 1) {
@@ -113,22 +103,49 @@ class Network extends Component {
         return nodesInRadius;
     }
 
+    getNodesInMainNode(nodes, mainNode) {
+        const nearNodes = [];
+
+        for (let i = 0; i < nodes.length; i += 1) {
+            if (CalculationService.checkNodeInRadius(mainNode.x, mainNode.y, mainNode.params.radius / 2, nodes[i].x, nodes[i].y)) {
+                nearNodes.push({
+                    id: nodes[i].id,
+                    x: nodes[i].x,
+                    y: nodes[i].y,
+                });
+            }
+        }
+
+        return {
+            id: mainNode.id,
+            x: mainNode.x,
+            y: mainNode.y,
+            nodesInRadius: nearNodes,
+        };
+    }
+
     // BUILD ALGORITHMS
     buildAlgorithm = () => {
-        const {
-            selectedAlgorithm,
-        } = this.props;
-
-        const nodesWithNearNodes = this.getRadiusNodes(this.props.nodes, this.props.mainNode);
+        const { selectedAlgorithm, nodes, mainNode } = this.props;
+        const nodesWithNearNodes = this.getNodesInNode(nodes, mainNode);
+        const mainNodeWithNearNodes = this.getNodesInMainNode(nodes, mainNode);
 
         // MODELING OPTICS ALGORITHM
         if (selectedAlgorithm === ALGORITHM_OPTICS) {
-            const linesWithNodes = Optics.makeOpticsCluster(nodesWithNearNodes);
-
-            if (linesWithNodes.length !== 0) {
-                this.props.dispatch(generateLines(linesWithNodes));
-            }
+            const linesWithNodes = Optics.makeOptics(nodesWithNearNodes);
+            this.props.dispatch(generateLines(linesWithNodes));
         }
+
+        // MODELING AODV ALGORITHM
+        if (selectedAlgorithm === ALGORITHM_AODV) {
+            const linesWithNodes = Aodv.makeAodv(nodesWithNearNodes, mainNodeWithNearNodes);
+        }
+
+        this.props.dispatch(buildAlgoritmChangeStatus(false));
+    }
+
+    rerenderForTooltip = (tooltip) => {
+        this.renderNetwork(this.props, tooltip);
     }
 
     // TOOLTIP
@@ -136,39 +153,37 @@ class Network extends Component {
         const canvas = this.canvasRef;
         const {
             nodes,
-        } = this.state;
+            mainNode,
+        } = this.props;
+
         const {
             top,
             left,
-            showTooltip,
         } = canvas.getBoundingClientRect();
 
         const mouseX = parseInt(e.clientX - left, 10);
         const mouseY = parseInt(e.clientY - top, 10);
+        const nodesWithMainNode = nodes.concat([mainNode]);
 
         let tooltip = false;
 
-        for (let i = 0; i < nodes.length; i += 1) {
-            if (CalculationService.checkNodeInRadius(nodes[i].x, nodes[i].y, NODE_RADIUS / 2, mouseX, mouseY)) {
+        for (let i = 0; i < nodesWithMainNode.length; i += 1) {
+            if (CalculationService.checkNodeInRadius(nodesWithMainNode[i].x, nodesWithMainNode[i].y, NODE_RADIUS / 2, mouseX, mouseY)) {
                 tooltip = {
-                    id: nodes[i].id,
-                    x: nodes[i].x,
-                    y: nodes[i].y,
-                    radius: nodes[i].params.radius,
+                    id: nodesWithMainNode[i].id,
+                    x: nodesWithMainNode[i].x,
+                    y: nodesWithMainNode[i].y,
+                    radius: nodesWithMainNode[i].params.radius,
                 };
                 break;
             }
         }
 
-        if (tooltip !== showTooltip) {
-            this.setState({
-                showTooltip: tooltip,
-            });
-        }
+        this.rerenderForTooltip(tooltip);
     }
 
     // renders
-    renderNetwork(nextProps) {
+    renderNetwork(nextProps, tooltip = false) {
         const {
             nodes,
             mainNode,
@@ -179,7 +194,6 @@ class Network extends Component {
         const {
             layoutWidth,
             layoutHeight,
-            showTooltip,
         } = this.state;
 
         const canvas = this.canvasRef;
@@ -196,7 +210,7 @@ class Network extends Component {
         // Lines
         CanvasService.renderLines(ctx, lines);
         // Tooltips
-        CanvasService.renderTooltipAndNodeRadius(ctx, showTooltip);
+        CanvasService.renderTooltipAndNodeRadius(ctx, tooltip);
     }
 
     render() {
@@ -226,6 +240,8 @@ Network.propTypes = {
     nodes: PropTypes.array,
     mainNode: PropTypes.object,
     selectedAlgorithm: PropTypes.any,
+    generateNodes: PropTypes.bool,
+    buildAlgorithm: PropTypes.bool,
 };
 
 export default Network;

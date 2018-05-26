@@ -2,10 +2,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
-// UTILS
-import eventEmmiter from '../../utils/eventEmmiter';
 // ACTIONS
-import { showRangeNodes } from '../../actions';
+import { showRangeNodes, buildAlgoritmChangeStatus } from '../../actions';
 // COMPONENTS
 import ModalBase from '../ModalBase';
 
@@ -20,7 +18,7 @@ class ControlsNetwork extends Component {
 
     // handlers
     onChangeAlgorithmStatus = () => {
-        eventEmmiter.emit('buildAlgorithm');
+        this.props.dispatch(buildAlgoritmChangeStatus(true));
     }
 
     onShowRange = () => {

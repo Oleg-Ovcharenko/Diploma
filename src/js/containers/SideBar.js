@@ -12,6 +12,7 @@ const SideBar = ({
     networkPanelHeight,
     dispatch,
     selectedAlgorithm,
+    generateNodes,
 }) => (
     <section className="menu overflow-x-a">
         <SelectAlgorithm
@@ -22,6 +23,7 @@ const SideBar = ({
             networkPanelWidth={networkPanelWidth}
             networkPanelHeight={networkPanelHeight}
             selectedAlgorithm={selectedAlgorithm}
+            generateNodes={generateNodes}
         />
         <NodeSettings
             dispatch={dispatch}
@@ -36,13 +38,15 @@ SideBar.propTypes = {
     networkPanelWidth: PropTypes.number,
     networkPanelHeight: PropTypes.number,
     selectedAlgorithm: PropTypes.any,
+    generateNodes: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
     return {
         networkPanelWidth: state.ui.networkPanel.width,
         networkPanelHeight: state.ui.networkPanel.height,
-        selectedAlgorithm: state.selectedAlgorithm,
+        selectedAlgorithm: state.settings.selectedAlgorithm,
+        generateNodes: state.settings.generateNodes,
     };
 }
 

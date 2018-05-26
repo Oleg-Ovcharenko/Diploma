@@ -7,6 +7,22 @@ export function addNetworkWindowSize(width, height) {
     };
 }
 
+export const GENERATE_NODES_CHANGE_STATUS = 'GENERATE_NODES_CHANGE_STATUS';
+export function generateNodesChangeStatus(status = false) {
+    return {
+        type: GENERATE_NODES_CHANGE_STATUS,
+        status,
+    };
+}
+
+export const BUILD_ALGORITHM_CHANGE_STATUS = 'BUILD_ALGORITHM_CHANGE_STATUS';
+export function buildAlgoritmChangeStatus(status = false) {
+    return {
+        type: BUILD_ALGORITHM_CHANGE_STATUS,
+        status,
+    };
+}
+
 export const GENERATE_NODES = 'GENERATE_NODES';
 export function generateNodes(nodes) {
     return {

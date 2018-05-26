@@ -6,13 +6,11 @@ import { Formik } from 'formik';
 // COMPONENTS
 import CardMenu from './CardMenu';
 // ACTIONS
-import { generateNodes, generateMainNode, generateLines } from '../../actions';
+import { generateNodes, generateMainNode, generateLines, generateNodesChangeStatus } from '../../actions';
 // HELPERS
 import { validationNumberField, randomFloatRange } from './../../helpers/helpersFunctions';
 // CONSTANTS
 import { RANGE_NODE_MIN, RANGE_NODE_MAX, MIN_NODES, MAX_NODES, DEFAULT_NODES, PADDING, DEFAULT_SCALE } from '../../constants';
-// UTILS
-import eventEmmiter from '../../utils/eventEmmiter';
 
 class Controls extends React.Component {
     constructor(props) {
@@ -37,13 +35,16 @@ class Controls extends React.Component {
     // life
 
     componentWillReceiveProps(nextProps) {
-        const w = nextProps.networkPanelWidth;
-        const h = nextProps.networkPanelHeight;
+        if (nextProps.generateNodes && nextProps.networkPanelWidth && nextProps.networkPanelHeight) {
+            const w = nextProps.networkPanelWidth;
+            const h = nextProps.networkPanelHeight;
 
-        if (w !== this.props.networkPanelWidth || h !== this.props.networkPanelHeight) {
-            this.onHandleGenerate(w, h);
+            this.props.dispatch(generateLines([]));
+            this.props.dispatch(generateNodesChangeStatus(false));
+
+            this.props.dispatch(generateMainNode(this.getMainNode(w, h)));
+            this.props.dispatch(generateNodes(this.getNodes(w, h)));
         }
-
 
         if (this.props.selectedAlgorithm !== nextProps.selectedAlgorithm) {
             this.setState({
@@ -54,15 +55,8 @@ class Controls extends React.Component {
 
     // handlers
 
-    onHandleGenerate = (w, h) => {
-        eventEmmiter.emit('generateNodes');
-
-        const nodes = this.getNodes(w, h);
-        const mainNode = this.getMainNode(w, h);
-
-        this.props.dispatch(generateMainNode(mainNode));
-        this.props.dispatch(generateNodes(nodes));
-        this.props.dispatch(generateLines([]));
+    onHandleGenerate = () => {
+        this.props.dispatch(generateNodesChangeStatus(true));
     }
 
     // getters
@@ -104,11 +98,19 @@ class Controls extends React.Component {
             networkPanelHeight,
         } = this.props;
 
+        const {
+            scale,
+            nodeRangeMin,
+            nodeRangeMax,
+        } = this.formValues;
+
         return {
             id: 'MAIN',
             x: randomFloatRange(PADDING, (w || networkPanelWidth) - PADDING),
             y: randomFloatRange(PADDING, (h || networkPanelHeight) - PADDING),
-            params: {},
+            params: {
+                radius: randomFloatRange(nodeRangeMin, nodeRangeMax) * scale,
+            },
         };
     }
 
@@ -270,6 +272,7 @@ Controls.propTypes = {
     networkPanelHeight: PropTypes.number,
     dispatch: PropTypes.func,
     selectedAlgorithm: PropTypes.any,
+    generateNodes: PropTypes.bool,
 };
 
 export default Controls;

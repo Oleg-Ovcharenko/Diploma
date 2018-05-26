@@ -6,7 +6,11 @@ export default {
         },
         showRange: false,
     },
-    selectedAlgorithm: null,
+    settings: {
+        generateNodes: false,
+        buildAlgorithm: false,
+        selectedAlgorithm: null,
+    },
     nodes: [],
     lines: [],
     mainNode: null,
