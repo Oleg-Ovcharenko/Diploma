@@ -8,7 +8,7 @@ import CalculationService from '../../services/CalculationService';
 // ACTIONS
 import { addNetworkWindowSize, generateLines } from '../../actions';
 // CONSTANTS
-import { NODE_RADIUS, ALGHORITHM_OPTICS } from '../../constants';
+import { NODE_RADIUS, ALGORITHM_OPTICS } from '../../constants';
 // ALGORITHMS
 import Optics from '../../algorithms/optics';
 
@@ -27,7 +27,7 @@ class Network extends Component {
     componentDidMount() {
         const canvas = this.canvasRef;
         eventEmmiter.addListener('generateNodes', this.setCanvasSize);
-        eventEmmiter.addListener('buildAlgorithm', this.buildAlgorthm);
+        eventEmmiter.addListener('buildAlgorithm', this.buildAlgorithm);
         canvas.addEventListener('mousemove', this.showNodeTooltip);
     }
 
@@ -113,16 +113,16 @@ class Network extends Component {
         return nodesInRadius;
     }
 
-    // BUILD ALGHORITHMS
-    buildAlgorthm = () => {
+    // BUILD ALGORITHMS
+    buildAlgorithm = () => {
         const {
-            selectedAlghorithm,
+            selectedAlgorithm,
         } = this.props;
 
         const nodesWithNearNodes = this.getRadiusNodes(this.props.nodes, this.props.mainNode);
 
-        // МОДЕЛИРОВАНИЕ АЛГОРИТМА OPTICS
-        if (selectedAlghorithm === ALGHORITHM_OPTICS) {
+        // MODELING OPTICS ALGORITHM
+        if (selectedAlgorithm === ALGORITHM_OPTICS) {
             const linesWithNodes = Optics.makeOpticsCluster(nodesWithNearNodes);
 
             if (linesWithNodes.length !== 0) {
@@ -131,7 +131,7 @@ class Network extends Component {
         }
     }
 
-    // TOOLTIPS
+    // TOOLTIP
     showNodeTooltip = (e) => {
         const canvas = this.canvasRef;
         const {
@@ -185,17 +185,17 @@ class Network extends Component {
         const canvas = this.canvasRef;
         const ctx = canvas.getContext('2d');
 
-        // clear canvas
+        // Clear canvas
         CanvasService.clearCanvas(ctx, layoutWidth, layoutHeight);
-        // all nodes
+        // All nodes
         CanvasService.renderNodes(ctx, nodes);
-        // render radius
+        // Render radius
         if (showRange) CanvasService.renderNodesRadius(ctx, nodes);
-        // main node
+        // Main node
         CanvasService.renderMainNode(ctx, mainNode);
-        // lines
+        // Lines
         CanvasService.renderLines(ctx, lines);
-        // tooltips
+        // Tooltips
         CanvasService.renderTooltipAndNodeRadius(ctx, showTooltip);
     }
 
@@ -225,7 +225,7 @@ Network.propTypes = {
     dispatch: PropTypes.func,
     nodes: PropTypes.array,
     mainNode: PropTypes.object,
-    selectedAlghorithm: PropTypes.any,
+    selectedAlgorithm: PropTypes.any,
 };
 
 export default Network;
