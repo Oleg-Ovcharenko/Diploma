@@ -84,7 +84,7 @@ class Animations {
             // Fields
             let top = y + 10;
             FIELDS.map((item) => {
-                ctx.fillText(`${item}: ${Math.round(tooltip[item])}`, x + PADDING, top);
+                ctx.fillText(`${item}: ${typeof tooltip[item] === 'number' ? Math.round(tooltip[item]) : tooltip[item]}`, x + PADDING, top);
                 top += FONT_SIZE;
             });
         }

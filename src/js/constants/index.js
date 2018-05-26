@@ -26,7 +26,8 @@ export const PADDING = MAIN_NODE_RADIUS;
 
 // ALGHORITHM LIST
 export const ALGHORITHM_OPTICS = 'OPTICS';
+export const ALGHORITHM_AODV = 'AODV';
 export const ALGHORITHMS_LIST = [
+    ALGHORITHM_AODV,
     ALGHORITHM_OPTICS,
-    'TODO',
 ];

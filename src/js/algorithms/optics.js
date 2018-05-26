@@ -65,7 +65,7 @@ class Optics {
         return false;
     }
 
-    static makeOpticsCluster(nodes) {
+    static makeOptics(nodes) {
         const lines = [];
         const idNodeInRoute = [];
         const idNodeWithoutRoute = [];
