@@ -197,21 +197,21 @@ class Network extends Component {
             layoutHeight,
         } = this.state;
 
-        const canvas = this.canvasRef;
-        const ctx = canvas.getContext('2d');
+        const ctx = this.canvasRef.getContext('2d');
+        const canvas = new CanvasService(ctx);
 
         // Clear canvas
-        CanvasService.clearCanvas(ctx, layoutWidth, layoutHeight);
+        canvas.clearCanvas(layoutWidth, layoutHeight);
         // All nodes
-        CanvasService.renderNodes(ctx, nodes);
+        canvas.renderNodes(nodes);
         // Render radius
-        if (showRange) CanvasService.renderNodesRadius(ctx, nodes);
+        if (showRange) canvas.renderNodesRadius(nodes);
         // Main node
-        CanvasService.renderMainNode(ctx, mainNode);
+        canvas.renderMainNode(mainNode);
         // Lines
-        CanvasService.renderLines(ctx, lines);
+        canvas.renderLines(lines);
         // Tooltips
-        CanvasService.renderTooltipAndNodeRadius(ctx, tooltip);
+        canvas.renderTooltipAndNodeRadius(tooltip);
     }
 
     render() {

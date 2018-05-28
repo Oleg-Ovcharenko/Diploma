@@ -8,48 +8,52 @@ import {
 } from '../constants';
 
 class Animations {
-    static clearCanvas(ctx, w, h) {
-        ctx.clearRect(0, 0, w, h);
+    constructor(ctx) {
+        this.ctx = ctx;
     }
 
-    static renderNodes(ctx, nodes) {
+    clearCanvas(w, h) {
+        this.ctx.clearRect(0, 0, w, h);
+    }
+
+    renderNodes(nodes) {
         nodes.forEach((node) => {
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, NODE_RADIUS / 2, 2 * Math.PI, false);
-            ctx.fillStyle = NODE_COLOR;
-            ctx.fill();
+            this.ctx.beginPath();
+            this.ctx.arc(node.x, node.y, NODE_RADIUS / 2, 2 * Math.PI, false);
+            this.ctx.fillStyle = NODE_COLOR;
+            this.ctx.fill();
         });
     }
 
-    static renderMainNode(ctx, mainNode) {
-        ctx.beginPath();
-        ctx.arc(mainNode.x, mainNode.y, MAIN_NODE_RADIUS / 2, 0, 2 * Math.PI, false);
-        ctx.fillStyle = MAIN_NODE_COLOR;
-        ctx.fill();
+    renderMainNode(mainNode) {
+        this.ctx.beginPath();
+        this.ctx.arc(mainNode.x, mainNode.y, MAIN_NODE_RADIUS / 2, 0, 2 * Math.PI, false);
+        this.ctx.fillStyle = MAIN_NODE_COLOR;
+        this.ctx.fill();
     }
 
-    static renderLines(ctx, lines) {
+    renderLines(lines) {
         lines.forEach((line) => {
-            ctx.beginPath();
-            ctx.moveTo(line.x1, line.y1);
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = NODE_COLOR;
-            ctx.lineTo(line.x2, line.y2);
-            ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.moveTo(line.x1, line.y1);
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeStyle = NODE_COLOR;
+            this.ctx.lineTo(line.x2, line.y2);
+            this.ctx.stroke();
         });
     }
 
-    static renderNodesRadius(ctx, nodes) {
+    renderNodesRadius(nodes) {
         nodes.forEach((node) => {
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, node.params.radius / 2, 2 * Math.PI, false);
-            ctx.strokeStyle = NODE_RADIUS_COLOR;
-            ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.arc(node.x, node.y, node.params.radius / 2, 2 * Math.PI, false);
+            this.ctx.strokeStyle = NODE_RADIUS_COLOR;
+            this.ctx.stroke();
         });
     }
 
     // TODO need behavior on the edge of canvas
-    static renderTooltipAndNodeRadius(ctx, tooltip) {
+    renderTooltipAndNodeRadius(tooltip) {
         const FONT_SIZE = 12;
         const TOOLTIP_X = tooltip.x;
         const TOOLTIP_Y = tooltip.y;
@@ -64,27 +68,27 @@ class Animations {
             const y = TOOLTIP_Y - (tooltipHeight / 2);
 
             // Node radius
-            ctx.beginPath();
-            ctx.arc(tooltip.x, tooltip.y, tooltip.radius / 2, 2 * Math.PI, false);
-            ctx.strokeStyle = NODE_RADIUS_COLOR;
-            ctx.stroke();
-            ctx.fillStyle = NODE_RADIUS_FILL_COLOR;
-            ctx.fill();
+            this.ctx.beginPath();
+            this.ctx.arc(tooltip.x, tooltip.y, tooltip.radius / 2, 2 * Math.PI, false);
+            this.ctx.strokeStyle = NODE_RADIUS_COLOR;
+            this.ctx.stroke();
+            this.ctx.fillStyle = NODE_RADIUS_FILL_COLOR;
+            this.ctx.fill();
 
             // Tooltip
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(x, y, TOOLTIP_WIDTH, tooltipHeight);
-            ctx.fillStyle = NODE_RADIUS_COLOR;
-            ctx.fillRect(x, y, TOOLTIP_WIDTH, tooltipHeight);
-            ctx.textBaseline = 'middle';
-            ctx.font = `${FONT_SIZE}px Arial`;
-            ctx.fillStyle = 'black';
+            this.ctx.strokeStyle = 'black';
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeRect(x, y, TOOLTIP_WIDTH, tooltipHeight);
+            this.ctx.fillStyle = NODE_RADIUS_COLOR;
+            this.ctx.fillRect(x, y, TOOLTIP_WIDTH, tooltipHeight);
+            this.ctx.textBaseline = 'middle';
+            this.ctx.font = `${FONT_SIZE}px Arial`;
+            this.ctx.fillStyle = 'black';
 
             // Fields
             let top = y + 10;
             FIELDS.map((item) => {
-                ctx.fillText(`${item}: ${typeof tooltip[item] === 'number' ? Math.round(tooltip[item]) : tooltip[item]}`, x + PADDING, top);
+                this.ctx.fillText(`${item}: ${typeof tooltip[item] === 'number' ? Math.round(tooltip[item]) : tooltip[item]}`, x + PADDING, top);
                 top += FONT_SIZE;
             });
         }

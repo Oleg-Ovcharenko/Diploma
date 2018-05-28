@@ -5,10 +5,34 @@ class aodv {
         const idNodeWithoutRoute = [];
         let nodesNeedToCheck = [];
 
-        for (let i = 0; i < mainNode.nodesInRadius.length; i += 1) {
+        // find nodes with small radius
+        // let nodeWithoutRouteId = null;
 
+        // nodes.map((nodeItem) => {
+        //     if (nodeItem.nodesInRadius.length === 0) {
+        //         nodeWithoutRouteId = nodeItem.id;
+        //         nodes.map((findNodeById) => {
+        //             findNodeById.nodesInRadius.map((nodesInRoute) => {
+        //                 if (nodesInRoute.id === nodeItem.id) {
+        //                     nodeWithoutRouteId = null;
+        //                 }
+        //             });
+        //         });
+
+        //         if (nodeWithoutRouteId && idNodeWithoutRoute.indexOf(nodeWithoutRouteId) === -1) {
+        //             idNodeWithoutRoute.push(nodeWithoutRouteId);
+        //         }
+        //     }
+        // });
+
+        if (mainNode.nodesInRadius.length === 0) {
+            alert('In the radius of the main point there are no points');
+            return [];
+        }
+
+        mainNode.nodesInRadius.map((nodeInMainNode) => {
             const findNearNode = nodes.find((item) => {
-                if (item.id === mainNode.nodesInRadius[i].id) {
+                if (item.id === nodeInMainNode.id) {
                     return item;
                 }
             });
@@ -37,9 +61,9 @@ class aodv {
                     });
                 }
             });
-        }
+        });
 
-        {
+        while ((idNodeInRoute.length + idNodeWithoutRoute.length) !== nodes.length + 1) {
             const newNeedToCheckNodes = [];
 
             nodesNeedToCheck.map((itemId) => {
@@ -49,65 +73,29 @@ class aodv {
                     }
                 });
 
-                findItem.nodesInRadius.map((item) => {
-                    if (idNodeInRoute.indexOf(item.id) === -1) {
-                        idNodeInRoute.push(item.id);
-                    }
+                if (findItem.nodesInRadius.length !== 0) {
+                    findItem.nodesInRadius.map((item) => {
+                        if (newNeedToCheckNodes.indexOf(item.id) === -1 && item.id !== 'MAIN') {
+                            newNeedToCheckNodes.push(item.id);
+                        }
 
-                    if (newNeedToCheckNodes.indexOf(item.id) === -1 && item.id !== 'MAIN') {
-                        newNeedToCheckNodes.push(item.id);
-                    }
+                        if (idNodeInRoute.indexOf(item.id) === -1) {
+                            idNodeInRoute.push(item.id);
 
-                    lines.push({
-                        idNode: findItem.id,
-                        idNexNode: item.id,
-                        x1: findItem.x,
-                        x2: item.x,
-                        y1: findItem.y,
-                        y2: item.y,
+                            lines.push({
+                                idNode: findItem.id,
+                                idNexNode: item.id,
+                                x1: findItem.x,
+                                x2: item.x,
+                                y1: findItem.y,
+                                y2: item.y,
+                            });
+                        }
                     });
-                });
+                }
             });
 
-
-            console.log(newNeedToCheckNodes);
-
-
-            // for (let i = 0; i < nodesNeedToCheck.length; i += 1) {
-
-            //     let findNearNode = null;
-            //     for (let j = 0; j < nodes.length; j += 1) {
-            //         if (nodesNeedToCheck.indexOf(nodes[j].id) !== -1) {
-            //             findNearNode = nodes[j];
-            //             break;
-            //         }
-            //     }
-
-
-            //     for (let k = 0; k < findNearNode.nodesInRadius.length; k += 1) {
-            //         console.log(findNearNode.nodesInRadius[k].id);
-            //         if (findNearNode.nodesInRadius[k].id === findNearNode.id) {
-            //             if (idNodeInRoute.indexOf(findNearNode.id) === -1) {
-            //                 idNodeInRoute.push(findNearNode.id);
-            //             }
-
-            //             if (newNeedToCheckNodes.indexOf(findNearNode.id) === -1) {
-            //                 newNeedToCheckNodes.push(findNearNode.id);
-            //             }
-
-            //             lines.push({
-            //                 idNode: findNearNode.nodesInRadius[k].id,
-            //                 idNexNode: findNearNode.id,
-            //                 x1: findNearNode.nodesInRadius[k].x,
-            //                 x2: findNearNode.x,
-            //                 y1: findNearNode.nodesInRadius[k].y,
-            //                 y2: findNearNode.y,
-            //             });
-            //         }
-            //     }
-            // }
-
-            // nodesNeedToCheck = newNeedToCheckNodes;
+            nodesNeedToCheck = newNeedToCheckNodes;
         }
 
         return lines;
