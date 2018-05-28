@@ -126,21 +126,22 @@ class Network extends Component {
 
     // BUILD ALGORITHMS
     buildAlgorithm = () => {
+        let linesWithNodes = null;
         const { selectedAlgorithm, nodes, mainNode } = this.props;
         const nodesWithNearNodes = this.getNodesInNode(nodes, mainNode);
         const mainNodeWithNearNodes = this.getNodesInMainNode(nodes, mainNode);
 
         // MODELING OPTICS ALGORITHM
         if (selectedAlgorithm === ALGORITHM_OPTICS) {
-            const linesWithNodes = Optics.makeOptics(nodesWithNearNodes);
-            this.props.dispatch(generateLines(linesWithNodes));
+            linesWithNodes = Optics.makeOptics(nodesWithNearNodes);
         }
 
         // MODELING AODV ALGORITHM
         if (selectedAlgorithm === ALGORITHM_AODV) {
-            const linesWithNodes = Aodv.makeAodv(nodesWithNearNodes, mainNodeWithNearNodes);
+            linesWithNodes = Aodv.makeAodv(nodesWithNearNodes, mainNodeWithNearNodes);
         }
 
+        this.props.dispatch(generateLines(linesWithNodes));
         this.props.dispatch(buildAlgoritmChangeStatus(false));
     }
 

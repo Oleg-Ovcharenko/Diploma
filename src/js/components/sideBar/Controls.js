@@ -109,7 +109,7 @@ class Controls extends React.Component {
             x: randomFloatRange(PADDING, (w || networkPanelWidth) - PADDING),
             y: randomFloatRange(PADDING, (h || networkPanelHeight) - PADDING),
             params: {
-                radius: randomFloatRange(nodeRangeMin, nodeRangeMax) * scale,
+                radius: (randomFloatRange(nodeRangeMin, nodeRangeMax) * scale) / 1.2,
             },
         };
     }
