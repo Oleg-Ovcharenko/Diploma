@@ -1,6 +1,4 @@
 # Моделирования самоорганизации сенсорной сети
-**Перейти к приложению:** [перейти](https://oleg-ovcharenko.github.io/diploma.github.io/)
----
 #### Запуск приложения
 ```sh
 git clone https://github.com/Oleg-Ovcharenko/Diploma.git
@@ -16,3 +14,5 @@ npm run build:dev
 ```sh
 npm run build:prod
 ```
+----
+**Перейти к приложению:** [перейти](https://oleg-ovcharenko.github.io/diploma.github.io/)
