@@ -5,6 +5,7 @@ import {
     MAIN_NODE_RADIUS,
     NODE_RADIUS_COLOR,
     NODE_RADIUS_FILL_COLOR,
+    TOOLTIP_BG_COLOR,
 } from '../constants';
 
 class Animations {
@@ -79,7 +80,7 @@ class Animations {
             this.ctx.strokeStyle = 'black';
             this.ctx.lineWidth = 1;
             this.ctx.strokeRect(x, y, TOOLTIP_WIDTH, tooltipHeight);
-            this.ctx.fillStyle = NODE_RADIUS_COLOR;
+            this.ctx.fillStyle = TOOLTIP_BG_COLOR;
             this.ctx.fillRect(x, y, TOOLTIP_WIDTH, tooltipHeight);
             this.ctx.textBaseline = 'middle';
             this.ctx.font = `${FONT_SIZE}px Arial`;

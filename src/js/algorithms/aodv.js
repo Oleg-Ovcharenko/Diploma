@@ -2,28 +2,7 @@ class aodv {
     static makeAodv(nodes, mainNode) {
         const lines = [];
         const idNodeInRoute = [];
-        const idNodeWithoutRoute = [];
         let nodesNeedToCheck = [];
-
-        // find nodes with small radius
-        // let nodeWithoutRouteId = null;
-
-        // nodes.map((nodeItem) => {
-        //     if (nodeItem.nodesInRadius.length === 0) {
-        //         nodeWithoutRouteId = nodeItem.id;
-        //         nodes.map((findNodeById) => {
-        //             findNodeById.nodesInRadius.map((nodesInRoute) => {
-        //                 if (nodesInRoute.id === nodeItem.id) {
-        //                     nodeWithoutRouteId = null;
-        //                 }
-        //             });
-        //         });
-
-        //         if (nodeWithoutRouteId && idNodeWithoutRoute.indexOf(nodeWithoutRouteId) === -1) {
-        //             idNodeWithoutRoute.push(nodeWithoutRouteId);
-        //         }
-        //     }
-        // });
 
         if (mainNode.nodesInRadius.length === 0) {
             alert('In the radius of the main point there are no points');
@@ -63,8 +42,11 @@ class aodv {
             });
         });
 
-        while ((idNodeInRoute.length + idNodeWithoutRoute.length) !== nodes.length + 1) {
+        let nodesWithoutRoute = true;
+
+        while (nodesNeedToCheck.length !== nodesWithoutRoute) {
             const newNeedToCheckNodes = [];
+            let countNodesWithoutRoute = 0;
 
             nodesNeedToCheck.map((itemId) => {
                 const findItem = nodes.find((findingItem) => {
@@ -74,7 +56,21 @@ class aodv {
                 });
 
                 if (findItem.nodesInRadius.length !== 0) {
+                    for (let i = 0; i < findItem.nodesInRadius.length; i += 1) {
+                        if (idNodeInRoute.indexOf(findItem.nodesInRadius[i].id) === -1) {
+                            countNodesWithoutRoute = 0;
+                            break;
+                        } else {
+                            countNodesWithoutRoute += 1;
+                        }
+                    }
+                } else {
+                    countNodesWithoutRoute += 1;
+                }
+
+                if (countNodesWithoutRoute === 0) {
                     findItem.nodesInRadius.map((item) => {
+                        
                         if (newNeedToCheckNodes.indexOf(item.id) === -1 && item.id !== 'MAIN') {
                             newNeedToCheckNodes.push(item.id);
                         }
@@ -96,6 +92,7 @@ class aodv {
             });
 
             nodesNeedToCheck = newNeedToCheckNodes;
+            nodesWithoutRoute = countNodesWithoutRoute;
         }
 
         return lines;

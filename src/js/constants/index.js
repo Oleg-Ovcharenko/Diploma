@@ -9,6 +9,7 @@ export const NODE_RADIUS = 6;
 export const NODE_COLOR = '#007bff';
 export const NODE_RADIUS_COLOR = '#e9ecef';
 export const NODE_RADIUS_FILL_COLOR = 'rgba(0,123,255,0.1)';
+export const TOOLTIP_BG_COLOR = 'rgba(250,250,250,.50)';
 
 // MAIN NODE SETTINGS
 export const MAIN_NODE_RADIUS = 16;
