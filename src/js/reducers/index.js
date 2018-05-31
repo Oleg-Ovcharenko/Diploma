@@ -8,6 +8,7 @@ import {
     SHOW_GRID,
     SELECT_ALGORITHM,
     BUILD_ALGORITHM_CHANGE_STATUS,
+    SET_SCALE,
 } from '../actions';
 
 export default function reducer(state = {}, action) {
@@ -75,6 +76,14 @@ export default function reducer(state = {}, action) {
                 settings: {
                     ...state.settings,
                     selectedAlgorithm: action.data,
+                },
+            });
+        }
+        case SET_SCALE: {
+            return Object.assign({}, state, {
+                settings: {
+                    ...state.settings,
+                    scale: action.data,
                 },
             });
         }

@@ -1,5 +1,6 @@
 // LIBRARIES
 import React, { Component } from 'react';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 // ACTIONS
@@ -45,6 +46,7 @@ class ControlsNetwork extends Component {
     }
 
     // renders
+
     renderModals() {
         return (
             <ModalBase
@@ -76,7 +78,7 @@ class ControlsNetwork extends Component {
                                     onClick={this.onShowRange}
                                 />
                                 <label
-                                    className="custom-control-label small cursor-pointer"
+                                    className={cx({ 'cursor-pointer': nodes.length !== 0 }, 'custom-control-label small')}
                                     htmlFor="showRanges"
                                 >
                                     <span>Show range</span>
@@ -87,10 +89,11 @@ class ControlsNetwork extends Component {
                                     type="checkbox"
                                     className="custom-control-input custom-control-input-sm"
                                     id="showGrid"
+                                    disabled={nodes.length === 0}
                                     onClick={this.onShowGrid}
                                 />
                                 <label
-                                    className="custom-control-label small cursor-pointer"
+                                    className={cx({ 'cursor-pointer': nodes.length !== 0 }, 'custom-control-label small')}
                                     htmlFor="showGrid"
                                 >
                                     <span>Show grid</span>

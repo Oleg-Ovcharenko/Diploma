@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 // COMPONENTS
 import CardMenu from './CardMenu';
 // ACTIONS
-import { generateNodes, generateMainNode, generateLines, generateNodesChangeStatus } from '../../actions';
+import { generateNodes, generateMainNode, generateLines, generateNodesChangeStatus, setScale } from '../../actions';
 // HELPERS
 import { validationNumberField, randomFloatRange } from './../../helpers/helpersFunctions';
 // CONSTANTS
@@ -57,6 +57,7 @@ class Controls extends React.Component {
 
     onHandleGenerate = () => {
         this.props.dispatch(generateNodesChangeStatus(true));
+        this.props.dispatch(setScale(this.formValues.scale));
     }
 
     // getters

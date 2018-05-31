@@ -68,3 +68,11 @@ export function selectAlgorithm(data) {
         data,
     };
 }
+
+export const SET_SCALE = 'SET_SCALE';
+export function setScale(data) {
+    return {
+        type: SET_SCALE,
+        data,
+    };
+}

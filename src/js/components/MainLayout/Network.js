@@ -155,6 +155,7 @@ class Network extends Component {
         const {
             nodes,
             mainNode,
+            scale,
         } = this.props;
 
         const {
@@ -175,6 +176,12 @@ class Network extends Component {
                     x: nodesWithMainNode[i].x,
                     y: nodesWithMainNode[i].y,
                     radius: nodesWithMainNode[i].params.radius,
+                    text: [
+                        `id: ${nodesWithMainNode[i].id}`,
+                        `x: ${Math.floor(nodesWithMainNode[i].x / scale, 2)} м`,
+                        `y: ${Math.floor(nodesWithMainNode[i].y / scale, 2)} м`,
+                        `radius: ${Math.floor(nodesWithMainNode[i].params.radius / scale, 2)} м`,
+                    ],
                 };
                 break;
             }
@@ -191,6 +198,7 @@ class Network extends Component {
             lines,
             showRange,
             showGrid,
+            scale,
         } = nextProps;
 
         const {
@@ -199,16 +207,16 @@ class Network extends Component {
         } = this.state;
 
         const ctx = this.canvasRef.getContext('2d');
-        const canvas = new CanvasService(ctx);
+        const canvas = new CanvasService(ctx, layoutWidth, layoutHeight);
 
         // Clear canvas
-        canvas.clearCanvas(layoutWidth, layoutHeight);
-        // All nodes
-        canvas.renderNodes(nodes);
+        canvas.clearCanvas();
         // Render radius
         if (showRange) canvas.renderNodesRadius(nodes);
         // Show grid
-        if (showGrid) console.log('test test test');
+        if (showGrid) canvas.renderGrid(scale);
+        // All nodes
+        canvas.renderNodes(nodes);
         // Main node
         canvas.renderMainNode(mainNode);
         // Lines
@@ -246,6 +254,7 @@ Network.propTypes = {
     selectedAlgorithm: PropTypes.any,
     generateNodes: PropTypes.bool,
     buildAlgorithm: PropTypes.bool,
+    scale: PropTypes.number,
 };
 
 export default Network;

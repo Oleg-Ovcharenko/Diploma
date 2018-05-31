@@ -70,7 +70,6 @@ class aodv {
 
                 if (countNodesWithoutRoute === 0) {
                     findItem.nodesInRadius.map((item) => {
-
                         if (newNeedToCheckNodes.indexOf(item.id) === -1 && item.id !== 'MAIN') {
                             newNeedToCheckNodes.push(item.id);
                         }

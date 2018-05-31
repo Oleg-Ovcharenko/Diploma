@@ -11,6 +11,7 @@ export default {
         generateNodes: false,
         buildAlgorithm: false,
         selectedAlgorithm: null,
+        scale: null,
     },
     nodes: [],
     lines: [],
