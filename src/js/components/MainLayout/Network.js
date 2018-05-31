@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import CanvasService from '../../services/CanvasService';
 import CalculationService from '../../services/CalculationService';
 // ACTIONS
-import { addNetworkWindowSize, generateLines, buildAlgoritmChangeStatus } from '../../actions';
+import { addNetworkWindowSize, generateLines, buildAlgorithmChangeStatus } from '../../actions';
 // CONSTANTS
 import { NODE_RADIUS, ALGORITHM_OPTICS, ALGORITHM_AODV } from '../../constants';
 // ALGORITHMS
@@ -142,10 +142,10 @@ class Network extends Component {
         }
 
         this.props.dispatch(generateLines(linesWithNodes));
-        this.props.dispatch(buildAlgoritmChangeStatus(false));
+        this.props.dispatch(buildAlgorithmChangeStatus(false));
     }
 
-    rerenderForTooltip = (tooltip) => {
+    reRenderForTooltip = (tooltip) => {
         this.renderNetwork(this.props, tooltip);
     }
 
@@ -180,7 +180,7 @@ class Network extends Component {
             }
         }
 
-        this.rerenderForTooltip(tooltip);
+        this.reRenderForTooltip(tooltip);
     }
 
     // renders
@@ -190,6 +190,7 @@ class Network extends Component {
             mainNode,
             lines,
             showRange,
+            showGrid,
         } = nextProps;
 
         const {
@@ -206,6 +207,8 @@ class Network extends Component {
         canvas.renderNodes(nodes);
         // Render radius
         if (showRange) canvas.renderNodesRadius(nodes);
+        // Show grid
+        if (showGrid) console.log('test test test');
         // Main node
         canvas.renderMainNode(mainNode);
         // Lines

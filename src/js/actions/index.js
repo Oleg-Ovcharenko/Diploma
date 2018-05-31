@@ -16,7 +16,7 @@ export function generateNodesChangeStatus(status = false) {
 }
 
 export const BUILD_ALGORITHM_CHANGE_STATUS = 'BUILD_ALGORITHM_CHANGE_STATUS';
-export function buildAlgoritmChangeStatus(status = false) {
+export function buildAlgorithmChangeStatus(status = false) {
     return {
         type: BUILD_ALGORITHM_CHANGE_STATUS,
         status,
@@ -51,6 +51,13 @@ export const SHOW_RANGE_NODES = 'SHOW_RANGE_NODES';
 export function showRangeNodes() {
     return {
         type: SHOW_RANGE_NODES,
+    };
+}
+
+export const SHOW_GRID = 'SHOW_GRID';
+export function showGrid() {
+    return {
+        type: SHOW_GRID,
     };
 }
 

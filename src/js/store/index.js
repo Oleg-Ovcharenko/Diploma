@@ -5,6 +5,7 @@ export default {
             height: 0,
         },
         showRange: false,
+        showGrid: false,
     },
     settings: {
         generateNodes: false,

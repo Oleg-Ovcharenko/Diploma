@@ -5,6 +5,7 @@ import {
     GENERATE_MAIN_NODE,
     GENERATE_LINES,
     SHOW_RANGE_NODES,
+    SHOW_GRID,
     SELECT_ALGORITHM,
     BUILD_ALGORITHM_CHANGE_STATUS,
 } from '../actions';
@@ -57,7 +58,15 @@ export default function reducer(state = {}, action) {
             return Object.assign({}, state, {
                 ui: {
                     ...state.ui,
-                    show: !state.ui.show,
+                    showRange: !state.ui.showRange,
+                },
+            });
+        }
+        case SHOW_GRID: {
+            return Object.assign({}, state, {
+                ui: {
+                    ...state.ui,
+                    showGrid: !state.ui.showGrid,
                 },
             });
         }

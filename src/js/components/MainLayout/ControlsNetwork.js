@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 // ACTIONS
-import { showRangeNodes, buildAlgoritmChangeStatus } from '../../actions';
+import { showRangeNodes, showGrid, buildAlgorithmChangeStatus } from '../../actions';
 // COMPONENTS
 import ModalBase from '../ModalBase';
 
@@ -17,12 +17,17 @@ class ControlsNetwork extends Component {
     }
 
     // handlers
+
     onChangeAlgorithmStatus = () => {
-        this.props.dispatch(buildAlgoritmChangeStatus(true));
+        this.props.dispatch(buildAlgorithmChangeStatus(true));
     }
 
     onShowRange = () => {
         this.props.dispatch(showRangeNodes());
+    }
+
+    onShowGrid = () => {
+        this.props.dispatch(showGrid());
     }
 
     onShowResultsModal = () => {
@@ -32,6 +37,7 @@ class ControlsNetwork extends Component {
     }
 
     // modals
+
     resultModalBody() {
         return (
             <p>asdf</p>
@@ -61,17 +67,7 @@ class ControlsNetwork extends Component {
                 <div className="w-50 mr-2">
                     <div className="card mb-3 h-80 bg-white rounded-0 w-100">
                         <div className="card-body d-flex align-i-center rounded-0">
-                            <div>
-                                <button
-                                    type="submit"
-                                    className="btn btn-success btn-sm"
-                                    onClick={this.onChangeAlgorithmStatus}
-                                    disabled={nodes.length === 0}
-                                >
-                                    Build algorithm
-                                </button>
-                            </div>
-                            <div className="custom-control custom-checkbox ml-3">
+                            <div className="custom-control custom-checkbox">
                                 <input
                                     type="checkbox"
                                     className="custom-control-input custom-control-input-sm"
@@ -83,8 +79,32 @@ class ControlsNetwork extends Component {
                                     className="custom-control-label small cursor-pointer"
                                     htmlFor="showRanges"
                                 >
-                                    Show range
+                                    <span>Show range</span>
                                 </label>
+                            </div>
+                            <div className="custom-control custom-checkbox ml-3 mr-3">
+                                <input
+                                    type="checkbox"
+                                    className="custom-control-input custom-control-input-sm"
+                                    id="showGrid"
+                                    onClick={this.onShowGrid}
+                                />
+                                <label
+                                    className="custom-control-label small cursor-pointer"
+                                    htmlFor="showGrid"
+                                >
+                                    <span>Show grid</span>
+                                </label>
+                            </div>
+                            <div className="ml-auto">
+                                <button
+                                    type="submit"
+                                    className="btn btn-success btn-sm"
+                                    onClick={this.onChangeAlgorithmStatus}
+                                    disabled={nodes.length === 0}
+                                >
+                                    Build algorithm
+                                </button>
                             </div>
                         </div>
                     </div>
