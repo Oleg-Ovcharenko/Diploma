@@ -98,83 +98,84 @@ class Optics {
                     if (idNodeInRoute.indexOf(node.id) === -1) {
                         idNodeWithoutRoute.push(node.id);
                     }
-                    buildRouteIds = []; // Сбрасываем все построение предыдущего маршрута
-                    line = false; // Сбрасываем предущие значение линии для начала построения нового маршрута на следующей итерации
+                    buildRouteIds = []; /** Скидаємо побудову попреденього маршруту */
+                    line = false; /** Скижаємо попередні значенная ліній для початку побудови нового маршруту на наступній ітерації */
                 } else {
-                    line = Optics.getLineForNearNode(node); // Получаем точку на минимальном расстоянии
+                    /** Отримуємо точку на яка знаходиться на мінімальній відстані */
+                    line = Optics.getLineForNearNode(node);
 
-                    // При попадании NextNode в главную точку прекращаем построение маршрута
+                    /** Якщо NextNode буду головною точкою за занічуємо побудову цього маршруту */
                     if (line.idNexNode === MAIN_NODE) {
-                        idNodeInRoute.push(line.idNode); // добавляем точку как ту что находится в маршруте
-                        lines.push(line); // добавляем линию в массив линий на отрисовку
-                        // Удаляем с массива id для получения случайной точки
+                        idNodeInRoute.push(line.idNode); /** Добавляємо точку як ту що знаходіться в маршруті */
+                        lines.push(line); /** Добавляємо нову лінію */
+                        /** Выдаляемо id новой точки за масыву де беремо нову точку для побудови маршруту */
                         if (randomIds.indexOf(line.idNode) !== -1) {
                             randomIds.splice(randomIds.indexOf(line.idNode), 1);
                         }
-                        // Обнуляем маршрут
+                        /** Обуняємо маршрут */
                         buildRouteIds = [];
                         line = null;
-                        // Если полученной idNexNode нет в маршруте то добавляем её в машрут
+                        /** Якщо отриманої idNexNode немає в маршруті то добавляємо її в маршрут */
                     } else if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
-                        lines.push(line); // добавляем линию в массив линий на отрисовку
+                        lines.push(line); /** Добавляємо нову лінію */
 
-                        // Так как это новый маршрут заносим в масив точек входящих в маршрут idNode и idNexNode
+                        /** Так як це новий маршрут то заносимо в масив точок які входять в маршрут idNode та idNexNode */
                         if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
                             idNodeInRoute.push(line.idNode, line.idNexNode);
                             buildRouteIds.push(line.idNode, line.idNexNode);
                         }
 
-                        // Удаляем с массива id для получения случайной точки
+                        /** Выдаляемо id новой точки за масыву де беремо нову точку для побудови маршруту */
                         if (randomIds.indexOf(line.idNexNode) !== -1) {
                             randomIds.splice(randomIds.indexOf(line.idNexNode), 1);
                         }
                     } else {
-                        // Если следующая точка входит в маршрут то предыдущую заносим в маршрут и обнуляем его
+                        /** Якщо наступна точка входить в маршрут то попредню точку заносимо в маршрут та обнуляємо його */
                         idNodeInRoute.push(line.idNode);
                         lines.push(line);
                         buildRouteIds = [];
                         line = null;
                     }
                 }
-            // Если на предущем этапе была полученна линия
+            /** Якщо на попередньому єтапі була отримана лінія */
             } else {
-                // получаем крайнюю в линии точку
+                /** Отримати наступну точку для отриманої лінії */
                 const nextNode = Optics.getNodeWithLine(nodes, line);
 
-                // Если нет ближайших точек обнуляем маршрут
+                /** Якщо немає найближчих точок то обнуляємо маршрут */
                 if (!nextNode || !nextNode.nodesInRadius || nextNode.nodesInRadius.length === 0) {
                     line = null;
                     buildRouteIds = [];
                 } else {
-                    // Ищем следующую точку по минимальному периметру
+                    /** Шукаємо наступну точку по мінімальному периметру */
                     line = Optics.getLineForMinimumPerimeter(nextNode, line, buildRouteIds);
 
-                    // Если не получили линию обнуляем маршрут
+                    /** Якщо не отримали лінію то обнуляємо маршрут */
                     if (!line) {
                         line = null;
                         buildRouteIds = [];
-                    // Попали в главную точку. Добавляем линию на отрисовку и обнуляем маршрут
+                    /** Якщо попали в головну точку. Добавляємо лінію та обнуляємо маршрут */
                     } else if (line.idNexNode === MAIN_NODE) {
                         lines.push(line);
                         buildRouteIds = [];
                         line = null;
-                    // Если в маршруте нет выбранной нами точки до заносим её в машрут
+                    /** Якщо в маршруті немає знайденої точки то заносимо її в маршрут */
                     } else if (idNodeInRoute.indexOf(line.idNexNode) === -1) {
                         lines.push(line); // добавляем линию на отрисовку
 
                         idNodeInRoute.push(line.idNexNode);
                         buildRouteIds.push(line.idNexNode);
 
-                        // Удаляем с массива id для получения случайной точки
+                        /** Выдаляемо id новой точки за масыву де беремо нову точку для побудови маршруту */
                         if (randomIds.indexOf(line.idNexNode) !== -1) {
                             randomIds.splice(randomIds.indexOf(line.idNexNode), 1);
                         }
 
-                        // Если новая точка была помечена как та у которой нет ближайших удаем её с массива
+                        /** Якщо нова точка була помічена як так у якої немає найближчих точок то видялємо її */
                         if (idNodeWithoutRoute.indexOf(line.idNexNode) !== -1) {
                             idNodeWithoutRoute.splice(idNodeWithoutRoute.indexOf(line.idNexNode), 1);
                         }
-                    // Если точка уже есть в маршуре отрисовываем линию и обнуляем маршурт
+                    /** Якщо точка знаходиться в маршруті то добаляемо нову лінію */
                     } else {
                         lines.push(line);
                         buildRouteIds = [];
