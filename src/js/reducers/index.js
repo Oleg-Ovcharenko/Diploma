@@ -72,14 +72,6 @@ export default function reducer(state = {}, action) {
                 },
             });
         }
-        case SHOW_LAYOUT_METERS: {
-            return Object.assign({}, state, {
-                ui: {
-                    ...state.ui,
-                    showLayoutMeters: !state.ui.showLayoutMeters,
-                },
-            });
-        }
         case SELECT_ALGORITHM: {
             return Object.assign({}, state, {
                 settings: {

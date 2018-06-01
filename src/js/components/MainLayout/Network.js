@@ -180,7 +180,7 @@ class Network extends Component {
                         `id: ${nodesWithMainNode[i].id}`,
                         `x: ${Math.floor(nodesWithMainNode[i].x / scale, 2)} м`,
                         `y: ${Math.floor(nodesWithMainNode[i].y / scale, 2)} м`,
-                        `radius: ${nodesWithMainNode[i].params.radius} px`,
+                        `radius: ${Math.floor(nodesWithMainNode[i].params.radius)} px`,
                         `radius: ${Math.floor(nodesWithMainNode[i].params.radius / scale, 2)} м`,
                     ],
                 };
@@ -200,7 +200,6 @@ class Network extends Component {
             showRange,
             showGrid,
             scale,
-            showLayoutMeters,
         } = nextProps;
 
         const {
@@ -211,14 +210,14 @@ class Network extends Component {
         const ctx = this.canvasRef.getContext('2d');
         const canvas = new CanvasService(ctx, layoutWidth, layoutHeight);
 
+        const nodesWithMainNode = nodes.concat([mainNode]);
+
         // Clear canvas
         canvas.clearCanvas();
         // Render radius
-        if (showRange) canvas.renderNodesRadius(nodes);
+        if (showRange) canvas.renderNodesRadius(nodesWithMainNode);
         // Show grid
         if (showGrid) canvas.renderGrid(scale);
-        // Show meters on layout
-        if (showLayoutMeters) console.log(layoutWidth / scale, layoutHeight / scale);
         // All nodes
         canvas.renderNodes(nodes);
         // Main node
@@ -258,7 +257,6 @@ Network.propTypes = {
     selectedAlgorithm: PropTypes.any,
     generateNodes: PropTypes.bool,
     buildAlgorithm: PropTypes.bool,
-    showLayoutMeters: PropTypes.bool,
     scale: PropTypes.number,
 };
 

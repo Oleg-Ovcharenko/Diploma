@@ -17,12 +17,14 @@ const MainLayout = ({
     buildAlgorithm,
     showGrid,
     scale,
-    showLayoutMeters,
+    networkPanel,
 }) => (
     <section className="flex-grow-1 bg-gray-200 d-flex flex-column p-3">
         <ControlsNetwork
             dispatch={dispatch}
             nodes={nodes}
+            scale={scale}
+            networkPanel={networkPanel}
         />
         <Network
             nodes={nodes}
@@ -35,7 +37,6 @@ const MainLayout = ({
             generateNodes={generateNodes}
             buildAlgorithm={buildAlgorithm}
             scale={scale}
-            showLayoutMeters={showLayoutMeters}
         />
     </section>
 );
@@ -51,7 +52,7 @@ MainLayout.propTypes = {
     generateNodes: PropTypes.bool,
     buildAlgorithm: PropTypes.bool,
     scale: PropTypes.number,
-    showLayoutMeters: PropTypes.bool,
+    networkPanel: PropTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -60,12 +61,12 @@ function mapStateToProps(state) {
         lines: state.lines,
         showRange: state.ui.showRange,
         showGrid: state.ui.showGrid,
-        showLayoutMeters: state.ui.showLayoutMeters,
         mainNode: state.mainNode,
         scale: state.settings.scale,
         selectedAlgorithm: state.settings.selectedAlgorithm,
         generateNodes: state.settings.generateNodes,
         buildAlgorithm: state.settings.buildAlgorithm,
+        networkPanel: state.ui.networkPanel,
     };
 }
 

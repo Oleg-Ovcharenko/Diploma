@@ -61,13 +61,6 @@ export function showGrid() {
     };
 }
 
-export const SHOW_LAYOUT_METERS = 'SHOW_LAYOUT_METERS';
-export function showLayoutMeters() {
-    return {
-        type: SHOW_LAYOUT_METERS,
-    };
-}
-
 export const SELECT_ALGORITHM = 'SELECT_ALGORITHM';
 export function selectAlgorithm(data) {
     return {

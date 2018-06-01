@@ -4,7 +4,7 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 // ACTIONS
-import { showRangeNodes, showGrid, showLayoutMeters, buildAlgorithmChangeStatus } from '../../actions';
+import { showRangeNodes, showGrid, buildAlgorithmChangeStatus } from '../../actions';
 // COMPONENTS
 import ModalBase from '../ModalBase';
 
@@ -14,6 +14,7 @@ class ControlsNetwork extends Component {
 
         this.state = {
             modalResults: false,
+            showLayoutMeters: false,
         };
     }
 
@@ -32,7 +33,9 @@ class ControlsNetwork extends Component {
     }
 
     onShowLayoutMeters = () => {
-        this.props.dispatch(showLayoutMeters());
+        this.setState({
+            showLayoutMeters: !this.state.showLayoutMeters,
+        });
     }
 
     onShowResultsModal = () => {
@@ -66,6 +69,8 @@ class ControlsNetwork extends Component {
     render() {
         const {
             nodes,
+            networkPanel,
+            scale,
         } = this.props;
 
         return (
@@ -135,10 +140,18 @@ class ControlsNetwork extends Component {
                     <div className="card mb-3 h-80 bg-white rounded-0 w-100">
                         <div className="card-body d-flex align-i-center rounded-0 d-flex justify-content-between">
                             <div>
+                                {
+                                    this.state.showLayoutMeters ? (
+                                        <small className="text-muted font-weight-bold">
+                                            {`Network width: ${Math.floor(networkPanel.width / scale)}m, height: ${Math.floor(networkPanel.height / scale)}m`}
+                                        </small>
+                                    ) : null
+                                }
+                            </div>
+                            <div>
                                 <Button
                                     onClick={this.onShowResultsModal}
-                                    outline
-                                    color="primary"
+                                    color="info"
                                     size="sm"
                                 >
                                     Show results
@@ -156,6 +169,8 @@ class ControlsNetwork extends Component {
 ControlsNetwork.propTypes = {
     dispatch: PropTypes.func,
     nodes: PropTypes.array,
+    networkPanel: PropTypes.object,
+    scale: PropTypes.number,
 };
 
 export default ControlsNetwork;
