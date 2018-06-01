@@ -6,6 +6,7 @@ import {
     GENERATE_LINES,
     SHOW_RANGE_NODES,
     SHOW_GRID,
+    SHOW_LAYOUT_METERS,
     SELECT_ALGORITHM,
     BUILD_ALGORITHM_CHANGE_STATUS,
     SET_SCALE,
@@ -68,6 +69,14 @@ export default function reducer(state = {}, action) {
                 ui: {
                     ...state.ui,
                     showGrid: !state.ui.showGrid,
+                },
+            });
+        }
+        case SHOW_LAYOUT_METERS: {
+            return Object.assign({}, state, {
+                ui: {
+                    ...state.ui,
+                    showLayoutMeters: !state.ui.showLayoutMeters,
                 },
             });
         }

@@ -1,5 +1,5 @@
 export const DEFAULT_NODES = 400;
-export const LINE_WIDTH = 2;
+export const LINE_WIDTH = 1;
 
 // SCALE
 export const DEFAULT_SCALE = 8;

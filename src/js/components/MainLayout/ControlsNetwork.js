@@ -4,7 +4,7 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 // ACTIONS
-import { showRangeNodes, showGrid, buildAlgorithmChangeStatus } from '../../actions';
+import { showRangeNodes, showGrid, showLayoutMeters, buildAlgorithmChangeStatus } from '../../actions';
 // COMPONENTS
 import ModalBase from '../ModalBase';
 
@@ -29,6 +29,10 @@ class ControlsNetwork extends Component {
 
     onShowGrid = () => {
         this.props.dispatch(showGrid());
+    }
+
+    onShowLayoutMeters = () => {
+        this.props.dispatch(showLayoutMeters());
     }
 
     onShowResultsModal = () => {
@@ -84,7 +88,7 @@ class ControlsNetwork extends Component {
                                     <span>Show range</span>
                                 </label>
                             </div>
-                            <div className="custom-control custom-checkbox ml-3 mr-3">
+                            <div className="custom-control custom-checkbox ml-3">
                                 <input
                                     type="checkbox"
                                     className="custom-control-input custom-control-input-sm"
@@ -97,6 +101,21 @@ class ControlsNetwork extends Component {
                                     htmlFor="showGrid"
                                 >
                                     <span>Show grid</span>
+                                </label>
+                            </div>
+                            <div className="custom-control custom-checkbox ml-3 mr-3">
+                                <input
+                                    type="checkbox"
+                                    className="custom-control-input custom-control-input-sm"
+                                    id="showMetersSizes"
+                                    disabled={nodes.length === 0}
+                                    onClick={this.onShowLayoutMeters}
+                                />
+                                <label
+                                    className={cx({ 'cursor-pointer': nodes.length !== 0 }, 'custom-control-label small')}
+                                    htmlFor="showMetersSizes"
+                                >
+                                    <span>Show layout in meters sizes</span>
                                 </label>
                             </div>
                             <div className="ml-auto">

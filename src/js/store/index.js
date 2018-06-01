@@ -6,6 +6,7 @@ export default {
         },
         showRange: false,
         showGrid: false,
+        showLayoutMeters: false,
     },
     settings: {
         generateNodes: false,

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "",
-    "build:dev": "webpack-dev-server --progress --color --inline --config ./configs/webpack/webpack.config.js --env development",
+    "start": "webpack-dev-server --progress --color --inline --config ./configs/webpack/webpack.config.js --env development",
     "build:prod": "webpack --display-error-details --env production --config ./configs/webpack/webpack.config.js --progress --color"
   },
   "eslintConfig": {
