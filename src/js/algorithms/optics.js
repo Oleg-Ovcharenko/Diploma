@@ -5,10 +5,10 @@ import { randomRange } from './../helpers/helpersFunctions';
 import { MAIN_NODE } from '../constants';
 
 class Optics {
-    // Получить следующую точку с линии
+    /** Отримати наступну точку для отриманої лінії */
     static getNodeWithLine = (nodes, line) => nodes.find((item) => item.id === line.idNexNode ? item : null);
 
-    // Получить ребро для ближайшей точки в радиусе
+    /** Отримати лінію для найближчої точки в радіусі */
     static getLineForNearNode(node) {
         let minDistance = null;
         let nearNode = null;
@@ -35,7 +35,7 @@ class Optics {
         return false;
     }
 
-    // Получить ребро по минимальному периметру
+    /** Отримати лінію для найменьшого периметру в радісі дії певної точки */
     static getLineForMinimumPerimeter(node, prevLine, buildRouteIds) {
         let minPerimeter = null;
         let nearNode = null;
@@ -66,33 +66,34 @@ class Optics {
         return false;
     }
 
+    /** Побудова алгоритму */
     static makeOptics(nodes) {
         const lines = [];
         const idNodeInRoute = [];
         const idNodeWithoutRoute = [];
+        const randomIds = [];
         let buildRouteIds = [];
         let line = false;
 
-        // Генерируем массив id с полученных нод
-        const randomIds = [];
+        /** Отримати масив id точок */
         nodes.map((item) => randomIds.push(item.id));
 
         while (randomIds.length !== 0 && ((idNodeInRoute.length + idNodeWithoutRoute.length) !== nodes.length)) {
-            // Получение точки для минимального растояния
+            /** Отримати точки для мінімальної відстані */
             if (!line) {
-                // Выбираем случайный элемент массива
+                /** Отримати випадкову точку */
                 const indexRandomNode = randomRange(0, randomIds.length - 1);
                 const idRandomNode = randomIds[indexRandomNode];
                 randomIds.splice(indexRandomNode, 1);
 
-                // Находим точку по этому элементу
+                /** Занаходимо віпадкову точку по id в масиві точок */
                 const node = nodes.find((item) => {
                     if (item.id === idRandomNode) {
                         return item;
                     }
                 });
 
-                // Если у выбранной точки нет ближайших точек
+                /** Якщо в радіусі дії знайденої точки немає найближчих точок */
                 if (!node || !node.nodesInRadius || node.nodesInRadius.length === 0) {
                     if (idNodeInRoute.indexOf(node.id) === -1) {
                         idNodeWithoutRoute.push(node.id);

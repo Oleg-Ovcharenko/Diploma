@@ -23,7 +23,7 @@ export const MAX_NODES = 2000;
 
 // RANGE NODES
 export const RANGE_NODE_MIN = 50;
-export const RANGE_NODE_MAX = 200;
+export const RANGE_NODE_MAX = 700;
 
 // PADDING FOR NETWORK LAYOUT
 export const PADDING = MAIN_NODE_RADIUS;

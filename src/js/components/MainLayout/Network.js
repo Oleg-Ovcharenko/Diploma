@@ -9,8 +9,8 @@ import { addNetworkWindowSize, generateLines, buildAlgorithmChangeStatus } from 
 // CONSTANTS
 import { NODE_RADIUS, ALGORITHM_OPTICS, ALGORITHM_AODV } from '../../constants';
 // ALGORITHMS
-import Optics from '../../algorithms/optics';
-import Aodv from '../../algorithms/aodv';
+import Optics from '../../algorithms/Optics';
+import Aodv from '../../algorithms/Aodv';
 
 class Network extends Component {
     constructor(props) {
