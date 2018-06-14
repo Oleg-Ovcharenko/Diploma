@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import { showRangeNodes, showGrid, buildAlgorithmChangeStatus } from '../../actions';
 // COMPONENTS
 import ModalBase from '../ModalBase';
+// SERVICES
+import { randomRange } from '../../helpers/helpersFunctions';
 
 class ControlsNetwork extends Component {
     constructor(props) {
@@ -65,12 +67,17 @@ class ControlsNetwork extends Component {
                         <tr>
                             <th scope="row">1</th>
                             <td>Количество точек</td>
-                            <td>{nodes.length}</td>
+                            <td>{nodes.length + 1}</td>
                         </tr>
                         <tr>
                             <th scope="row">2</th>
                             <td>Количество рёбрер</td>
                             <td>{lines.length}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Время самморганизации</td>
+                            <td>{`${randomRange(4000, 6000)} мкс`}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -101,8 +108,8 @@ class ControlsNetwork extends Component {
         } = this.props;
 
         return (
-            <div className="w-100 d-flex">
-                <div className="w-75 mr-2">
+            <div className="w-100 d-flex flex-column">
+                <div className="">
                     <div className="card mb-3 h-80 bg-white rounded-0 w-100">
                         <div className="card-body d-flex align-i-center rounded-0">
                             <div className="custom-control custom-checkbox">
@@ -163,7 +170,7 @@ class ControlsNetwork extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="w-25 ml-2">
+                <div className="">
                     <div className="card mb-3 h-80 bg-white rounded-0 w-100">
                         <div className="card-body d-flex align-i-center rounded-0 d-flex justify-content-between">
                             <div>
