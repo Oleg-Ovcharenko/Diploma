@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
 // ACTIONS
 import { showRangeNodes, showGrid, buildAlgorithmChangeStatus } from '../../actions';
 // COMPONENTS
@@ -46,9 +45,36 @@ class ControlsNetwork extends Component {
 
     // modals
 
-    resultModalBody() {
+    resultModalBody = () => {
+        const {
+            nodes,
+            lines,
+        } = this.props;
+
         return (
-            <p>asdf</p>
+            <div>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Parameter</th>
+                            <th scope="col">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Количество точек</td>
+                            <td>{nodes.length}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Количество рёбрер</td>
+                            <td>{lines.length}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         );
     }
 
@@ -71,11 +97,12 @@ class ControlsNetwork extends Component {
             nodes,
             networkPanel,
             scale,
+            lines,
         } = this.props;
 
         return (
             <div className="w-100 d-flex">
-                <div className="w-50 mr-2">
+                <div className="w-75 mr-2">
                     <div className="card mb-3 h-80 bg-white rounded-0 w-100">
                         <div className="card-body d-flex align-i-center rounded-0">
                             <div className="custom-control custom-checkbox">
@@ -136,7 +163,7 @@ class ControlsNetwork extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="w-50 ml-2">
+                <div className="w-25 ml-2">
                     <div className="card mb-3 h-80 bg-white rounded-0 w-100">
                         <div className="card-body d-flex align-i-center rounded-0 d-flex justify-content-between">
                             <div>
@@ -149,13 +176,14 @@ class ControlsNetwork extends Component {
                                 }
                             </div>
                             <div>
-                                <Button
+                                <button
+                                    type="submit"
+                                    className="btn btn-info btn-sm"
                                     onClick={this.onShowResultsModal}
-                                    color="info"
-                                    size="sm"
+                                    disabled={lines.length === 0}
                                 >
                                     Show results
-                                </Button>
+                                </button>
                             </div>
                         </div>
                     </div>

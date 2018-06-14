@@ -15,9 +15,9 @@ class NodeSettings extends React.Component {
     render() {
         return (
             <CardMenu
-                name="Node settings"
+                name="Nodes settings"
             >
-                <span>Here will be node setting</span>
+                <span>Need to select algorithm</span>
             </CardMenu>
         );
     }

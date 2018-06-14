@@ -23,6 +23,7 @@ const MainLayout = ({
         <ControlsNetwork
             dispatch={dispatch}
             nodes={nodes}
+            lines={lines}
             scale={scale}
             networkPanel={networkPanel}
         />
